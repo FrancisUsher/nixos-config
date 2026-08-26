@@ -13,7 +13,7 @@
   networking.hostName = "bubu-brain"; # Define your hostname.
   # Pick only one of the below networking options.
   networking.wireless.enable = true;
-  networking.wireless.secretsFile = "/etc/nixos/wifi-secrets.env";
+  networking.wireless.secretsFile = "/etc/wifi-secrets.env";
   networking.wireless.networks.autohackbot2600.pskRaw = "ext:WIFI_PSK";
 
   # Enable some experimental settings so we can use flakes
