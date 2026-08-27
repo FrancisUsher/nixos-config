@@ -71,8 +71,15 @@
       "claude-code"
     ];
 
-  # Firewall - allow SSH
-  networking.firewall.allowedTCPPorts = [ 22 ];
+  # Tailscale - remote access from anywhere (e.g. public wifi) without
+  # exposing SSH to the open internet. One-time manual step after this is
+  # deployed: `sudo tailscale up` to authenticate the machine.
+  services.tailscale.enable = true;
+  networking.firewall.trustedInterfaces = [ "tailscale0" ];
+  networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
+
+  # SSH is only reachable over the tailnet now (trustedInterfaces above),
+  # not on the public interface.
 
   # Enable DNS to allow connecting to me via hostname
   services.avahi = {
