@@ -43,6 +43,15 @@
   # Passwordless sudo
   security.sudo.wheelNeedsPassword = false;
 
+  # Auto-attach a persistent tmux session on interactive login (ssh or
+  # mosh), so a dropped connection (e.g. laptop sleep) doesn't kill what
+  # was running - just reconnect and you're back in it.
+  programs.bash.interactiveShellInit = ''
+    if [[ $- == *i* ]] && [ -z "''${TMUX:-}" ]; then
+      tmux attach -t main || tmux new -s main
+    fi
+  '';
+
   # Enable SSH
   services.openssh = {
     enable = true;
@@ -62,6 +71,8 @@
     git
     wget
     htop
+    tmux
+    mosh
   ] ++ [
     unstableUnfreePkgs.claude-code
   ];
