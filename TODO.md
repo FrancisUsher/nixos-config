@@ -4,9 +4,28 @@
 - [x] Set up Home Manager as a flake input
 
 ## Dotfiles / editor (depends on Home Manager)
-- [ ] Clear context, then do a proper pass over arch-reference/ - prune the
-      junk (e.g. chromium configs) before deciding what's worth converting
-- [ ] Reproduce custom theming scripts
+- [x] Triage arch-reference/, prune junk before deciding what's worth converting
+- [ ] Port hypr config
+- [ ] Port sway config
+- [ ] Port swaylock config
+- [ ] Port waybar config
+- [ ] Port fuzzel config
+- [ ] Port kitty config
+- [ ] Port zsh config (.zshrc + .config/zsh)
+- [ ] Port oh-my-posh config (or replace with starship - see QoL tools below)
+- [ ] Port fastfetch config
+- [ ] Port gh config
+- [ ] Port gitui config
+- [ ] Port go config
+- [ ] Port uv config
+- [ ] Port kicad config
+- [ ] Port zmk (keyboard firmware) config
+- [ ] Port glow config
+- [ ] Port qutebrowser config
+- [ ] Reproduce custom theming scripts (themer/, themes/)
+- [ ] Review system-config/collect.zsh - old Arch dotfiles-workflow experiment,
+      list of /etc files it tracked may be useful as a checklist
+- [ ] Import orgfiles/ into a nvim-orgmode setup
 - [ ] Install neovim via Home Manager
 - [ ] Migrate nvim config from Arch laptop
 - [ ] Add obsidian.nvim, start using it for notes
