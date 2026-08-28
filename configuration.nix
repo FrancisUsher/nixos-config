@@ -4,6 +4,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./remote-operations.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -43,24 +44,6 @@
   # Passwordless sudo
   security.sudo.wheelNeedsPassword = false;
 
-  # Auto-attach a persistent tmux session on interactive login (ssh or
-  # mosh), so a dropped connection (e.g. laptop sleep) doesn't kill what
-  # was running - just reconnect and you're back in it.
-  programs.bash.interactiveShellInit = ''
-    if [[ $- == *i* ]] && [ -z "''${TMUX:-}" ]; then
-      tmux attach -t main || tmux new -s main
-    fi
-  '';
-
-  # Enable SSH
-  services.openssh = {
-    enable = true;
-    settings = {
-      PasswordAuthentication = false;
-      KbdInteractiveAuthentication = false;
-    };
-  };
-
   # AMD GPU support
   hardware.graphics.enable = true;
   boot.kernelModules = [ "amdgpu" ];
@@ -71,8 +54,6 @@
     git
     wget
     htop
-    tmux
-    mosh
   ] ++ [
     unstableUnfreePkgs.claude-code
   ];
@@ -81,27 +62,6 @@
     builtins.elem (lib.getName pkg) [
       "claude-code"
     ];
-
-  # Tailscale - remote access from anywhere (e.g. public wifi) without
-  # exposing SSH to the open internet. One-time manual step after this is
-  # deployed: `sudo tailscale up` to authenticate the machine.
-  services.tailscale.enable = true;
-  networking.firewall.trustedInterfaces = [ "tailscale0" ];
-  networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
-
-  # SSH is only reachable over the tailnet now (trustedInterfaces above),
-  # not on the public interface.
-
-  # Enable DNS to allow connecting to me via hostname
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    publish = {
-      enable = true;
-      addresses = true;
-    };
-  };
-
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";

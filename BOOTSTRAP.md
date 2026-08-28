@@ -1,31 +1,28 @@
 # Bootstrap (bubu-brain)
 
 Manual, one-time steps required before this flake can manage itself.
-Automated by `bootstrap.sh` except the secrets step.
+Automated by `bootstrap.sh` except dropping the secrets in place.
 
 1. Clone repo:
    ```
    git clone <repo-url> ~/nixos-config
    ```
 
-2. Create `/etc/wifi-secrets.env` (not tracked in git):
-   ```
-   WIFI_PSK="<network password>"
-   ```
-   ```
-   sudo install -m 600 /dev/stdin /etc/wifi-secrets.env <<< 'WIFI_PSK="..."'
-   ```
+2. Drop these files into `~/nixos-config/secrets/` (gitignored - `bootstrap.sh`
+   installs each one to `/etc/<same filename>` with mode 600):
+   - `wifi-secrets.env`:
+     ```
+     WIFI_PSK="<network password>"
+     ```
+   - `tailscale-authkey` (expires after 90 days - mint a fresh one at
+     https://login.tailscale.com/admin/settings/keys):
+     ```
+     tskey-auth-...
+     ```
 
-3. Point `/etc/nixos` at the repo (remove existing real dir first, `ln -s` nests into an existing dir otherwise):
-   ```
-   sudo rm -rf /etc/nixos
-   sudo ln -s ~/nixos-config /etc/nixos
-   ```
+3. Run `./bootstrap.sh` - installs the secrets, symlinks `/etc/nixos`, and
+   does the first rebuild.
 
-4. First rebuild (flakes not yet enabled system-wide):
-   ```
-   sudo nixos-rebuild switch --flake ~/nixos-config#bubu-brain --option experimental-features "nix-command flakes"
-   ```
-   Later rebuilds: `sudo nixos-rebuild switch`.
+4. Verify SSH/wifi from a second session before closing the first.
 
-5. Verify SSH/wifi from a second session before closing the first.
+Later rebuilds: `sudo nixos-rebuild switch`.

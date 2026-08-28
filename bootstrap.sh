@@ -3,18 +3,21 @@ set -euo pipefail
 
 REPO_URL="<replace-with-your-git-remote-url>"
 CONFIG_DIR="$HOME/nixos-config"
-SECRETS_FILE="/etc/wifi-secrets.env"
+SECRETS_DIR="$CONFIG_DIR/secrets"
 HOSTNAME="bubu-brain"
 
 if [ ! -d "$CONFIG_DIR" ]; then
   git clone "$REPO_URL" "$CONFIG_DIR"
 fi
 
-if [ ! -f "$SECRETS_FILE" ]; then
-  echo "Missing $SECRETS_FILE. Create it manually, e.g.:"
-  echo '  sudo install -m 600 /dev/stdin '"$SECRETS_FILE"' <<< '"'"'WIFI_PSK="..."'"'"''
+if [ ! -d "$SECRETS_DIR" ] || [ -z "$(ls -A "$SECRETS_DIR" 2>/dev/null)" ]; then
+  echo "Missing secrets. Drop the required files into $SECRETS_DIR (see BOOTSTRAP.md), then re-run."
   exit 1
 fi
+
+for f in "$SECRETS_DIR"/*; do
+  sudo install -m 600 "$f" "/etc/$(basename "$f")"
+done
 
 if [ -L /etc/nixos ]; then
   sudo rm /etc/nixos
