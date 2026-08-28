@@ -1,9 +1,12 @@
 # TODO
 
 ## Home Manager (foundational - enables everything below it)
-- [ ] Set up Home Manager as a flake input
+- [x] Set up Home Manager as a flake input
 
 ## Dotfiles / editor (depends on Home Manager)
+- [ ] Clear context, then do a proper pass over arch-reference/ - prune the
+      junk (e.g. chromium configs) before deciding what's worth converting
+- [ ] Reproduce custom theming scripts
 - [ ] Install neovim via Home Manager
 - [ ] Migrate nvim config from Arch laptop
 - [ ] Add obsidian.nvim, start using it for notes
