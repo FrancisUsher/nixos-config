@@ -31,3 +31,7 @@
 - [ ] Power management (TLP/battery, backlight)
 - [ ] Sway desktop config, ported from current Arch setup
 - [ ] Home Manager config shared between bubu-brain and laptop
+
+## Claude Code guardrails (unrelated to nixos-config)
+- [ ] Set up predictable guardrails for git usage etc (settings.json
+      permissions/hooks) so it doesn't do unpredictable things
