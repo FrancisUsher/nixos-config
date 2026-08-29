@@ -4,7 +4,8 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./remote-operations.nix
+      ./rgb.nix
+      ../../remote-operations.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -36,7 +37,7 @@
     extraGroups = [ "wheel" "networkmanager" ];
     hashedPassword = "!";
     openssh.authorizedKeys.keyFiles = [
-      ./soong.pub
+      ../../soong.pub
     ];
   };
   # Auto login this user when at the physical machine

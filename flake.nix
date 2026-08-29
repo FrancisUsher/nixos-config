@@ -23,7 +23,7 @@
           };
         };
         modules = [
-          ./configuration.nix
+          ./hosts/bubu-brain/configuration.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
