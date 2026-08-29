@@ -33,6 +33,12 @@
 - [ ] git config
 - [ ] Other QoL tools worth considering: starship, direnv, fzf, atuin
 
+## bubu-brain hardware
+- [ ] Verify acpi_enforce_resources=lax (hosts/bubu-brain/rgb.nix) actually
+      fixes RAM RGB staying off after a real cold power off/on - added
+      after RAM lit back up post power cycle, only tested via warm reboot
+      so far
+
 ## GitHub CLI (independent - doesn't need Home Manager)
 - [ ] Install `gh`
 - [ ] Authenticate without a local browser (device-code flow, entering the

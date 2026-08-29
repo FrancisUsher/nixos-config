@@ -1,6 +1,8 @@
 { config, lib, pkgs, ... }:
 
 {
+  boot.kernelParams = [ "acpi_enforce_resources=lax" ];
+
   services.hardware.openrgb.enable = true;
   environment.etc."openrgb-off.orp".source = ./openrgb-off.orp;
   systemd.services.openrgb-off = {
