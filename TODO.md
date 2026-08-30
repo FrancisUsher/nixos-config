@@ -1,11 +1,30 @@
 # TODO
 
+## Questions
+- [ ] I noticed we used nixos-hardware to provision the thinkpad. I wonder if
+      we can define a similar module for our SFFPC which is what bubu-brain
+      is currently hosted on?
+
+## Bootstrap improvements
+- [ ] I made some manual changes to the files to improve clarity and writing
+      style. please review.
+- [ ] "verify ssh/wifi" but presumably we're already connected to wifi because
+      we just used git clone on a github repo. Anyway I think this verification
+      should be scripted, not in the MD file.
+- [ ] I don't know if I really like the idea of having my deploy key be
+      dependent on github and github auth. If we do want this "deploy keys"
+      feature we need to talk through what they are, pros/cons, alternatives.
+- [ ] There looks like a lot of stuff in the machine-specific setup that could
+      be delegated to a script instead of written out in the MD file.
+- [ ] I'm thinking we might just want to split out the bootstrapping MD files
+      into separate ones for each purpose. So, some global bootstrapping in the
+      root dir; but then some machine-specific bootstrpping in the hosts dirs.
+
 ## Home Manager (foundational - enables everything below it)
 - [x] Set up Home Manager as a flake input
 
 ## Dotfiles / editor (depends on Home Manager)
 - [x] Triage arch-reference/, prune junk before deciding what's worth converting
-- [ ] Port hypr config
 - [ ] Port sway config
 - [ ] Port swaylock config
 - [ ] Port waybar config
@@ -50,10 +69,31 @@
 - [ ] Audio (pipewire) and clipboard passthrough
 
 ## Migrate Arch laptop to NixOS (big project, depends on Home Manager)
-- [ ] Restructure flake.nix for multiple hosts (shared modules + per-host config)
-- [ ] Laptop hardware-configuration.nix
-- [ ] WiFi: NetworkManager instead of static wireless.networks (roaming)
-- [ ] Power management (TLP/battery, backlight)
+- [x] Restructure flake.nix for multiple hosts (shared modules + per-host config)
+- [x] hosts/x1nano/configuration.nix scaffolded (unbootable until hardware
+      config is added - see below)
+- [x] WiFi: NetworkManager instead of static wireless.networks (roaming)
+- [x] Headless captive-portal wifi login (modules/captive-portal.nix,
+      services.captivePortalAccept, wired into x1nano)
+- [x] hosts/x1nano/hardware-configuration.nix preview - generated via
+      nixos-generate-config --no-filesystems while still on Arch (kernel
+      modules, CPU microcode). fileSystems/LUKS still pending the real
+      install, see below
+- [x] Pull in NixOS/nixos-hardware's lenovo-thinkpad-x1-nano-gen1 module
+      (flake input + import in hosts/x1nano/configuration.nix) - gives
+      trackpoint config, the known x1-nano audio-interference fix, and TLP
+      power management for free
+- [x] Fingerprint reader: services.fprintd.enable = true (from the hardware
+      module above) - still need to run `fprintd-enroll` after first boot
+- [ ] Push nixos-config to a git remote (GitHub or similar) - currently has
+      no remote configured at all (`git remote -v` is empty), and
+      bootstrap.sh's REPO_URL is still the placeholder. Blocks the x1nano
+      bootstrap's deploy-key clone step
+- [ ] Finish migrating data off the Arch install
+- [ ] Laptop hardware-configuration.nix - regenerate for real during the
+      actual install (LUKS-encrypted root), see BOOTSTRAP.md's x1nano section
+- [ ] Power management: TLP now on by default via nixos-hardware; backlight
+      and any further battery tuning still open
 - [ ] Sway desktop config, ported from current Arch setup
 - [ ] Home Manager config shared between bubu-brain and laptop
 

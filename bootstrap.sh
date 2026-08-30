@@ -4,7 +4,7 @@ set -euo pipefail
 REPO_URL="<replace-with-your-git-remote-url>"
 CONFIG_DIR="$HOME/nixos-config"
 SECRETS_DIR="$CONFIG_DIR/secrets"
-HOSTNAME="bubu-brain"
+HOSTNAME="${1:-$(hostname -s)}"
 
 if [ ! -d "$CONFIG_DIR" ]; then
   git clone "$REPO_URL" "$CONFIG_DIR"
