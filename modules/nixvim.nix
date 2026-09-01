@@ -452,6 +452,10 @@ in
             name = "notes";
             path = "~/notes";
           }
+          {
+            name = "nixos-config";
+            path = "~/nixos-config/notes";
+          }
         ];
       };
     };
