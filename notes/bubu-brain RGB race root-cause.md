@@ -1,0 +1,16 @@
+# bubu-brain RGB race root-cause
+
+Referenced from [[bubu-brain hardware]].
+
+Not the `acpi_enforce_resources=lax` kernel param (never actually the issue -
+dmesg never logged an ACPI resource conflict). The RAM's SMBus RGB chips
+(ENE, 0x70/0x71) have no kernel/udev readiness signal and can take a few
+seconds to start answering reads after a real cold boot; openrgb-off.service
+was only trying once, right after openrgb.service started, so a slow wake
+meant the whole off-profile silently failed to apply (openrgb's CLI exits 0
+whether or not it succeeds) and every device - RAM and AIO both - was left
+at its power-on lighting default.
+
+Fixed in hosts/bubu-brain/rgb.nix: openrgb-off's ExecStart is now a small
+wrapper that retries up to 5 times, 2s apart, and only exits nonzero (a real
+failed unit) if none of the attempts report "Profile loaded successfully".
