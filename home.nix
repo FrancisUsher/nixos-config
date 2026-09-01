@@ -22,6 +22,23 @@
     settings.aliases.co = "pr checkout";
   };
 
+  # No home-manager module for glow exists on this nixpkgs/home-manager pin
+  # (release-24.11) - config is a plain xdg.configFile instead of a
+  # programs.glow block.
+  home.packages = [ pkgs.glow ];
+  xdg.configFile."glow/glow.yml".text = ''
+    # style name or JSON path (default "auto")
+    style: "auto"
+    # mouse support (TUI-mode only)
+    mouse: false
+    # use pager to display markdown
+    pager: false
+    # word-wrap at width
+    width: 80
+    # show all files, including hidden and ignored.
+    all: false
+  '';
+
   programs.bash.enable = true;
   programs.bat.enable = true;
   programs.ripgrep.enable = true;

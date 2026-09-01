@@ -77,7 +77,9 @@
 - [ ] Port uv config
 - [ ] Port kicad config
 - [ ] Port zmk (keyboard firmware) config
-- [ ] Port glow config
+- [x] Port glow config - no home-manager module for glow on this pin, so
+      it's home.packages + xdg.configFile."glow/glow.yml" in home.nix,
+      copied verbatim from arch-reference (no personal data/secrets in it)
 - [ ] Port qutebrowser config
 - [x] ~~Reproduce custom theming scripts~~ Superseded by adopting Stylix
       (nix-community/stylix) instead of porting the Python/Jinja engine - see
