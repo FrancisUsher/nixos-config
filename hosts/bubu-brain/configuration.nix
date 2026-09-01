@@ -6,6 +6,7 @@
       ./hardware-configuration.nix
       ./rgb.nix
       ../../remote-operations.nix
+      ../../modules/stylix.nix
     ];
 
   # Use the systemd-boot EFI boot loader.

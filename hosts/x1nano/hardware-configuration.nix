@@ -3,10 +3,17 @@
 # to /etc/nixos/configuration.nix instead.
 #
 # PREVIEW - generated with --no-filesystems while still running Arch, so it
-# only has hardware-detection bits. fileSystems/swapDevices/boot.initrd.luks
-# are missing and MUST be regenerated for real during the actual install
-# (nixos-generate-config --root /mnt, per BOOTSTRAP.md's x1nano section) -
-# this file won't build as-is until that happens.
+# only has hardware-detection bits from that scan. fileSystems/swapDevices/
+# boot.initrd.luks below are NOT from a real scan - they're filled in by hand
+# to match BOOTSTRAP.md's x1nano partitioning plan (GPT: ESP partition
+# labeled "ESP"/filesystem-labeled "boot", primary partition labeled
+# "primary" holding LUKS with the decrypted mapper filesystem-labeled
+# "nixos"; zram swap instead of a swap partition, per
+# hosts/x1nano/configuration.nix's zramSwap.enable), just so the flake
+# evaluates instead of failing the fileSystems assertion. This is still a
+# placeholder, not a real disk layout: MUST be regenerated for real during
+# the actual install (nixos-generate-config --root /mnt, per BOOTSTRAP.md) -
+# see TODO.md's "Laptop hardware-configuration.nix" item.
 { config, lib, pkgs, modulesPath, ... }:
 
 {
@@ -18,6 +25,21 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
+
+  boot.initrd.luks.devices."cryptroot".device = "/dev/disk/by-partlabel/primary";
+
+  fileSystems."/" = {
+    device = "/dev/disk/by-label/nixos";
+    fsType = "ext4";
+  };
+
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-label/boot";
+    fsType = "vfat";
+    options = [ "fmask=0077" "dmask=0077" ];
+  };
+
+  swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

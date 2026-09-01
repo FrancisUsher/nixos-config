@@ -1,5 +1,17 @@
 # TODO
 
+## Nix release bump
+- [ ] Bump nixpkgs from nixos-24.11 (just what the minimal installer
+      happened to ship with, not a deliberate pin) to nixos-26.05 (current
+      stable) - also bump home-manager, nixvim, and stylix to their matching
+      nixos-26.05 branches, then rebuild and verify bubu-brain boots and
+      works before trusting it. Do as its own isolated task, not bundled
+      with unrelated concurrent changes, so a regression is attributable.
+      Picks up nixvim's plugins.lazydev module for free (added upstream
+      after the nixos-24.11 branch was cut) - see modules/nixvim.nix's
+      lazydev extraConfigLua wiring for what could then move to a real
+      option.
+
 ## Questions
 - [ ] I noticed we used nixos-hardware to provision the thinkpad. I wonder if
       we can define a similar module for our SFFPC which is what bubu-brain
@@ -30,8 +42,16 @@
 - [ ] Port waybar config
 - [ ] Port fuzzel config
 - [ ] Port kitty config
-- [ ] Port zsh config (.zshrc + .config/zsh)
-- [ ] Port oh-my-posh config (or replace with starship - see QoL tools below)
+- [ ] Port zsh config (.zshrc + .config/zsh) - independent of starship/prompt
+      theming below; starship is wired to bash via
+      programs.starship.enableBashIntegration, so zsh isn't a prerequisite
+- [x] Replace oh-my-posh with starship (no Stylix module exists for
+      oh-my-posh). home.nix's programs.starship is enabled.
+- [ ] Automatic Stylix theming for starship - needs stylix >= release-25.05
+      (its starship target doesn't exist on release-24.11, which is what
+      we're pinned to). Revisit with the "Nix release bump" item above;
+      until then starship uses its default prompt styling, untouched by
+      Stylix.
 - [ ] Port fastfetch config
 - [ ] Port gh config
 - [ ] Port gitui config
@@ -41,22 +61,41 @@
 - [ ] Port zmk (keyboard firmware) config
 - [ ] Port glow config
 - [ ] Port qutebrowser config
-- [ ] Reproduce custom theming scripts (themer/, themes/)
+- [x] ~~Reproduce custom theming scripts~~ Superseded by adopting Stylix
+      (nix-community/stylix) instead of porting the Python/Jinja engine - see
+      modules/stylix.nix and modules/themes/ancient-ruins.nix (the "Ancient
+      Ruins" palette ported to base16). arch-reference/themer/ is kept, not
+      deleted, since plymouth_themes/oreb/ is still needed below.
+- [ ] Port oreb Plymouth theme (arch-reference/themer/plymouth_themes/oreb/ -
+      owl.script + animation frames) to consume config.lib.stylix.colors,
+      replacing Stylix's built-in Plymouth theme/logo currently in use
+- [ ] Full greetd + tuigreet bring-up (services.greetd.enable, session
+      launch command) wired to modules/tuigreet-theme.nix's
+      config.lib.tuigreet.themeArg. Gated on Sway session existing - see
+      "Port sway config" / "Sway desktop config" below
+- [ ] Once the oreb Plymouth port (if it happens) is complete, prune
+      arch-reference/themer/'s Python engine (main.py, input/, output/,
+      .venv/, uv.lock, pyproject.toml) as dead code
 - [ ] Review system-config/collect.zsh - old Arch dotfiles-workflow experiment,
       list of /etc files it tracked may be useful as a checklist
 - [ ] Import orgfiles/ into a nvim-orgmode setup
 - [ ] Install neovim via Home Manager
 - [ ] Migrate nvim config from Arch laptop
+- [ ] Custom flake check process for catching a broken plugin/nixpkgs update
+      (e.g. nvim failing to start) before committing the flake.lock bump,
+      instead of discovering it several revisions later - needs its own
+      longer discussion about what would actually meet my needs here
 - [ ] Add obsidian.nvim, start using it for notes
 - [ ] tmux keybind remap (closer to Sway's mental model)
 - [ ] git config
-- [ ] Other QoL tools worth considering: starship, direnv, fzf, atuin
+- [ ] Other QoL tools worth considering: direnv, atuin
 
 ## bubu-brain hardware
 - [ ] Verify acpi_enforce_resources=lax (hosts/bubu-brain/rgb.nix) actually
       fixes RAM RGB staying off after a real cold power off/on - added
       after RAM lit back up post power cycle, only tested via warm reboot
-      so far
+      so far. [Note - I did a cold restart and it was not fixed. Need to
+      troubleshoot this a bit more]
 
 ## GitHub CLI (independent - doesn't need Home Manager)
 - [ ] Install `gh`
@@ -90,8 +129,14 @@
       bootstrap.sh's REPO_URL is still the placeholder. Blocks the x1nano
       bootstrap's deploy-key clone step
 - [ ] Finish migrating data off the Arch install
-- [ ] Laptop hardware-configuration.nix - regenerate for real during the
-      actual install (LUKS-encrypted root), see BOOTSTRAP.md's x1nano section
+- [ ] Laptop hardware-configuration.nix's fileSystems/swapDevices/
+      boot.initrd.luks are hand-filled placeholders matching BOOTSTRAP.md's
+      documented partition plan (by-label/by-partlabel refs), not from a
+      real scan - just enough for `nix flake check`/`nixos-rebuild build` to
+      pass instead of failing the fileSystems assertion. MUST be regenerated
+      for real during the actual install (nixos-generate-config --root /mnt,
+      per BOOTSTRAP.md's x1nano section) - don't trust these values to boot
+      the real hardware as-is
 - [ ] Power management: TLP now on by default via nixos-hardware; backlight
       and any further battery tuning still open
 - [ ] Sway desktop config, ported from current Arch setup

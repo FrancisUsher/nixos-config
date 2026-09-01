@@ -7,6 +7,7 @@
     ./hardware-configuration.nix
     ../../remote-operations.nix
     ../../modules/captive-portal.nix
+    ../../modules/stylix.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
