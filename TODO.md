@@ -90,16 +90,28 @@
       (e.g. nvim failing to start) before committing the flake.lock bump,
       instead of discovering it several revisions later - needs its own
       longer discussion about what would actually meet my needs here
-- [ ] tmux keybind remap (closer to Sway's mental model)
+- [x] tmux keybind remap (closer to Sway's mental model) - remote-operations.nix's
+      programs.tmux, a dedicated "sway" key-table (Ctrl-Space prefix,
+      h/j/k/l pane nav + resize, 1-0 window switching, split/zoom/kill/new-window)
 - [ ] git config
 - [ ] Other QoL tools worth considering: direnv, atuin
 
 ## bubu-brain hardware
-- [ ] Verify acpi_enforce_resources=lax (hosts/bubu-brain/rgb.nix) actually
-      fixes RAM RGB staying off after a real cold power off/on - added
-      after RAM lit back up post power cycle, only tested via warm reboot
-      so far. [Note - I did a cold restart and it was not fixed. Need to
-      troubleshoot this a bit more]
+- [x] Root-caused RAM RGB staying on after a cold power off/on: not the
+      acpi_enforce_resources=lax kernel param (never actually the issue -
+      dmesg never logged an ACPI resource conflict). The RAM's SMBus RGB
+      chips (ENE, 0x70/0x71) have no kernel/udev readiness signal and can
+      take a few seconds to start answering reads after a real cold boot;
+      openrgb-off.service was only trying once, right after openrgb.service
+      started, so a slow wake meant the whole off-profile silently failed
+      to apply (openrgb's CLI exits 0 whether or not it succeeds) and every
+      device - RAM and AIO both - was left at its power-on lighting
+      default. Fixed in hosts/bubu-brain/rgb.nix: openrgb-off's ExecStart is
+      now a small wrapper that retries up to 5 times, 2s apart, and only
+      exits nonzero (a real failed unit) if none of the attempts report
+      "Profile loaded successfully". Deployed and manually verified
+      working; still wants confirmation across a few more real cold
+      power-on cycles since that's the actual race being fixed.
 
 ## GitHub CLI (independent - doesn't need Home Manager)
 - [ ] Install `gh`
@@ -144,7 +156,17 @@
 - [ ] Power management: TLP now on by default via nixos-hardware; backlight
       and any further battery tuning still open
 - [ ] Sway desktop config, ported from current Arch setup
-- [ ] Home Manager config shared between bubu-brain and laptop
+- [x] Home Manager config shared between bubu-brain and laptop - flake.nix's
+      mkHost wires home-manager.users.soong = import ./home.nix identically
+      for both hosts
+- [ ] Split home.nix into shared + per-host pieces - the laptop isn't just
+      a themed variant of bubu-brain's user experience, it's a different
+      structure entirely: hostname "red-sun-whorl" (Gene Wolfe's Solar
+      Cycle), with two separate users instead of bubu-brain's single
+      "soong" - "silk" (general-purpose, full Sway GUI) and "horn" (boots
+      straight into a distraction-free writing tool, nothing else).
+      home-manager.users.soong = import ./home.nix in flake.nix's mkHost
+      won't work as-is once there's more than one user per host
 
 ## Claude Code guardrails (unrelated to nixos-config)
 - [ ] Set up predictable guardrails for git usage etc (settings.json
