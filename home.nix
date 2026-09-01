@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, config, hostName, ... }:
 
 {
   imports = [ ./modules/nixvim.nix ];
@@ -38,6 +38,38 @@
     # show all files, including hidden and ignored.
     all: false
   '';
+
+  # Per-host accent, standing in for real per-host base16 theming until
+  # x1nano/red-sun-whorl has its own theme file the way bubu-brain has
+  # modules/themes/ancient-ruins.nix (see TODO.md's "Split home.nix" item -
+  # this doesn't do that split, just threads hostName through far enough
+  # for fastfetch to tell hosts apart). Named colors only: fastfetch does
+  # support #rrggbb, but its escaping rules for that are format-string
+  # specific and unverified here without a real display to test against -
+  # named colors are unambiguous.
+  programs.fastfetch = {
+    enable = true;
+    settings = {
+      logo = "nixos_small";
+      display.color = if hostName == "bubu-brain" then "yellow" else "red";
+      modules = [
+        "title"
+        "separator"
+        "os"
+        "host"
+        "uptime"
+        "packages"
+        "memory"
+        "processes"
+        "shell"
+        "lm"
+        "wm"
+        "cursor"
+        "terminal"
+        "terminalfont"
+      ];
+    };
+  };
 
   xdg.configFile."zmk/zmk.ini".text = ''
     [user]

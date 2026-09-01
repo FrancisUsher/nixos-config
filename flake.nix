@@ -50,6 +50,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit hostName; };
             home-manager.users.soong = import ./home.nix;
           }
         ] ++ extraModules;

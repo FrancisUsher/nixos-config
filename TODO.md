@@ -65,7 +65,18 @@
 - [ ] Automatic Stylix theming for starship - blocked on the "Nix /
       flake-input upgrades" section above; until then starship uses its
       default prompt styling, untouched by Stylix.
-- [ ] Port fastfetch config
+- [x] Port fastfetch config - home.nix's programs.fastfetch, dropped the
+      "editor" module (arch-reference's own config had it commented
+      "TODO: this doesn't work") and the aspirational qutebrowser/launcher/
+      clipboard-history wishlist comments (JSONC comments don't survive
+      home-manager's JSON generator anyway, and those aren't real fastfetch
+      module types). Logo/display.color now vary by hostName (flake.nix's
+      mkHost passes it via home-manager.extraSpecialArgs) instead of the
+      original's hardcoded "arch3" - a first step toward per-host theming,
+      not the full home.nix split. x1nano/red-sun-whorl has no real base16
+      theme yet (see project-x1nano-red-sun-whorl memory), so it just gets
+      a different named accent color for now, not real palette-driven
+      theming like bubu-brain's Ancient Ruins
 - [x] Port gh config - home.nix's programs.gh (settings.aliases.co = "pr checkout",
       matching arch-reference's config.yml). Deliberately does NOT touch
       hosts.yml - that file holds a live oauth_token in plaintext, auth stays
