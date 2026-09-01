@@ -26,11 +26,16 @@
 
   zramSwap.enable = true;
 
+  # zsh as the login shell - see home.nix's programs.zsh for the actual
+  # config (aliases, history, vi keybindings, etc).
+  programs.zsh.enable = true;
+
   # Physical-access laptop, not headless like bubu-brain: real password
   # login instead of autologin, and sudo still asks for a password.
   users.users.soong = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
+    shell = pkgs.zsh;
     openssh.authorizedKeys.keyFiles = [
       ../../soong.pub
     ];

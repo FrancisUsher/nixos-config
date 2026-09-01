@@ -57,9 +57,28 @@
 - [ ] Port waybar config
 - [ ] Port fuzzel config
 - [ ] Port kitty config
-- [ ] Port zsh config (.zshrc + .config/zsh) - independent of starship/prompt
-      theming below; starship is wired to bash via
-      programs.starship.enableBashIntegration, so zsh isn't a prerequisite
+- [x] Port zsh config (.zshrc + .config/zsh) - zsh is now the actual login
+      shell (programs.zsh.enable at the system level in both hosts'
+      configuration.nix, users.users.soong.shell = pkgs.zsh), not just a
+      side config; bash stays enabled in home.nix as a fallback. Ported:
+      vi keybindings (defaultKeymap = "viins"), history size/save (20000/
+      50000, matching the original numbers), the bb() mosh-to-bubu-brain
+      function, and the ls/:q/vim/battery aliases (battery needed adding
+      pkgs.acpi). NEWT_COLORS moved to home.sessionVariables verbatim -
+      already Stylix-themed for free via modules/stylix.nix's
+      stylix.targets.console.enable, since newt reads its named-color
+      slots off the TTY's 16-color palette. autohack moved to
+      modules/captive-portal.nix as environment.shellAliases (laptop-only,
+      co-located with the rest of x1nano's wifi tooling) instead of living
+      in home.nix. Dropped: the bare-repo `dots` alias (redundant now that
+      this repo IS the dotfile source of truth), `todo.sh` (unused),
+      `yay=paru` (Arch/AUR, no NixOS equivalent), the custom _git
+      completion script (redundant - Nix's git package already ships zsh
+      completions, picked up by programs.zsh.enableCompletion), and the
+      oh-my-posh init (already superseded by starship). `icat` (kitten
+      icat) deliberately deferred until kitty itself is ported - `kitten`
+      doesn't exist yet. Atuin (for history) considered and deferred, see
+      "Things to investigate" below.
 - [x] Replace oh-my-posh with starship (no Stylix module exists for
       oh-my-posh). home.nix's programs.starship is enabled.
 - [ ] Automatic Stylix theming for starship - blocked on the "Nix /

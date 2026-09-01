@@ -24,8 +24,8 @@
 
   # No home-manager module for glow exists on this nixpkgs/home-manager pin
   # (release-24.11) - config is a plain xdg.configFile instead of a
-  # programs.glow block.
-  home.packages = [ pkgs.glow ];
+  # programs.glow block. acpi is for the zsh `battery` alias below.
+  home.packages = [ pkgs.glow pkgs.acpi ];
   xdg.configFile."glow/glow.yml".text = ''
     # style name or JSON path (default "auto")
     style: "auto"
@@ -76,16 +76,53 @@
     home = ${config.home.homeDirectory}/dev/zmk-config
   '';
 
+  # zsh is the actual login shell (users.users.soong.shell in hosts/*/
+  # configuration.nix); bash stays enabled below as a fallback/compat
+  # shell, not the primary one.
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+    defaultKeymap = "viins"; # bindkey -v, as in arch-reference's .zshrc
+    history = {
+      size = 20000;
+      save = 50000;
+    };
+    shellAliases = {
+      ":q" = "exit";
+      ls = "ls --color=auto -la";
+      vim = "nvim";
+      battery = "acpi -b";
+      # icat (kitten icat) deliberately left out - kitty itself isn't
+      # ported yet (TODO.md), so `kitten` wouldn't exist. Add once kitty
+      # lands.
+    };
+    # Bare-repo `dots` alias and `todo.sh` dropped (unused); `yay=paru` was
+    # Arch/AUR-only and has no NixOS equivalent worth aliasing.
+    initExtra = ''
+      # Quickly connect to home server: try local mDNS first, fall back to
+      # Tailscale if not on the LAN.
+      bb() {
+        if timeout 0.5 bash -c "echo > /dev/tcp/bubu-brain.local/22" 2>/dev/null; then
+          mosh bubu
+        else
+          mosh bubu-jip
+        fi
+      }
+    '';
+  };
+
   programs.bash.enable = true;
   programs.bat.enable = true;
   programs.ripgrep.enable = true;
   programs.fzf = {
     enable = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
   };
   programs.starship = {
     enable = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
   };
 
   # Stylix's system-level config (palette, fonts, console/plymouth targets,
@@ -122,5 +159,11 @@
     EDITOR = "nvim";
     MANPAGER = "sh -c 'col -bx | bat -l man -p'";
     MANROFFOPT = "-c";
+    # Theme for newt-based TUIs (nmtui, etc). Named ANSI slots only - newt
+    # reads the actual RGB for each one off the console's 16-color palette,
+    # which Stylix already themes via modules/stylix.nix's
+    # stylix.targets.console.enable, so this inherits the active base16
+    # scheme automatically without needing its own Stylix wiring.
+    NEWT_COLORS = "root=white,black:roottext=lightgrey,black:window=white,black:border=brightblack,black:shadow=brightblack,black:title=brightblue,black:button=brightblue,black:actbutton=brightblue,black:compactbutton=brightwhite,black:checkbox=brightgreen,black:actcheckbox=brightgreen,black:entry=white,black:disentry=gray,lightgray:label=black,lightgray:listbox=white,black:actlistbox=black,cyan:sellistbox=lightgray,black:actsellistbox=lightgray,black:textbox=black,lightgray:acttextbox=black,cyan:emptyscale=,gray:fullscale=,cyan:helpline=white,black:";
   };
 }
