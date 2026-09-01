@@ -17,6 +17,11 @@
     };
   };
 
+  programs.gh = {
+    enable = true;
+    settings.aliases.co = "pr checkout";
+  };
+
   programs.bash.enable = true;
   programs.bat.enable = true;
   programs.ripgrep.enable = true;

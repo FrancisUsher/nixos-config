@@ -66,7 +66,12 @@
       flake-input upgrades" section above; until then starship uses its
       default prompt styling, untouched by Stylix.
 - [ ] Port fastfetch config
-- [ ] Port gh config
+- [x] Port gh config - home.nix's programs.gh (settings.aliases.co = "pr checkout",
+      matching arch-reference's config.yml). Deliberately does NOT touch
+      hosts.yml - that file holds a live oauth_token in plaintext, auth stays
+      a manual `gh auth login` step (see "GitHub CLI" section below).
+      programs.gh's default gitCredentialHelper also reproduces the
+      credential.helper stanza from .gitconfig for free
 - [ ] Port gitui config
 - [ ] Port go config
 - [ ] Port uv config
