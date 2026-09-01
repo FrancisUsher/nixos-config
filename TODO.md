@@ -78,14 +78,18 @@
       .venv/, uv.lock, pyproject.toml) as dead code
 - [ ] Review system-config/collect.zsh - old Arch dotfiles-workflow experiment,
       list of /etc files it tracked may be useful as a checklist
-- [ ] Import orgfiles/ into a nvim-orgmode setup
+- [x] ~~Import orgfiles/ into a nvim-orgmode setup~~ Superseded by
+      plugins.obsidian (modules/nixvim.nix) instead of nvim-orgmode -
+      orgfiles/refile.org's actual content still needs converting from org
+      syntax to markdown and dropping into the ~/notes vault, see below
+- [ ] Migrate orgfiles/refile.org's content (org syntax) to markdown in the
+      ~/notes Obsidian vault - deferred out of the orgmode->obsidian swap
 - [ ] Install neovim via Home Manager
 - [ ] Migrate nvim config from Arch laptop
 - [ ] Custom flake check process for catching a broken plugin/nixpkgs update
       (e.g. nvim failing to start) before committing the flake.lock bump,
       instead of discovering it several revisions later - needs its own
       longer discussion about what would actually meet my needs here
-- [ ] Add obsidian.nvim, start using it for notes
 - [ ] tmux keybind remap (closer to Sway's mental model)
 - [ ] git config
 - [ ] Other QoL tools worth considering: direnv, atuin

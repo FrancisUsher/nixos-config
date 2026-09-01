@@ -1,5 +1,35 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 let
+  languages = {
+    lua = {
+      server = "lua_ls";
+      serverSettings.Lua.completion.callSnippet = "Replace";
+      grammars = [ "lua" "luadoc" ];
+    };
+    python = {
+      server = "basedpyright";
+      grammars = [ "python" ];
+    };
+    css = {
+      server = "cssls";
+      grammars = [ "css" ];
+    };
+    toml = {
+      server = "taplo";
+      grammars = [ "toml" ];
+    };
+    typescript = {
+      server = "ts_ls";
+      grammars = [ "typescript" "tsx" "javascript" ];
+    };
+  };
+
+  # Grammars with no matching LSP server - Neovim-internal/structural
+  # languages (diff, query, vimdoc) or ones no server is configured for.
+  extraGrammars = [ "bash" "c" "diff" "html" "markdown" "markdown_inline" "query" "vim" "vimdoc" ];
+
+  treesitterGrammars = extraGrammars ++ builtins.concatLists (map (lang: lang.grammars) (builtins.attrValues languages));
+
   nvim-tcss = pkgs.vimUtils.buildVimPlugin {
     pname = "nvim-tcss";
     version = "2024-01-24";
@@ -132,6 +162,7 @@ in
     ];
 
     extraPlugins = [ nvim-tcss pkgs.vimPlugins.lazydev-nvim ];
+    extraPackages = [ pkgs.python3Packages.autopep8 ];
     extraConfigLua = ''
       -- lazydev.nvim has no nixvim module; configure it directly.
       require('lazydev').setup {
@@ -179,6 +210,8 @@ in
           ];
         };
       };
+
+      web-devicons.enable = true;
 
       telescope = {
         enable = true;
@@ -320,10 +353,13 @@ in
           capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
         '';
 
-        servers.lua_ls = {
-          enable = true;
-          settings.Lua.completion.callSnippet = "Replace";
-        };
+        servers = builtins.listToAttrs (map
+          (lang: {
+            name = lang.server;
+            value = { enable = true; }
+              // lib.optionalAttrs (lang ? serverSettings) { settings = lang.serverSettings; };
+          })
+          (builtins.attrValues languages));
       };
 
       conform-nvim = {
@@ -342,7 +378,10 @@ in
               end
             end
           '';
-          formatters_by_ft.lua = [ "stylua" ];
+          formatters_by_ft = {
+            lua = [ "stylua" ];
+            python = [ "autopep8" ];
+          };
         };
       };
 
@@ -358,6 +397,7 @@ in
           sources = {
             default = [ "lsp" "path" "snippets" "lazydev" ];
             providers.lazydev = {
+              name = "LazyDev";
               module = "lazydev.integrations.blink";
               score_offset = 100;
             };
@@ -393,25 +433,22 @@ in
       treesitter = {
         enable = true;
         nixGrammars = true;
+        grammarPackages = map (name: pkgs.vimPlugins.nvim-treesitter.builtGrammars.${name}) treesitterGrammars;
         settings = {
-          ensure_installed = [ "bash" "c" "diff" "html" "lua" "luadoc" "markdown" "markdown_inline" "query" "vim" "vimdoc" ];
-          highlight = {
-            enable = true;
-            additional_vim_regex_highlighting = [ "org" ];
-          };
+          auto_install = false;
+          highlight.enable = true;
           indent.enable = true;
         };
       };
 
-      orgmode = {
+      obsidian = {
         enable = true;
-        settings = {
-          org_agenda_files = "~/org/agenda/**/*.org";
-          org_default_notes_file = "~/org/refile.org";
-          org_archive_location = "~/org/archive/%s_archive::";
-          org_use_property_inheritance = false;
-          org_hide_leading_stars = true;
-        };
+        settings.workspaces = [
+          {
+            name = "notes";
+            path = "~/notes";
+          }
+        ];
       };
     };
   };
