@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   imports = [ ./modules/nixvim.nix ];
@@ -37,6 +37,11 @@
     width: 80
     # show all files, including hidden and ignored.
     all: false
+  '';
+
+  xdg.configFile."zmk/zmk.ini".text = ''
+    [user]
+    home = ${config.home.homeDirectory}/dev/zmk-config
   '';
 
   programs.bash.enable = true;

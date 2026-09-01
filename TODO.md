@@ -76,7 +76,14 @@
 - [ ] Port go config
 - [ ] Port uv config
 - [ ] Port kicad config
-- [ ] Port zmk (keyboard firmware) config
+- [x] Port zmk (keyboard firmware) config - home.nix's xdg.configFile for
+      zmk.ini, pointing `home` at $HOME/dev/zmk-config via
+      config.home.homeDirectory rather than hardcoding a username (the
+      original arch-reference file hardcoded /home/silk, which happens to
+      already be the account name on the real laptop - see
+      project-x1nano-red-sun-whorl notes). No package added: the zmk build
+      toolchain (west) isn't packaged here, this is just the config file
+      it reads
 - [x] Port glow config - no home-manager module for glow on this pin, so
       it's home.packages + xdg.configFile."glow/glow.yml" in home.nix,
       copied verbatim from arch-reference (no personal data/secrets in it)
