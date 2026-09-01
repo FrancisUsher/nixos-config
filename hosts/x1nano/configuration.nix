@@ -49,6 +49,8 @@
     git
     wget
     htop
+    go
+    uv
   ];
 
   services.captivePortalAccept = {

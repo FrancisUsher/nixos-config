@@ -72,9 +72,16 @@
       a manual `gh auth login` step (see "GitHub CLI" section below).
       programs.gh's default gitCredentialHelper also reproduces the
       credential.helper stanza from .gitconfig for free
-- [ ] Port gitui config
-- [ ] Port go config
-- [ ] Port uv config
+- [x] ~~Port gitui config~~ Dropped - not something actually in use, and
+      there was no config to port anyway (arch-reference's gitui config
+      dir was empty). Not installed.
+- [x] Port go config - no real dotfiles existed to port (arch-reference's
+      go config dir was just telemetry cache, not settings), so this is
+      just installing `go` via environment.systemPackages on both hosts
+      (system-wide, not per-user home.nix)
+- [x] Port uv config - same story as go above: arch-reference's uv config
+      dir was just an installer receipt, nothing to port. `uv` added to
+      environment.systemPackages on both hosts
 - [ ] Port kicad config
 - [x] Port zmk (keyboard firmware) config - home.nix's xdg.configFile for
       zmk.ini, pointing `home` at $HOME/dev/zmk-config via

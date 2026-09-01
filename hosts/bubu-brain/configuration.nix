@@ -56,6 +56,8 @@
     git
     wget
     htop
+    go
+    uv
   ] ++ [
     unstableUnfreePkgs.claude-code
   ];
