@@ -1,5 +1,18 @@
 {
   "worktree": {
     "baseRef": "head"
+  },
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/cleanup-worktrees.sh 2>/dev/null || true",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
   }
 }
