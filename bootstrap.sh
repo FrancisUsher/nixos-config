@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_URL="<replace-with-your-git-remote-url>"
+REPO_URL="https://github.com/FrancisUsher/nixos-config.git"
 CONFIG_DIR="$HOME/nixos-config"
 SECRETS_DIR="$CONFIG_DIR/secrets"
 HOSTNAME="${1:-$(hostname -s)}"

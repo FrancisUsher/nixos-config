@@ -140,10 +140,10 @@
       power management for free
 - [x] Fingerprint reader: services.fprintd.enable = true (from the hardware
       module above) - still need to run `fprintd-enroll` after first boot
-- [ ] Push nixos-config to a git remote (GitHub or similar) - currently has
-      no remote configured at all (`git remote -v` is empty), and
-      bootstrap.sh's REPO_URL is still the placeholder. Blocks the x1nano
-      bootstrap's deploy-key clone step
+- [x] Push nixos-config to a git remote - github.com/FrancisUsher/nixos-config
+      (private). bootstrap.sh's REPO_URL now points at it (plain https, no
+      auth wired up yet - it'll fail non-interactively against a private
+      repo until the deploy-key question above is actually resolved)
 - [ ] Finish migrating data off the Arch install
 - [ ] Laptop hardware-configuration.nix's fileSystems/swapDevices/
       boot.initrd.luks are hand-filled placeholders matching BOOTSTRAP.md's
@@ -167,6 +167,13 @@
       straight into a distraction-free writing tool, nothing else).
       home-manager.users.soong = import ./home.nix in flake.nix's mkHost
       won't work as-is once there's more than one user per host
+
+## Repo visibility
+- [ ] Add automated secret scanning to the repo (e.g. gitleaks/trufflehog as
+      a pre-commit hook and/or CI check) - do this before making the repo
+      public, not after, to catch accidental disclosures going forward
+- [ ] Make github.com/FrancisUsher/nixos-config public - gated on the
+      secret-scanning item above landing first
 
 ## Claude Code guardrails (unrelated to nixos-config)
 - [ ] Set up predictable guardrails for git usage etc (settings.json
