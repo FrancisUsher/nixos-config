@@ -142,7 +142,7 @@
       core.editor). Credential helper isn't set here; it comes from
       programs.gh's gitCredentialHelper (see "Port gh config" above) instead
       of being duplicated by hand
-- [ ] Other QoL tools worth considering: direnv, atuin
+- [ ] Other QoL tools worth considering: direnv
 
 ## bubu-brain hardware
 - [x] Root-caused RAM RGB staying on after a cold power off/on: not the
@@ -227,9 +227,19 @@
 - [ ] Set up predictable guardrails for git usage etc (settings.json
       permissions/hooks) so it doesn't do unpredictable things
 
-## Desktop shell exploration (low priority, after initial dotfile porting)
+## Things to investigate (low priority, no immediate need)
 - [ ] Investigate quickshell as a possible replacement for the waybar/
       swaylock/mako stack. QML-based, single persistent process instead of
       several small ones - more flexible than waybar's JSON+CSS but likely
       higher idle RAM (Qt/QML runtime); unmeasured, so benchmark before
       actually switching rather than assuming.
+- [ ] Investigate atuin for shell history, instead of/alongside plain zsh
+      history. Its one differentiator over what's already planned (fzf's
+      Ctrl+R fuzzy search, already covered) is cross-host history sync
+      between bubu-brain and red-sun-whorl - worth it only if that's
+      actually wanted day to day. Costs: contests Ctrl+R with fzf's zsh
+      integration (fixable, but a real conflict to resolve), moves history
+      into a SQLite db it owns instead of a plain HISTFILE, and needs
+      either trusting atuin's hosted sync or running your own sync server.
+      No need to decide now - zsh port (below) uses plain zsh history
+      until/unless this gets picked up.
