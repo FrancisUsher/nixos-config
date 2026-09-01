@@ -76,5 +76,11 @@ in
         type = "basic";
       }
     ];
+
+    # Convenience alias for a specific recurring network, kept alongside
+    # the rest of this host's wifi-friction tooling rather than in the
+    # shared home.nix - this module is currently only imported on x1nano,
+    # which is the point (bubu-brain has no wifi hardware to speak of).
+    environment.shellAliases.autohack = "nmcli device wifi connect autohackbot2600";
   };
 }
