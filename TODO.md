@@ -106,7 +106,10 @@
 - [x] tmux keybind remap (closer to Sway's mental model) - remote-operations.nix's
       programs.tmux, a dedicated "sway" key-table (Ctrl-Space prefix,
       h/j/k/l pane nav + resize, 1-0 window switching, split/zoom/kill/new-window)
-- [ ] git config
+- [x] git config - home.nix's programs.git (userName/userEmail/init.defaultBranch/
+      core.editor). Credential helper isn't set here; it comes from
+      programs.gh's gitCredentialHelper (see "Port gh config" above) instead
+      of being duplicated by hand
 - [ ] Other QoL tools worth considering: direnv, atuin
 
 ## bubu-brain hardware

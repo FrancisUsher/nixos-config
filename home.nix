@@ -7,6 +7,16 @@
   home.homeDirectory = "/home/soong";
   home.stateVersion = "24.11";
 
+  programs.git = {
+    enable = true;
+    userName = "Francis Usher";
+    userEmail = "francis.w.usher@gmail.com";
+    extraConfig = {
+      init.defaultBranch = "main";
+      core.editor = "nvim";
+    };
+  };
+
   programs.bash.enable = true;
   programs.bat.enable = true;
   programs.ripgrep.enable = true;
