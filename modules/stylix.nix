@@ -63,4 +63,7 @@
     # config.lib.stylix.colors is deferred follow-up work, see TODO.md.
     plymouth.enable = true;
   };
+
+  # see tuigreet-theme.nix - same named-color-via-console-palette mechanism
+  environment.sessionVariables.NEWT_COLORS = "root=white,black:roottext=lightgrey,black:window=white,black:border=brightblack,black:shadow=brightblack,black:title=brightblue,black:button=brightblue,black:actbutton=brightblue,black:compactbutton=brightwhite,black:checkbox=brightgreen,black:actcheckbox=brightgreen,black:entry=white,black:disentry=gray,lightgray:label=black,lightgray:listbox=white,black:actlistbox=black,cyan:sellistbox=lightgray,black:actsellistbox=lightgray,black:textbox=black,lightgray:acttextbox=black,cyan:emptyscale=,gray:fullscale=,cyan:helpline=white,black:";
 }

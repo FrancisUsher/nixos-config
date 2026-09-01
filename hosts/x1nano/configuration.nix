@@ -26,8 +26,6 @@
 
   zramSwap.enable = true;
 
-  # zsh as the login shell - see home.nix's programs.zsh for the actual
-  # config (aliases, history, vi keybindings, etc).
   programs.zsh.enable = true;
 
   # Physical-access laptop, not headless like bubu-brain: real password

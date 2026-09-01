@@ -14,6 +14,10 @@
       - Automatic Stylix theming for starship (its starship target
         doesn't exist on release-24.11) - see the "Automatic Stylix
         theming for starship" item in Dotfiles/editor
+      - Possibly a home-manager module for glow - none exists on this
+        release-24.11 pin, so home.nix's glow config is a plain
+        xdg.configFile instead of a programs.glow block; switch it over
+        if one lands
 - [ ] Bump home-manager specifically to its master/unstable branch to pick
       up programs.claude-code (doesn't exist on release-24.11, and isn't
       guaranteed to land on release-26.05 either - it's a newer module,
@@ -64,8 +68,12 @@
       vi keybindings (defaultKeymap = "viins"), history size/save (20000/
       50000, matching the original numbers), the bb() mosh-to-bubu-brain
       function, and the ls/:q/vim/battery aliases (battery needed adding
-      pkgs.acpi). NEWT_COLORS moved to home.sessionVariables verbatim -
-      already Stylix-themed for free via modules/stylix.nix's
+      pkgs.acpi). NEWT_COLORS moved to modules/stylix.nix's
+      environment.sessionVariables (a theming concern, not a personal
+      shell setting - it belongs with the rest of the theming glue, next
+      to tuigreet-theme.nix, and needs to be system-wide since it's read
+      by nmtui/whiptail sessions including root's, not just soong's
+      home-manager session) - already Stylix-themed for free via
       stylix.targets.console.enable, since newt reads its named-color
       slots off the TTY's 16-color palette. autohack moved to
       modules/captive-portal.nix as environment.shellAliases (laptop-only,
