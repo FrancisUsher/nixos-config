@@ -42,6 +42,10 @@ let
   };
 in
 {
+  # obsidian.nvim's workspace below expects ~/notes to already exist; it
+  # errors out on startup rather than creating it itself.
+  home.file."notes/.keep".text = "";
+
   programs.nixvim = {
     enable = true;
     viAlias = true;
