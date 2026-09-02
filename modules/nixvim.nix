@@ -86,6 +86,7 @@ in
       expandtab = true;
       tabstop = 2;
       shiftwidth = 2;
+      conceallevel = 2;
     };
 
     clipboard.register = "unnamedplus";
