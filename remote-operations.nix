@@ -62,6 +62,11 @@
       tmux attach -t main || tmux new -s main
     fi
   '';
+  programs.zsh.interactiveShellInit = ''
+    if [[ -o interactive ]] && [ -z "''${TMUX:-}" ]; then
+      tmux attach -t main || tmux new -s main
+    fi
+  '';
 
   # Enable SSH
   services.openssh = {
