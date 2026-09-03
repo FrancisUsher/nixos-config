@@ -21,7 +21,27 @@
       period/effects settings existed in the original config to port.
 - [ ] Port waybar config
 - [ ] Port fuzzel config
-- [ ] Port kitty config
+- [x] Port kitty config - home.nix's programs.kitty, with structured settings
+      (scrollback_lines, mouse_hide_wait, hide_window_decorations,
+      tab_bar_style/tab_powerline_style = powerline/round,
+      allow_remote_control) plus shellIntegration.enable{Bash,Zsh}Integration
+      instead of relying on kitty's own auto-detected integration. No map
+      lines ported - every keybinding in arch-reference's kitty.conf was
+      commented out, so there was nothing active to carry over. Colors,
+      cursor/selection styling, and the `include current-theme.conf` /
+      themer/input/kitty Jinja leftovers were all dropped per
+      stylix.targets.kitty.enable (already dormant in home.nix, now live) -
+      Stylix injects the Ancient Ruins palette instead. Also dropped the
+      hardcoded font_family (`MesloLGM Nerd Font Mono`, the M/medium-width
+      Meslo variant) since it's a different variant of the same font
+      stylix.fonts.monospace already manages (`MesloLGS Nerd Font Mono`,
+      S/small-width) - not a deliberate distinct font choice, so left to
+      Stylix rather than fighting it. En route, fixed a pre-existing
+      `pkgs.nerdfonts` -> `pkgs.nerd-fonts.meslo-lg` breakage in
+      modules/stylix.nix (nixpkgs renamed/restructured the nerd-fonts
+      package set; this was latent because nothing had evaluated
+      stylix.fonts.monospace.package until an app under a stylix target
+      actually got enabled)
 - [x] Port zsh config (.zshrc + .config/zsh) - zsh is now the actual login
       shell (programs.zsh.enable at the system level in both hosts'
       configuration.nix, users.users.soong.shell = pkgs.zsh), not just a

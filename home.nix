@@ -113,6 +113,22 @@
     enableZshIntegration = true;
   };
 
+  programs.kitty = {
+    enable = true;
+    settings = {
+      scrollback_lines = 10000;
+      mouse_hide_wait = -3.0;
+      hide_window_decorations = true;
+      tab_bar_style = "powerline";
+      tab_powerline_style = "round";
+      allow_remote_control = true;
+    };
+    shellIntegration = {
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+    };
+  };
+
   # Stylix's system-level config (palette, fonts, console/plymouth targets,
   # autoEnable=false) lives in modules/stylix.nix; these per-app targets only
   # exist under home-manager, so they're enabled explicitly here instead.
