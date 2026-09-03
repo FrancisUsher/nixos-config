@@ -4,7 +4,20 @@
 - [ ] Port sway config
 - [ ] Port swaylock config
 - [ ] Port waybar config
-- [ ] Port fuzzel config
+- [x] Port fuzzel config - home.nix's programs.fuzzel, settings as a
+      structured attrset (not xdg.configFile text) mirroring fuzzel.ini's
+      [section]/key layout. arch-reference's fuzzel.ini had almost
+      everything commented out (pure defaults) except [main]
+      filter-desktop=yes, which is what's ported (filter-desktop = true).
+      The whole [colors] section, and fuzzel.ini's `include=theme.ini` (the
+      old Python/Jinja engine's per-app override file), are dropped -
+      that's Stylix's job now via stylix.targets.fuzzel.enable (already
+      wired in home.nix, was sitting dormant waiting on this port); Stylix
+      injects the Ancient Ruins palette plus font/icon-theme itself, so
+      those aren't set here to avoid clashing. The one non-color value
+      inside theme.ini's [border] section (width=4, radius=0, vs fuzzel's
+      own default of width=3) is a genuine layout override rather than
+      theming, so that's carried over too
 - [ ] Port kitty config
 - [x] Port zsh config (.zshrc + .config/zsh) - zsh is now the actual login
       shell (programs.zsh.enable at the system level in both hosts'
