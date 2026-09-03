@@ -19,7 +19,40 @@
       base08 wrong, plus stylix.image for the lock background) instead of
       arch-reference's old themer/-driven hex values. No indicator/grace-
       period/effects settings existed in the original config to port.
-- [ ] Port waybar config
+- [x] Port waybar config - home.nix's programs.waybar (settings.mainBar for
+      config.jsonc, style for style.css), structured Nix options rather than
+      an xdg.configFile text-dump. Kept modules-left (sway/workspaces,
+      sway/mode, sway/scratchpad), modules-center (sway/window), and
+      modules-right (network, battery, clock, tray) with their formats/
+      icons/click-behavior as configured. Dropped: keyboard-state, mpd,
+      idle_inhibitor, cpu, memory, temperature, backlight, battery#bat2,
+      power-profiles-daemon, and pulseaudio - all configured in the
+      original but never actually wired into modules-left/center/right
+      (commented out of the arrays or just never added), so dead config
+      blocks. Also dropped custom/media and custom/power even though both
+      were active in modules-left/right - their backing scripts
+      (mediaplayer.py, power_menu.xml) don't exist anywhere in
+      arch-reference; the "// Script in resources folder" / "// Menu file
+      in resources folder" comments are straight from Waybar's stock
+      upstream example config, never actually replaced with real scripts.
+      style.css stripped of every hardcoded color (hex, rgba, and the old
+      @color-* GTK defines from palette.css) per Stylix now owning waybar
+      theming (stylix.targets.waybar.enable, already dormant-but-set in
+      home.nix) - kept `transparent` since it's an absence of color, not a
+      themed value. Rules that were 100% about color (workspace
+      focused/urgent backgrounds, hover backgrounds, the battery-critical
+      blink @keyframes - a blink is meaningless once the two colors it
+      alternates between are stripped) dropped entirely rather than left
+      as empty rulesets. Also dropped a hardcoded `* { font-family:
+      FontAwesome, MesloLGM Nerd Font Mono, ... }` rule - fonts are a
+      Stylix concern too (stylix.fonts), and since home-manager
+      concatenates programs.waybar.style after the stylix waybar target's
+      own output, that rule was silently overriding Stylix's actual
+      (verified-installed) font choice with a hardcoded one that may not
+      even exist on NixOS. Verified both `nixos-rebuild build` for x1nano
+      and bubu-brain, and inspected the built waybar-config.json/style.css
+      in the Nix store to confirm Stylix's base16 colors and font land
+      correctly on top of the structural CSS.
 - [x] Port fuzzel config - home.nix's programs.fuzzel, settings as a
       structured attrset (not xdg.configFile text) mirroring fuzzel.ini's
       [section]/key layout. arch-reference's fuzzel.ini had almost
@@ -175,3 +208,11 @@
       programs.gh's gitCredentialHelper (see the gh item above) instead
       of being duplicated by hand
 - [ ] Other QoL tools worth considering: direnv
+- [ ] Consider splitting home.nix into modules/programs/*.nix per app -
+      it's picked up a lot of weight from these ports (waybar's block alone
+      is ~140 lines including the style.css heredoc) and is starting to
+      feel like it wants the same per-concern module split as modules/*.nix
+      already gets for system-level config. Worth doing once the current
+      round of parallel arch-reference ports (waybar/kitty/fuzzel/sway/etc.)
+      has landed, not mid-flight - splitting now would conflict with every
+      one of those in-progress edits.
