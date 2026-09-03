@@ -16,6 +16,10 @@
   networking.hostName = "x1nano";
   networking.networkmanager.enable = true;
 
+  # Avoids tailscaled/NetworkManager DNS conflicts: https://tailscale.com/s/dns-fight
+  services.resolved.enable = true;
+  networking.networkmanager.dns = "systemd-resolved";
+
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
