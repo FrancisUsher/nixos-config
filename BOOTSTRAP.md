@@ -33,7 +33,14 @@ of trust. Right now we have more than one secret.
 3. Run `./bootstrap.sh` - installs the secrets, symlinks `/etc/nixos`, and
    does the first rebuild.
 
-4. Verify SSH/wifi from a second session before closing the first.
+4. `bootstrap.sh` finishes by running an automated post-rebuild check
+   (sshd active, tailscaled active, network reachable, DNS/HTTPS to
+   github.com) and prints a pass/fail summary - a failed check there doesn't
+   mean the rebuild failed, just that something's worth a closer look. Still
+   keep a second session (another terminal, or SSH in from elsewhere) open
+   until you've confirmed you can actually reach this machine - the script
+   is running from the same session that might be about to lock you out, so
+   it can't fully replace that belt-and-suspenders check.
 
 # Machine-specific bootstrapping
 
@@ -120,6 +127,9 @@ Those are documented here.
    follow the bubu-brain steps above from step 1 (clone to `~/nixos-config`,
    drop secrets, run `./bootstrap.sh x1nano`).
 
-8. Verify wifi (including a real captive-portal coffee-shop test - see
-   `services.captivePortalAccept`) and SSH from a second session before
-   trusting this as your daily system.
+8. `bootstrap.sh` already checked SSH/tailscale/network automatically (see
+   step 4 above). Wifi specifically still needs a real captive-portal
+   coffee-shop test - see `services.captivePortalAccept` - since that's
+   inherently a live, manual check a script can't do. Do that (and confirm
+   you can reach this machine) from a second session before trusting this as
+   your daily system.
