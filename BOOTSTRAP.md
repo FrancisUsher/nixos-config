@@ -1,4 +1,4 @@
-# Bootstrap (bubu-brain)
+# Bootstrap
 
 ## Purpose
 Most of our machine setup should be stored as declarative config that we can
