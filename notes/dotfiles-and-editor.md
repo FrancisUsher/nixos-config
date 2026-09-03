@@ -1,7 +1,16 @@
 # Dotfiles / editor
 
 - [x] Triage arch-reference/, prune junk before deciding what's worth converting
-- [ ] Port sway config
+- [x] Port sway config - home.nix's wayland.windowManager.sway, using
+      structured options (modifier/terminal/menu/window/floating/gaps/bars/
+      keybindings) instead of extraConfig. Most keybindings needed no
+      override - arch-reference was close to stock sway defaults already.
+      Colors dropped (Stylix themes sway now). Also dropped:
+      frame_orchestrator.py (unused WIP script), the Arch-only `include
+      /etc/sway/config.d/*`, and cliphist (its retrieval script,
+      ~/.local/bin/fuzzel-cliphist, was never captured into
+      arch-reference). bars uses `command = "waybar"` - that module's being
+      ported by a different agent in parallel. Both hosts build clean.
 - [ ] Port swaylock config
 - [ ] Port waybar config
 - [ ] Port fuzzel config
