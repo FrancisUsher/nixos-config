@@ -1,6 +1,6 @@
 # Todo
 
-- [ ] [[questions|Questions]]
+- [ ] [[bubu-brain-hardware-module|bubu-brain hardware module]]
 - [ ] [[dotfiles-and-editor|Dotfiles and editor]]
 - [ ] [[remote-desktop|Remote desktop]]
 - [ ] [[migrate-arch-laptop-to-nixos|Migrate Arch laptop to NixOS]]
