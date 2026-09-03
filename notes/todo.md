@@ -6,7 +6,6 @@
 - [ ] [[bootstrap-improvements|Bootstrap improvements]]
 - [ ] [[dotfiles-and-editor|Dotfiles and editor]]
 - [ ] [[bubu-brain-hardware|bubu-brain hardware]]
-- [ ] [[github-cli|GitHub CLI]]
 - [ ] [[remote-desktop|Remote desktop]]
 - [ ] [[migrate-arch-laptop-to-nixos|Migrate Arch laptop to NixOS]]
 - [ ] [[repo-visibility|Repo visibility]]
