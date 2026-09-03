@@ -37,7 +37,7 @@
       '';
 
   stylix.fonts.monospace = {
-    package = pkgs.nerdfonts.override { fonts = [ "Meslo" ]; };
+    package = pkgs.nerd-fonts.meslo-lg;
     name = "MesloLGS Nerd Font Mono";
   };
 
