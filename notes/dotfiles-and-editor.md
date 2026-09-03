@@ -1,7 +1,5 @@
 # Dotfiles / editor
 
-Depends on [[home-manager|Home Manager]].
-
 - [x] Triage arch-reference/, prune junk before deciding what's worth converting
 - [ ] Port sway config
 - [ ] Port swaylock config
@@ -55,8 +53,7 @@ Depends on [[home-manager|Home Manager]].
 - [x] Port gh config - home.nix's programs.gh (settings.aliases.co = "pr checkout",
       matching arch-reference's config.yml). Deliberately does NOT touch
       hosts.yml - that file holds a live oauth_token in plaintext, auth stays
-      a manual `gh auth login` step (see [[github-cli|GitHub CLI]]).
-      programs.gh's default gitCredentialHelper also reproduces the
+      a manual `gh auth login` step. programs.gh's default gitCredentialHelper also reproduces the
       credential.helper stanza from .gitconfig for free
 - [x] ~~Port gitui config~~ Dropped - not something actually in use, and
       there was no config to port anyway (arch-reference's gitui config

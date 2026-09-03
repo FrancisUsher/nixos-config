@@ -1,6 +1,6 @@
 # Migrate Arch laptop to NixOS
 
-Big project, depends on [[home-manager|Home Manager]].
+Big project.
 
 - [x] Restructure flake.nix for multiple hosts (shared modules + per-host config)
 - [x] hosts/x1nano/configuration.nix scaffolded (unbootable until hardware
@@ -19,9 +19,8 @@ Big project, depends on [[home-manager|Home Manager]].
 - [x] Fingerprint reader: services.fprintd.enable = true (from the hardware
       module above) - still need to run `fprintd-enroll` after first boot
 - [x] Push nixos-config to a git remote - github.com/FrancisUsher/nixos-config
-      (private). bootstrap.sh's REPO_URL now points at it (plain https, no
-      auth wired up yet - it'll fail non-interactively against a private
-      repo until the deploy-key question in [[bootstrap-improvements|Bootstrap improvements]] is actually resolved)
+      (now public, so bootstrap.sh's plain https REPO_URL clone needs no
+      auth)
 - [ ] Finish migrating data off the Arch install
 - [ ] Laptop hardware-configuration.nix's fileSystems/swapDevices/
       boot.initrd.luks are hand-filled placeholders matching BOOTSTRAP.md's
