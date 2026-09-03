@@ -46,6 +46,8 @@ in
   # errors out on startup rather than creating it itself.
   home.file."notes/.keep".text = "";
 
+  stylix.targets.nixvim.enable = true;
+
   programs.nixvim = {
     enable = true;
     viAlias = true;

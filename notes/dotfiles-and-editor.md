@@ -217,11 +217,19 @@
       programs.gh's gitCredentialHelper (see the gh item above) instead
       of being duplicated by hand
 - [ ] Other QoL tools worth considering: direnv
-- [ ] Consider splitting home.nix into modules/programs/*.nix per app -
-      it's picked up a lot of weight from these ports (waybar's block alone
-      is ~140 lines including the style.css heredoc) and is starting to
-      feel like it wants the same per-concern module split as modules/*.nix
-      already gets for system-level config. Worth doing once the current
-      round of parallel arch-reference ports (waybar/kitty/fuzzel/sway/etc.)
-      has landed, not mid-flight - splitting now would conflict with every
-      one of those in-progress edits.
+- [x] Split home.nix into modules/programs/*.nix per app - one file per
+      program (git/gh/glow/fastfetch/zmk/zsh/kitty/sway/swaylock/waybar/
+      fuzzel), plus modules/programs/cli-tools.nix for the one-line enables
+      (bash/bat/ripgrep/fzf/starship/zoxide/yazi) that didn't warrant their
+      own file. Each app's stylix.targets.<app>.enable line moved into that
+      app's own module (including nixvim's, now in modules/nixvim.nix)
+      instead of staying centralized, so a module owns its own theming
+      enablement. home.nix is now just the entrypoint: imports list, user
+      identity (username/homeDirectory/stateVersion), and the couple of
+      genuinely cross-cutting home.shellAliases/home.sessionVariables that
+      don't belong to any one app. Verified behavior-preserving, not just
+      "builds clean": diffed the full generated home-manager-files tree
+      between master and this split - byte-identical except unavoidable
+      embedded store-path self-references and one shell function landing in
+      a harmless different position in .zshrc (import order changed, content
+      didn't).
