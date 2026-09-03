@@ -11,6 +11,20 @@ meant the whole off-profile silently failed to apply (openrgb's CLI exits 0
 whether or not it succeeds) and every device - RAM and AIO both - was left
 at its power-on lighting default.
 
-Fixed in hosts/bubu-brain/rgb.nix: openrgb-off's ExecStart is now a small
-wrapper that retries up to 5 times, 2s apart, and only exits nonzero (a real
-failed unit) if none of the attempts report "Profile loaded successfully".
+Attempted fix in hosts/bubu-brain/rgb.nix: openrgb-off's ExecStart is a
+small wrapper that retries up to 5 times, 2s apart, and only exits nonzero
+(a real failed unit) if none of the attempts report "Profile loaded
+successfully".
+
+**This does not actually work.** Confirmed 2026-09-02: the service ran,
+reported "Profile loaded successfully" on `journalctl`, exited 0 - and the
+RGB was still visibly on hours later. So "Profile loaded successfully" is
+not a reliable signal that the hardware write actually landed - it most
+likely just confirms the `.orp` profile file parsed and the client
+requested the controllers, not that the SMBus write to the RAM chips stuck.
+That's the same class of false-positive this fix was written to guard
+against (openrgb's own exit code lying about success), just recurring one
+level up in a string the fix trusted instead. The underlying SMBus-timing
+theory above may still be right, or may not be the whole story - not
+re-diagnosed further, see [[bubu-brain-hardware|bubu-brain hardware]] for
+priority (low - not being actively chased right now).
