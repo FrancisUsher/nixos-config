@@ -3,10 +3,9 @@
 Machine-specific steps for bringing up a brand new X1 Nano install, before
 following the general steps in the root `BOOTSTRAP.md`.
 
-This assumes `nixos-config` is a public repo, so the live installer can
-clone it with no credentials. If it's still private (see
-`notes/repo-visibility.md`), the `git clone` step below will fail until
-that lands.
+The repo is public, so the live installer can clone it with no credentials -
+see notes/deploy-key-vs-public-repo.md for why this doesn't need a deploy
+key.
 
 ## Thinkpad X1 Nano (laptop)
 

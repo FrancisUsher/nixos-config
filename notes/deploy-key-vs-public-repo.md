@@ -30,10 +30,11 @@ secrets committed (secrets/ is gitignored, installed to /etc separately).
 
 ## Where this landed
 
-Resolved: the repo was never meant to stay private long-term - the
+Resolved and done: the repo was never meant to stay private long-term - the
 private/deploy-key setup was only ever meant to hold until secret scanning
-was in place, not a deliberate long-term choice. So this isn't really a
-deploy-keys-vs-alternatives design decision at all, just sequencing: add
-secret scanning, go public (see [[repo-visibility|Repo visibility]]), and
-the whole deploy-key mechanism in BOOTSTRAP.md's x1nano section goes away
-as a side effect. No separate deploy-key work needed.
+was in place, not a deliberate long-term choice. So this wasn't really a
+deploy-keys-vs-alternatives design decision at all, just sequencing: secret
+scanning landed, the repo went public 2026-09-02 (see
+[[repo-visibility|Repo visibility]]), and the deploy-key mechanism was
+dropped from `hosts/x1nano/BOOTSTRAP.md`/`bootstrap-install.sh` as a side
+effect - both now do a plain unauthenticated `git clone`.

@@ -10,6 +10,7 @@
 - [x] One-time full-history scan (`gitleaks detect --log-opts="--all"`)
       before making the repo public - clean, 46 commits, no leaks found
       (2026-09-02)
-- [ ] Make github.com/FrancisUsher/nixos-config public - secret-scanning
-      prerequisites above are done; this step itself is a deliberate,
-      user-triggered action
+- [x] Make github.com/FrancisUsher/nixos-config public - done 2026-09-02.
+      Unblocks [[deploy-key-vs-public-repo|Deploy key vs public repo]]'s
+      resolution: hosts/x1nano/bootstrap-install.sh's plain `git clone`
+      (no deploy key) now actually works.
