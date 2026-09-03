@@ -2,7 +2,23 @@
 
 - [x] Triage arch-reference/, prune junk before deciding what's worth converting
 - [ ] Port sway config
-- [ ] Port swaylock config
+- [x] Port swaylock config - home.nix's programs.swaylock, ported only the
+      non-color behavioral setting (ignore-empty-password); arch-reference's
+      font=Ubuntu was dropped too since no Ubuntu font package is installed
+      on either host (Stylix only sets a monospace role via
+      stylix.fonts.monospace) - it would've just silently fallen back to a
+      default anyway, not an intentional choice worth hardcoding. All of
+      arch-reference's hardcoded hex colors (color/ring-*/inside-*/line-*/
+      text-*/bs-hl-color/caps-lock-*-hl-color) were dropped rather than
+      copied - stylix.targets.swaylock turned out to already exist on this
+      pin (release-26.05, confirmed by reading nix-community/stylix's
+      modules/swaylock/hm.nix out of the flake input's store path) and is
+      now enabled in home.nix's stylix.targets block alongside the other
+      per-app targets, so swaylock gets the Ancient Ruins palette for free
+      (base01 background/inside, base05 ring/text, base0B key-hl,
+      base08 wrong, plus stylix.image for the lock background) instead of
+      arch-reference's old themer/-driven hex values. No indicator/grace-
+      period/effects settings existed in the original config to port.
 - [ ] Port waybar config
 - [ ] Port fuzzel config
 - [ ] Port kitty config

@@ -22,6 +22,13 @@
     settings.aliases.co = "pr checkout";
   };
 
+  programs.swaylock = {
+    enable = true;
+    settings = {
+      ignore-empty-password = true;
+    };
+  };
+
   home.packages = [ pkgs.glow pkgs.acpi pkgs.gitleaks ];
   xdg.configFile."glow/glow.yml".text = ''
     # style name or JSON path (default "auto")
@@ -117,6 +124,7 @@
     fuzzel.enable = true;
     sway.enable = true;
     nixvim.enable = true;
+    swaylock.enable = true;
     # No starship target on stylix's release-24.11 branch (added in 25.05+)
     # - see flake.nix's stylix input comment. programs.starship above is
     # still enabled/themeable by hand meanwhile.
