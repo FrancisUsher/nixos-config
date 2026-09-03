@@ -20,7 +20,20 @@
       arch-reference's old themer/-driven hex values. No indicator/grace-
       period/effects settings existed in the original config to port.
 - [ ] Port waybar config
-- [ ] Port fuzzel config
+- [x] Port fuzzel config - home.nix's programs.fuzzel, settings as a
+      structured attrset (not xdg.configFile text) mirroring fuzzel.ini's
+      [section]/key layout. arch-reference's fuzzel.ini had almost
+      everything commented out (pure defaults) except [main]
+      filter-desktop=yes, which is what's ported (filter-desktop = true).
+      The whole [colors] section, and fuzzel.ini's `include=theme.ini` (the
+      old Python/Jinja engine's per-app override file), are dropped -
+      that's Stylix's job now via stylix.targets.fuzzel.enable (already
+      wired in home.nix, was sitting dormant waiting on this port); Stylix
+      injects the Ancient Ruins palette plus font/icon-theme itself, so
+      those aren't set here to avoid clashing. The one non-color value
+      inside theme.ini's [border] section (width=4, radius=0, vs fuzzel's
+      own default of width=3) is a genuine layout override rather than
+      theming, so that's carried over too
 - [x] Port kitty config - home.nix's programs.kitty, with structured settings
       (scrollback_lines, mouse_hide_wait, hide_window_decorations,
       tab_bar_style/tab_powerline_style = powerline/round,
