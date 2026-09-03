@@ -1,6 +1,5 @@
 # Todo
 
-- [ ] [[nix-flake-input-upgrades|Nix flake-input upgrades]]
 - [ ] [[questions|Questions]]
 - [ ] [[dotfiles-and-editor|Dotfiles and editor]]
 - [ ] [[remote-desktop|Remote desktop]]
