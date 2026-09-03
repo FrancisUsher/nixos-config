@@ -34,10 +34,12 @@
       [[things-to-investigate|Things to investigate]].
 - [x] Replace oh-my-posh with starship (no Stylix module exists for
       oh-my-posh). home.nix's programs.starship is enabled.
-- [ ] Automatic Stylix theming for starship - blocked on the
-      [[nix-flake-input-upgrades|Nix flake-input upgrades]] section above;
-      until then starship uses its default prompt styling, untouched by
-      Stylix.
+- [ ] Automatic Stylix theming for starship - no longer blocked, the
+      [[nix-flake-input-upgrades|Nix flake-input upgrades]] bump to
+      release-26.05 confirmed the starship target exists there. Still
+      needs actually wiring up (stylix.targets.starship.enable or
+      equivalent); starship currently uses its default prompt styling,
+      untouched by Stylix.
 - [x] Port fastfetch config - home.nix's programs.fastfetch, dropped the
       "editor" module (arch-reference's own config had it commented
       "TODO: this doesn't work") and the aspirational qutebrowser/launcher/

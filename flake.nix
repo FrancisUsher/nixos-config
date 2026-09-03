@@ -1,13 +1,13 @@
 {
   inputs = {
     nixpkgs = {
-      url = "github:NixOS/nixpkgs/nixos-24.11";
+      url = "github:NixOS/nixpkgs/nixos-26.05";
     };
     nixpkgs-unstable-unfree = {
       url = "github:NixOS/nixpkgs/nixos-unstable";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware = {
@@ -15,16 +15,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-24.11";
+      url = "github:nix-community/nixvim/nixos-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix = {
-      # release-24.11 predates the starship target (added in 25.05+), and
-      # trying 25.05 with nixpkgs.follows pinned back to nixos-24.11 hit
-      # unrelated fcitx5-vs-home-manager-24.11 breakage - so staying on the
-      # matching release branch for now. Revisit starship theming once the
-      # flake's nixpkgs/home-manager/stylix get bumped together.
-      url = "github:nix-community/stylix/release-24.11";
+      url = "github:nix-community/stylix/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
