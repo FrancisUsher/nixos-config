@@ -1,5 +1,5 @@
 # Inert color-derivation stub for tuigreet - not wired to a running greeter
-# yet. See TODO.md: neither host has a compositor session to launch into
+# yet. Neither host has a compositor session to launch into
 # (blocked on "port sway" / "sway desktop config"), so this only prepares the
 # color piece for when that lands.
 #

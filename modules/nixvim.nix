@@ -448,16 +448,26 @@ in
 
       obsidian = {
         enable = true;
-        settings.workspaces = [
-          {
-            name = "notes";
-            path = "~/notes";
-          }
-          {
-            name = "nixos-config";
-            path = "~/nixos-config/notes";
-          }
-        ];
+        settings = {
+          workspaces = [
+            {
+              name = "notes";
+              path = "~/notes";
+            }
+            {
+              name = "nixos-config";
+              path = "~/nixos-config/notes";
+            }
+          ];
+          note_id_func.__raw = ''
+            function(title)
+              if title ~= nil then
+                return title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+              end
+              return tostring(os.time())
+            end
+          '';
+        };
       };
     };
   };

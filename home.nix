@@ -110,7 +110,7 @@
   # autoEnable=false) lives in modules/stylix.nix; these per-app targets only
   # exist under home-manager, so they're enabled explicitly here instead.
   # kitty/waybar/fuzzel/sway stay dormant until those apps are actually
-  # ported (see TODO.md).
+  # ported.
   stylix.targets = {
     kitty.enable = true;
     waybar.enable = true;

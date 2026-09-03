@@ -23,8 +23,7 @@
       # trying 25.05 with nixpkgs.follows pinned back to nixos-24.11 hit
       # unrelated fcitx5-vs-home-manager-24.11 breakage - so staying on the
       # matching release branch for now. Revisit starship theming once the
-      # flake's nixpkgs/home-manager/stylix get bumped together (see
-      # TODO.md's "Nix release bump" item).
+      # flake's nixpkgs/home-manager/stylix get bumped together.
       url = "github:nix-community/stylix/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };

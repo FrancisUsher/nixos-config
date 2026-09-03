@@ -1,6 +1,6 @@
 # bubu-brain RGB race root-cause
 
-Referenced from [[bubu-brain hardware]].
+Referenced from [[bubu-brain-hardware|bubu-brain hardware]].
 
 Not the `acpi_enforce_resources=lax` kernel param (never actually the issue -
 dmesg never logged an ACPI resource conflict). The RAM's SMBus RGB chips

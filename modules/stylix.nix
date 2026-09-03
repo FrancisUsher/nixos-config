@@ -43,8 +43,8 @@
 
   # autoEnable=true (the default) tries to activate every target Stylix has
   # a module for, including ones we have no use for (e.g. fcitx5) - and on
-  # this nixpkgs/home-manager pin (nixos-24.11, see TODO.md's "Nix release
-  # bump" item) at least one of those (fcitx5) hits an option path that
+  # this nixpkgs/home-manager pin (nixos-24.11) at least one of those
+  # (fcitx5) hits an option path that
   # doesn't exist in this home-manager version and hard-fails eval. Turning
   # it off and listing targets explicitly avoids that, and avoids surprise
   # theming of apps we didn't ask for. This propagates to the home-manager
@@ -60,7 +60,7 @@
     # Stylix's own theme (colors + logo), not the custom "oreb" owl theme at
     # arch-reference/themer/plymouth_themes/oreb/ - that has no palette hook
     # (hardcoded white text) and porting it to consume
-    # config.lib.stylix.colors is deferred follow-up work, see TODO.md.
+    # config.lib.stylix.colors is deferred follow-up work.
     plymouth.enable = true;
   };
 

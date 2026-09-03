@@ -1,6 +1,6 @@
 # GitHub CLI
 
-Independent - doesn't need [[Home Manager]].
+Independent - doesn't need [[home-manager|Home Manager]].
 
 - [ ] Install `gh`
 - [ ] Authenticate without a local browser (device-code flow, entering the

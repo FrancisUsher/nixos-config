@@ -12,8 +12,7 @@
 # hosts/x1nano/configuration.nix's zramSwap.enable), just so the flake
 # evaluates instead of failing the fileSystems assertion. This is still a
 # placeholder, not a real disk layout: MUST be regenerated for real during
-# the actual install (nixos-generate-config --root /mnt, per BOOTSTRAP.md) -
-# see TODO.md's "Laptop hardware-configuration.nix" item.
+# the actual install (nixos-generate-config --root /mnt, per BOOTSTRAP.md).
 { config, lib, pkgs, modulesPath, ... }:
 
 {

@@ -1,6 +1,5 @@
 # "Ancient Ruins" palette, ported from arch-reference/themer/palette.toml
-# into a base16 scheme for Stylix. See TODO.md for the Plymouth (oreb) and
-# tuigreet follow-ups that still need to consume these colors directly.
+# into a base16 scheme for Stylix.
 {
   slug = "ancient-ruins";
   scheme = "Ancient Ruins";
