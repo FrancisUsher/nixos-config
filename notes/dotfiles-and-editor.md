@@ -34,10 +34,20 @@
       [[things-to-investigate|Things to investigate]].
 - [x] Replace oh-my-posh with starship (no Stylix module exists for
       oh-my-posh). home.nix's programs.starship is enabled.
-- [ ] Automatic Stylix theming for starship - blocked on the
-      [[nix-flake-input-upgrades|Nix flake-input upgrades]] section above;
-      until then starship uses its default prompt styling, untouched by
-      Stylix.
+- [ ] Wire up Stylix theming for starship - no longer blocked, the
+      [[nix-flake-input-upgrades|Nix flake-input upgrades]] bump to
+      release-26.05 confirmed the starship target exists there
+      (stylix.targets.starship.enable or equivalent, alongside the other
+      per-app targets in home.nix's stylix.targets block). Right now
+      starship runs on its pure upstream defaults (no `settings` block at
+      all in home.nix's programs.starship) - which is also why the prompt
+      visibly shifted after the 26.05 bump, since starship itself moved
+      1.22.1 -> 1.25.1 and its zero-config default changed underneath us.
+- [ ] Design a real themed starship prompt matching bubu-brain's Ancient
+      Ruins palette (modules/themes/ancient-ruins.nix) - not just flipping
+      on the auto Stylix target above, but actually choosing a format/module
+      set/icons that feels like Ancient Ruins rather than generic
+      base16-recolored defaults.
 - [x] Port fastfetch config - home.nix's programs.fastfetch, dropped the
       "editor" module (arch-reference's own config had it commented
       "TODO: this doesn't work") and the aspirational qutebrowser/launcher/

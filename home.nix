@@ -9,9 +9,9 @@
 
   programs.git = {
     enable = true;
-    userName = "Francis Usher";
-    userEmail = "francis.w.usher@gmail.com";
-    extraConfig = {
+    settings = {
+      user.name = "Francis Usher";
+      user.email = "francis.w.usher@gmail.com";
       init.defaultBranch = "main";
       core.editor = "nvim";
     };
@@ -79,7 +79,7 @@
       vim = "nvim";
       battery = "acpi -b";
     };
-    initExtra = ''
+    initContent = ''
       # Quickly connect to home server: try local mDNS first, fall back to
       # Tailscale if not on the LAN.
       bb() {
