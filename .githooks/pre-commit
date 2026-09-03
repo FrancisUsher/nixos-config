@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: gitleaks not on PATH (needs a home-manager switch to pick up pkgs.gitleaks) - skipping secret scan" >&2
+  exit 0
+fi
+
+gitleaks protect --staged --redact -v

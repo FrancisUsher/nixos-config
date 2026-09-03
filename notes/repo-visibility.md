@@ -1,7 +1,15 @@
 # Repo visibility
 
-- [ ] Add automated secret scanning to the repo (e.g. gitleaks/trufflehog as
-      a pre-commit hook and/or CI check) - do this before making the repo
-      public, not after, to catch accidental disclosures going forward
-- [ ] Make github.com/FrancisUsher/nixos-config public - gated on the
-      secret-scanning item above landing first
+- [x] Add automated secret scanning: gitleaks, both as a pre-commit hook
+      (.githooks/pre-commit, wired up via `git config core.hooksPath
+      .githooks` - bootstrap.sh now sets this on every clone) and a CI
+      check (.github/workflows/gitleaks.yml, gitleaks/gitleaks-action@v2).
+      pkgs.gitleaks added to home.nix so the binary is on PATH; the hook
+      skips (doesn't block) if gitleaks isn't there yet, e.g. before the
+      first home-manager switch on a fresh machine.
+- [x] One-time full-history scan (`gitleaks detect --log-opts="--all"`)
+      before making the repo public - clean, 46 commits, no leaks found
+      (2026-09-02)
+- [ ] Make github.com/FrancisUsher/nixos-config public - secret-scanning
+      prerequisites above are done; this step itself is a deliberate,
+      user-triggered action

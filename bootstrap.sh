@@ -10,6 +10,8 @@ if [ ! -d "$CONFIG_DIR" ]; then
   git clone "$REPO_URL" "$CONFIG_DIR"
 fi
 
+git -C "$CONFIG_DIR" config core.hooksPath .githooks
+
 if [ ! -d "$SECRETS_DIR" ] || [ -z "$(ls -A "$SECRETS_DIR" 2>/dev/null)" ]; then
   echo "Missing secrets. Drop the required files into $SECRETS_DIR (see BOOTSTRAP.md), then re-run."
   exit 1

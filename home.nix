@@ -22,7 +22,7 @@
     settings.aliases.co = "pr checkout";
   };
 
-  home.packages = [ pkgs.glow pkgs.acpi ];
+  home.packages = [ pkgs.glow pkgs.acpi pkgs.gitleaks ];
   xdg.configFile."glow/glow.yml".text = ''
     # style name or JSON path (default "auto")
     style: "auto"
