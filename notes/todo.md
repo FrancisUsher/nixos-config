@@ -1,6 +1,5 @@
 # Todo
 
-- [ ] [[home-manager|Home Manager]]
 - [ ] [[nix-flake-input-upgrades|Nix flake-input upgrades]]
 - [ ] [[questions|Questions]]
 - [ ] [[dotfiles-and-editor|Dotfiles and editor]]
