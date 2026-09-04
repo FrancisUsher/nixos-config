@@ -31,7 +31,7 @@
         inherit system;
         config.allowUnfree = true;
       };
-      mkHost = hostName: extraModules: nixpkgs.lib.nixosSystem {
+      mkHost = hostName: username: extraModules: nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit unstableUnfreePkgs; };
         modules = [
@@ -44,16 +44,16 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit hostName; };
-            home-manager.users.soong = import ./home.nix;
+            home-manager.extraSpecialArgs = { inherit hostName username; };
+            home-manager.users.${username} = import ./home.nix;
           }
         ] ++ extraModules;
       };
     in
     {
       nixosConfigurations = {
-        bubu-brain = mkHost "bubu-brain" [ ];
-        x1nano = mkHost "x1nano" [ nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1 ];
+        bubu-brain = mkHost "bubu-brain" "soong" [ ];
+        red-sun-whorl = mkHost "red-sun-whorl" "silk" [ nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1 ];
       };
     };
 }

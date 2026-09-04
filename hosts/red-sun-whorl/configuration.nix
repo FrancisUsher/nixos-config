@@ -13,7 +13,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "x1nano";
+  networking.hostName = "red-sun-whorl";
   networking.networkmanager.enable = true;
 
   # Avoids tailscaled/NetworkManager DNS conflicts: https://tailscale.com/s/dns-fight
@@ -34,7 +34,7 @@
 
   # Physical-access laptop, not headless like bubu-brain: real password
   # login instead of autologin, and sudo still asks for a password.
-  users.users.soong = {
+  users.users.silk = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
     shell = pkgs.zsh;

@@ -1,4 +1,4 @@
-{ ... }:
+{ username, ... }:
 
 {
   imports = [
@@ -18,8 +18,8 @@
     ./modules/programs/fuzzel.nix
   ];
 
-  home.username = "soong";
-  home.homeDirectory = "/home/soong";
+  home.username = username;
+  home.homeDirectory = "/home/${username}";
   home.stateVersion = "24.11";
 
   home.shellAliases = {
