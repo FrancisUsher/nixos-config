@@ -3,11 +3,11 @@
 {
   imports = [
     # Generated on-device via `nixos-generate-config` - see BOOTSTRAP.md.
-    # Does not exist yet; this host won't evaluate until it's added.
     ./hardware-configuration.nix
     ../../remote-operations.nix
     ../../modules/captive-portal.nix
     ../../modules/stylix.nix
+    ../../modules/greetd-sway.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
