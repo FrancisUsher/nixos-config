@@ -22,9 +22,9 @@
       # Tailscale if not on the LAN.
       bb() {
         if timeout 0.5 bash -c "echo > /dev/tcp/bubu-brain.local/22" 2>/dev/null; then
-          mosh soong@bubu-brain.local
+          mosh bubu-brain.local
         else
-          mosh soong@bubu-brain
+          mosh bubu-brain
         fi
       }
     '';

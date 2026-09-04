@@ -8,6 +8,7 @@
     ./modules/programs/gh.nix
     ./modules/programs/glow.nix
     ./modules/programs/fastfetch.nix
+    ./modules/programs/ssh.nix
     ./modules/programs/zmk.nix
     ./modules/programs/zsh.nix
     ./modules/programs/cli-tools.nix
