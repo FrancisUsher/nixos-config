@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "perl \"$HOME/.claude/hooks/detect-new-comments.pl\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "autoCompactWindow": 400000,
+  "attribution": {
+    "commit": ""
+  },
+  "theme": "dark",
+  "preferredNotifChannel": "notifications_disabled",
+  "voiceEnabled": true,
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  }
+}

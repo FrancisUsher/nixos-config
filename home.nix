@@ -3,6 +3,7 @@
 {
   imports = [
     ./modules/nixvim.nix
+    ./modules/programs/claude-code.nix
     ./modules/programs/git.nix
     ./modules/programs/gh.nix
     ./modules/programs/glow.nix
