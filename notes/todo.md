@@ -10,3 +10,4 @@
 - [ ] [[bubu-brain-hardware|bubu-brain hardware]]
 - [ ] [[nixos-rebuild-health-checks|Post-rebuild health checks]]
 - [ ] [[laptop-wipe|Laptop wipe and fresh install]]
+- [ ] [[notes-cleanup|Notes cleanup: prune completed checkboxes]]

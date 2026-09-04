@@ -5,11 +5,11 @@
 # PREVIEW - generated with --no-filesystems while still running Arch, so it
 # only has hardware-detection bits from that scan. fileSystems/swapDevices/
 # boot.initrd.luks below are NOT from a real scan - they're filled in by hand
-# to match BOOTSTRAP.md's x1nano partitioning plan (GPT: ESP partition
+# to match BOOTSTRAP.md's red-sun-whorl partitioning plan (GPT: ESP partition
 # labeled "ESP"/filesystem-labeled "boot", primary partition labeled
 # "primary" holding LUKS with the decrypted mapper filesystem-labeled
 # "nixos"; zram swap instead of a swap partition, per
-# hosts/x1nano/configuration.nix's zramSwap.enable), just so the flake
+# hosts/red-sun-whorl/configuration.nix's zramSwap.enable), just so the flake
 # evaluates instead of failing the fileSystems assertion. This is still a
 # placeholder, not a real disk layout: MUST be regenerated for real during
 # the actual install (nixos-generate-config --root /mnt, per BOOTSTRAP.md).

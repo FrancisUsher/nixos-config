@@ -1,7 +1,7 @@
 # bubu-brain hardware module
 
 Started as a question in the old Questions note: bubu-brain (the SFFPC) uses
-nixos-hardware for the x1nano thinkpad, so why not the same for bubu-brain?
+nixos-hardware for the red-sun-whorl thinkpad, so why not the same for bubu-brain?
 Answered - bubu-brain is a custom build, not a shipped model, so there's no
 prebuilt nixos-hardware module to pull in.
 

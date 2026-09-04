@@ -49,11 +49,11 @@ nixos-generate-config --root /mnt
 
 echo "==> Cloning nixos-config"
 git clone "$REPO_URL" /tmp/nixos-config
-cp /mnt/etc/nixos/hardware-configuration.nix /tmp/nixos-config/hosts/x1nano/hardware-configuration.nix
+cp /mnt/etc/nixos/hardware-configuration.nix /tmp/nixos-config/hosts/red-sun-whorl/hardware-configuration.nix
 
 echo "==> Installing (you'll be prompted to set the initial root password)"
-nixos-install --root /mnt --flake /tmp/nixos-config#x1nano
+nixos-install --root /mnt --flake /tmp/nixos-config#red-sun-whorl
 
 echo
-echo "==> Done. Reboot into the new system, set soong's login password (passwd),"
+echo "==> Done. Reboot into the new system, set silk's login password (passwd),"
 echo "    then follow the general steps in the root BOOTSTRAP.md, step 1 onward."

@@ -5,24 +5,17 @@ side-by-side migration to NixOS - see
 [[migrate-arch-laptop-to-nixos|Migrate Arch laptop to NixOS]] for the
 broader NixOS-side migration work this depends on, and
 [[red-sun-whorl-rename-plan|red-sun-whorl rename plan]] for the
-hostname/user restructuring that may happen as part of or after this.
-
-## Open decision: rename timing
-
-- [ ] Decide whether the red-sun-whorl rename (hostname + silk/horn user
-      split, see [[red-sun-whorl-rename-plan|red-sun-whorl rename plan]])
-      happens *during* this wipe (the fresh install boots directly as
-      red-sun-whorl) or *after* (install once as x1nano to get a working
-      baseline, rename in a later rebuild). Affects the ordering of phase 2
-      below.
+hostname/user structure this installs (silk; horn is a separate, still-open
+account). The fresh install in phase 2 below boots directly as
+red-sun-whorl/silk.
 
 ## Phase 0 - Prerequisites (mostly done, tracked in [[migrate-arch-laptop-to-nixos|Migrate Arch laptop to NixOS]])
 
 - [x] flake.nix restructured for multiple hosts
-- [x] hosts/x1nano/configuration.nix scaffolded
-- [x] hosts/x1nano/BOOTSTRAP.md + bootstrap-install.sh already write the
-      destructive partition/LUKS/install flow - phase 2 below just points
-      at it, doesn't duplicate it
+- [x] hosts/red-sun-whorl/configuration.nix scaffolded
+- [x] hosts/red-sun-whorl/BOOTSTRAP.md + bootstrap-install.sh already write
+      the destructive partition/LUKS/install flow - phase 2 below just
+      points at it, doesn't duplicate it
 - [ ] Finish anything still open in
       [[migrate-arch-laptop-to-nixos|Migrate Arch laptop to NixOS]] that
       blocks a bootable install (fileSystems/swapDevices placeholders need
@@ -168,12 +161,8 @@ cost you a second USB stick or a second ISO download.
 
 Mechanics already written up - this phase is "go do that", not new work:
 
-- [ ] Follow hosts/x1nano/BOOTSTRAP.md end to end (USB installer,
+- [ ] Follow hosts/red-sun-whorl/BOOTSTRAP.md end to end (USB installer,
       bootstrap-install.sh against the real device, first boot)
-- [ ] If renaming to red-sun-whorl during install (see "Open decision"
-      above): do the hostname/user-split work first, so
-      bootstrap-install.sh and hosts/x1nano/BOOTSTRAP.md target the renamed
-      host/config instead of x1nano
 - [ ] Follow the general BOOTSTRAP.md steps post-install (secrets, first
       `./bootstrap.sh`, automated post-rebuild check)
 - [ ] Verify wifi (including a real captive-portal test), SSH from a

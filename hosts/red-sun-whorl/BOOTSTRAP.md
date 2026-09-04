@@ -1,4 +1,4 @@
-# Bootstrap (x1nano)
+# Bootstrap (red-sun-whorl)
 
 Machine-specific steps for bringing up a brand new X1 Nano install, before
 following the general steps in the root `BOOTSTRAP.md`.
@@ -23,7 +23,7 @@ key.
    device:
    ```
    nix-shell -p git curl
-   curl -LO https://raw.githubusercontent.com/FrancisUsher/nixos-config/master/hosts/x1nano/bootstrap-install.sh
+   curl -LO https://raw.githubusercontent.com/FrancisUsher/nixos-config/master/hosts/red-sun-whorl/bootstrap-install.sh
    chmod +x bootstrap-install.sh
    ./bootstrap-install.sh /dev/nvme0n1
    ```
@@ -36,9 +36,9 @@ key.
    `hardware-configuration.nix`, and runs `nixos-install` - you'll be
    prompted to set the initial root password.
 
-4. Reboot into the new system, set soong's login password (`passwd`), then
+4. Reboot into the new system, set silk's login password (`passwd`), then
    follow the general steps in the root `BOOTSTRAP.md`, step 1 onward
-   (clone to `~/nixos-config`, drop secrets, run `./bootstrap.sh x1nano`).
+   (clone to `~/nixos-config`, drop secrets, run `./bootstrap.sh red-sun-whorl`).
 
 5. Verify wifi (including a real captive-portal coffee-shop test - see
    `services.captivePortalAccept`) and SSH from a second session before

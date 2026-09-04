@@ -58,7 +58,7 @@
       concatenates programs.waybar.style after the stylix waybar target's
       own output, that rule was silently overriding Stylix's actual
       (verified-installed) font choice with a hardcoded one that may not
-      even exist on NixOS. Verified both `nixos-rebuild build` for x1nano
+      even exist on NixOS. Verified both `nixos-rebuild build` for red-sun-whorl
       and bubu-brain, and inspected the built waybar-config.json/style.css
       in the Nix store to confirm Stylix's base16 colors and font land
       correctly on top of the structural CSS.
@@ -113,7 +113,7 @@
       stylix.targets.console.enable, since newt reads its named-color
       slots off the TTY's 16-color palette. autohack moved to
       modules/captive-portal.nix as environment.shellAliases (laptop-only,
-      co-located with the rest of x1nano's wifi tooling) instead of living
+      co-located with the rest of red-sun-whorl's wifi tooling) instead of living
       in home.nix. Dropped: the bare-repo `dots` alias (redundant now that
       this repo IS the dotfile source of truth), `todo.sh` (unused),
       `yay=paru` (Arch/AUR, no NixOS equivalent), the custom _git
@@ -147,7 +147,7 @@
       module types). Logo/display.color now vary by hostName (flake.nix's
       mkHost passes it via home-manager.extraSpecialArgs) instead of the
       original's hardcoded "arch3" - a first step toward per-host theming,
-      not the full home.nix split. x1nano/red-sun-whorl has no real base16
+      not the full home.nix split. red-sun-whorl has no real base16
       theme yet (see [[red-sun-whorl-rename-plan|red-sun-whorl rename plan]]),
       so it just gets a different named accent color for now, not real
       palette-driven theming like bubu-brain's Ancient Ruins
