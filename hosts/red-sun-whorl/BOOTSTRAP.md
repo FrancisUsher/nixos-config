@@ -25,11 +25,15 @@ key.
    nix-shell -p git curl
    curl -LO https://raw.githubusercontent.com/FrancisUsher/nixos-config/master/hosts/red-sun-whorl/bootstrap-install.sh
    chmod +x bootstrap-install.sh
-   ./bootstrap-install.sh /dev/nvme0n1
+   sudo ./bootstrap-install.sh /dev/nvme0n1
    ```
    This is destructive - it partitions, formats, and LUKS-encrypts the given
    device. It shows you `lsblk` output for the device and requires you to
    type the device path back to confirm before touching anything.
+
+   The script needs root (it calls `parted`, `cryptsetup`, `mount`, and
+   `nixos-install` directly) - run it with `sudo`, or as `root` if you're
+   already there on the live ISO.
 
    It then generates the hardware profile against the mounted target,
    clones the flake into `/tmp/nixos-config`, drops in the generated
