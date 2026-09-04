@@ -20,7 +20,9 @@ of trust. Right now we have more than one secret.
 
 2. Drop these files into `~/nixos-config/secrets/` (gitignored - `bootstrap.sh`
    installs each one to `/etc/<same filename>` with mode 600):
-   - `wifi-secrets.env`:
+   - `wifi-secrets.env` - only needed on hosts that use
+     `networking.wireless.secretsFile` (currently bubu-brain; hosts on
+     NetworkManager, like red-sun-whorl, don't consume this file):
      ```
      WIFI_PSK="<network password>"
      ```
@@ -31,7 +33,10 @@ of trust. Right now we have more than one secret.
      ```
 
 3. Run `./bootstrap.sh` - installs the secrets, symlinks `/etc/nixos`, and
-   does the first rebuild.
+   does the first rebuild. Run it as your normal user, NOT with `sudo` -
+   it calls `sudo` itself for the specific steps that need root. Running
+   the whole script as root makes `$HOME` resolve to `/root`, so it looks
+   for (and installs) the repo and secrets in the wrong place.
 
 4. `bootstrap.sh` finishes by running an automated post-rebuild check
    (sshd active, tailscaled active, network reachable, DNS/HTTPS to

@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [ "$EUID" -eq 0 ]; then
+  echo "Don't run this with sudo/as root - it invokes sudo itself for the" >&2
+  echo "specific steps that need it. Running the whole script as root makes" >&2
+  echo "\$HOME resolve to /root, so the repo and secrets end up in the wrong" >&2
+  echo "place. Run it as your normal user instead." >&2
+  exit 1
+fi
+
 REPO_URL="https://github.com/FrancisUsher/nixos-config.git"
 CONFIG_DIR="$HOME/nixos-config"
 SECRETS_DIR="$CONFIG_DIR/secrets"
@@ -24,8 +32,10 @@ done
 if [ -L /etc/nixos ]; then
   sudo rm /etc/nixos
 elif [ -d /etc/nixos ]; then
-  echo "/etc/nixos exists as a real directory. Remove/back it up manually first."
-  exit 1
+  BACKUP="/etc/nixos.bootstrap-backup.$(date +%Y%m%d%H%M%S)"
+  echo "==> /etc/nixos exists as a real directory (expected on a fresh install) -" \
+    "moving it to $BACKUP"
+  sudo mv /etc/nixos "$BACKUP"
 fi
 sudo ln -s "$CONFIG_DIR" /etc/nixos
 
