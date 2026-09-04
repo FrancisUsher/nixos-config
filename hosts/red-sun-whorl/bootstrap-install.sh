@@ -38,7 +38,9 @@ mkfs.fat -F32 -n boot "$BOOT_PART"
 
 cryptsetup luksFormat "$ROOT_PART"
 cryptsetup luksOpen "$ROOT_PART" cryptroot
+udevadm settle
 mkfs.ext4 -L nixos /dev/mapper/cryptroot
+udevadm settle
 
 mount /dev/disk/by-label/nixos /mnt
 mkdir -p /mnt/boot
