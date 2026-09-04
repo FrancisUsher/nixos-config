@@ -9,18 +9,6 @@ hostname/user structure this installs (silk; horn is a separate, still-open
 account). The fresh install in phase 2 below boots directly as
 red-sun-whorl/silk.
 
-## Phase 0 - Prerequisites (mostly done, tracked in [[migrate-arch-laptop-to-nixos|Migrate Arch laptop to NixOS]])
-
-- [x] flake.nix restructured for multiple hosts
-- [x] hosts/red-sun-whorl/configuration.nix scaffolded
-- [x] hosts/red-sun-whorl/BOOTSTRAP.md + bootstrap-install.sh already write
-      the destructive partition/LUKS/install flow - phase 2 below just
-      points at it, doesn't duplicate it
-- [ ] Finish anything still open in
-      [[migrate-arch-laptop-to-nixos|Migrate Arch laptop to NixOS]] that
-      blocks a bootable install (fileSystems/swapDevices placeholders need
-      a real `nixos-generate-config` scan, per that file)
-
 ## Phase 1 - Full filesystem backup (before touching anything)
 
 Goal: a complete, unfiltered copy of the current Arch install, so nothing
