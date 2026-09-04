@@ -8,3 +8,4 @@
 - [ ] [[tmux-session-persistence|tmux session persistence across reboots]]
 - [ ] [[things-to-investigate|Things to investigate]]
 - [ ] [[bubu-brain-hardware|bubu-brain hardware]]
+- [ ] [[nixos-rebuild-health-checks|Post-rebuild health checks]]
