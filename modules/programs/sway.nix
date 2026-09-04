@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 
 {
   wayland.windowManager.sway = {
@@ -24,7 +24,7 @@
           modifier = config.wayland.windowManager.sway.config.modifier;
           menu = config.wayland.windowManager.sway.config.menu;
         in
-        {
+        lib.mkOptionDefault {
           "${modifier}+d" = null;
           "${modifier}+p" = "exec ${menu}";
 
