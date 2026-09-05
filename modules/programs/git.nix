@@ -8,6 +8,7 @@
       user.email = "francis.w.usher@gmail.com";
       init.defaultBranch = "main";
       core.editor = "nvim";
+      push.autoSetupRemote = true;
     };
   };
 }
