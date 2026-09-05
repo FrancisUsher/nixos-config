@@ -8,6 +8,9 @@
 # yet: pipewire + wireplumber (for the wpctl volume keybindings - neither
 # services.pipewire.pulse nor .wireplumber actually installs a CLI client,
 # so wpctl needs to be added explicitly), polkit (session/auth actions),
+# dconf (registers the dconf D-Bus service as activatable - without this,
+# home-manager's dconf activation step fails outright with "the name is
+# not activatable" and takes the whole home-manager switch down with it),
 # and udev perms for brightnessctl (brightness keybindings).
 { config, lib, pkgs, ... }:
 
@@ -34,6 +37,8 @@
   };
 
   security.polkit.enable = true;
+
+  programs.dconf.enable = true;
 
   environment.systemPackages = [ pkgs.wireplumber ];
 
