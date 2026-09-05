@@ -12,11 +12,13 @@
     ./modules/programs/zmk.nix
     ./modules/programs/zsh.nix
     ./modules/programs/cli-tools.nix
+    ./modules/programs/starship.nix
     ./modules/programs/kitty.nix
     ./modules/programs/sway.nix
     ./modules/programs/swaylock.nix
     ./modules/programs/waybar.nix
     ./modules/programs/fuzzel.nix
+    ./modules/programs/qutebrowser.nix
   ];
 
   home.username = username;

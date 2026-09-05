@@ -1,8 +1,9 @@
 # Shared Stylix config for both hosts. Replaces arch-reference/themer/ (the
 # old Python+Jinja engine) for everything Stylix has a target for; that
-# engine's palette.toml is ported into modules/themes/ancient-ruins.nix and
-# themer/ itself is left in place (not deleted) since plymouth_themes/oreb/
-# is still needed for a deferred follow-up, see below.
+# engine's palette.toml is ported into modules/themes/ancient-ruins.nix.
+# themer/ itself is left in place (not deleted), now just as dead reference
+# material - plymouth_themes/oreb/ has been ported (see modules/
+# plymouth-oreb.nix, imported below instead of stylix.targets.plymouth).
 #
 # This is the NixOS-level half. Per-app targets (kitty, waybar, fuzzel, sway,
 # starship, nixvim) live under home-manager and are enabled in home.nix
@@ -11,7 +12,7 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./tuigreet-theme.nix ];
+  imports = [ ./tuigreet-theme.nix ./plymouth-oreb.nix ];
 
   stylix.enable = true;
   stylix.base16Scheme = import ./themes/ancient-ruins.nix;
@@ -57,11 +58,9 @@
     # achievable by hand-setting COLOR_0..COLOR_15 in /etc/vconsole.conf.
     console.enable = true;
 
-    # Stylix's own theme (colors + logo), not the custom "oreb" owl theme at
-    # arch-reference/themer/plymouth_themes/oreb/ - that has no palette hook
-    # (hardcoded white text) and porting it to consume
-    # config.lib.stylix.colors is deferred follow-up work.
-    plymouth.enable = true;
+    # plymouth is turned off here (modules/plymouth-oreb.nix, imported
+    # above, does that) in favor of the custom "oreb" theme, which now uses
+    # this same palette instead of Stylix's own generated logo/spinner theme.
   };
 
   # see tuigreet-theme.nix - same named-color-via-console-palette mechanism
