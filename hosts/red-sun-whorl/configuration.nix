@@ -13,6 +13,11 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  boot.plymouth.enable = true;
+  boot.kernelParams = [ "quiet" ];
+  boot.consoleLogLevel = 0;
+  boot.initrd.verbose = false;
+
   networking.hostName = "red-sun-whorl";
   networking.networkmanager.enable = true;
 
