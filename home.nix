@@ -19,6 +19,7 @@
     ./modules/programs/waybar.nix
     ./modules/programs/fuzzel.nix
     ./modules/programs/qutebrowser.nix
+    ./modules/programs/power-menu.nix
   ];
 
   home.username = username;
