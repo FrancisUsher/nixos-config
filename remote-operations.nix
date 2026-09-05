@@ -56,14 +56,18 @@
 
   # Auto-attach a persistent tmux session on interactive login (ssh or
   # mosh), so a dropped connection (e.g. laptop sleep) doesn't kill what
-  # was running - just reconnect and you're back in it.
+  # was running - just reconnect and you're back in it. Skipped when a
+  # Wayland/X display is present, since that means this is a local
+  # terminal in a physical graphical session (e.g. red-sun-whorl's sway),
+  # not a remote login - no dropped-connection risk to guard against, and
+  # every local terminal joining one shared session is just annoying.
   programs.bash.interactiveShellInit = ''
-    if [[ $- == *i* ]] && [ -z "''${TMUX:-}" ]; then
+    if [[ $- == *i* ]] && [ -z "''${TMUX:-}" ] && [ -z "''${WAYLAND_DISPLAY:-}''${DISPLAY:-}" ]; then
       tmux attach -t main || tmux new -s main
     fi
   '';
   programs.zsh.interactiveShellInit = ''
-    if [[ -o interactive ]] && [ -z "''${TMUX:-}" ]; then
+    if [[ -o interactive ]] && [ -z "''${TMUX:-}" ] && [ -z "''${WAYLAND_DISPLAY:-}''${DISPLAY:-}" ]; then
       tmux attach -t main || tmux new -s main
     fi
   '';
