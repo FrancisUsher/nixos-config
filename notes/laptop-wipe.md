@@ -150,11 +150,13 @@ cost you a second USB stick or a second ISO download.
 Mechanics already written up - this phase is "go do that", not new work:
 
 - [ ] Follow hosts/red-sun-whorl/BOOTSTRAP.md end to end (USB installer,
-      bootstrap-install.sh against the real device, first boot)
+      bootstrap-install.sh against the real device, first boot, fingerprint
+      enrollment)
 - [ ] Follow the general BOOTSTRAP.md steps post-install (secrets, first
       `./bootstrap.sh`, automated post-rebuild check)
 - [ ] Verify wifi (including a real captive-portal test), SSH from a
-      second session, and anything from
+      second session, sudo via fingerprint (`fprintd-enroll`, then
+      `sudo -k && sudo true`), and anything from
       [[nixos-rebuild-health-checks|Post-rebuild health checks]] worth
       running by hand before trusting this as the daily system
 

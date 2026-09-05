@@ -46,3 +46,11 @@ no deploy key needed.
 5. Verify wifi (including a real captive-portal coffee-shop test - see
    `services.captivePortalAccept`) and SSH from a second session before
    trusting this as your daily system.
+
+6. Enroll a fingerprint for sudo (`services.fprintd.enable` already wires up
+   `security.pam.services.sudo.fprintAuth` by default - no config change
+   needed):
+   ```
+   fprintd-enroll
+   ```
+   then confirm it works: `sudo -k && sudo true` should prompt for a swipe.
