@@ -19,11 +19,6 @@
 
       bars = [ { command = "waybar"; } ];
 
-      # needed for interactive auth in e.g. fprintd enrollment
-      startup = [
-        { command = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"; }
-      ];
-
       keybindings =
         let
           modifier = config.wayland.windowManager.sway.config.modifier;
@@ -46,4 +41,19 @@
 
   stylix.targets.sway.enable = true;
   stylix.targets.gtk.enable = true;
+
+  # needed for interactive auth in e.g. fprintd enrollment
+  systemd.user.services.polkit-gnome-authentication-agent-1 = {
+    Unit = {
+      Description = "polkit-gnome-authentication-agent-1";
+      PartOf = [ "sway-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+    Install.WantedBy = [ "sway-session.target" ];
+  };
 }
