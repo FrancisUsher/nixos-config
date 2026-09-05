@@ -5,8 +5,10 @@
 #
 # Also brings up the handful of system services sway's existing keybindings
 # (modules/programs/sway.nix) already assume exist but nothing had wired up
-# yet: pipewire (for the pactl volume keybindings), polkit (session/auth
-# actions), and udev perms for brightnessctl (brightness keybindings).
+# yet: pipewire + wireplumber (for the wpctl volume keybindings - neither
+# services.pipewire.pulse nor .wireplumber actually installs a CLI client,
+# so wpctl needs to be added explicitly), polkit (session/auth actions),
+# and udev perms for brightnessctl (brightness keybindings).
 { config, lib, pkgs, ... }:
 
 {
@@ -32,6 +34,8 @@
   };
 
   security.polkit.enable = true;
+
+  environment.systemPackages = [ pkgs.wireplumber ];
 
   services.udev.packages = [ pkgs.brightnessctl ];
 }
