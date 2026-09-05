@@ -50,6 +50,9 @@ in
 
   programs.nixvim = {
     enable = true;
+    # Reuse home-manager's already-built pkgs instead of nixvim importing
+    # its own separate instance from nixpkgs.source.
+    nixpkgs.useGlobalPackages = true;
     viAlias = true;
     vimAlias = true;
 
