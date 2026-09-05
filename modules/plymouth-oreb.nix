@@ -2,11 +2,6 @@
 # Plymouth theme by adi1090x, renamed "oreb" but otherwise untouched) to
 # consume the Ancient Ruins palette instead of its hardcoded white text.
 # See the "Port oreb Plymouth theme" todo in notes/dotfiles-and-editor.md.
-#
-# Note this is packaged and wired up (stylix.targets.plymouth.enable is off
-# in favor of this theme) but boot.plymouth.enable itself is still off, same
-# as it was before this file existed - actually turning the boot splash on
-# is a separate, later decision, not made here.
 { pkgs, config, ... }:
 let
   colors = config.lib.stylix.colors;
