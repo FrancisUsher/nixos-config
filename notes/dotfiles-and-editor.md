@@ -261,8 +261,19 @@
       plugins.obsidian (modules/nixvim.nix) instead of nvim-orgmode -
       orgfiles/refile.org's actual content still needs converting from org
       syntax to markdown and dropping into the ~/notes vault, see below
-- [ ] Migrate orgfiles/refile.org's content (org syntax) to markdown in the
-      ~/notes Obsidian vault - deferred out of the orgmode->obsidian swap
+- [x] Migrate orgfiles/refile.org's content (org syntax) to markdown in the
+      ~/notes Obsidian vault - deferred out of the orgmode->obsidian swap.
+      Written to ~/notes/refile.md, but pruned rather than copied verbatim
+      (confirmed with Francis first): dropped everything either Arch-
+      specific and now moot (mkinitcpio/pacman/AUR/etckeeper/zsh-setup-
+      script concerns - this whole flake supersedes them) or already done
+      and tracked properly elsewhere in this repo's notes/ (fastfetch,
+      sway, swaylock, waybar, zsh, starship, tuigreet colors, nixvim/
+      obsidian, fingerprint auth). What's left is genuinely still-open
+      ideas (quickshell, the real custom oreb bird/whorl Plymouth
+      animation, a themed wallpaper now that Sway exists, YubiKey auth,
+      etc.) - see ~/notes/refile.md itself for the full pruned list, not
+      reproduced here since it's personal/outside this repo's scope.
 - [x] ~~Install neovim via Home Manager~~ / ~~Migrate nvim config from Arch
       laptop~~ Already done, checklist just hadn't caught up: modules/
       nixvim.nix fully ports arch-reference's kickstart.nvim-based config
