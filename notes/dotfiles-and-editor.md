@@ -234,11 +234,12 @@
       itself (still false, as it was before this) - actually turning the
       boot splash on is a separate decision with real on-device boot
       behavior, left for later. Now unblocks the next item below.
-- [ ] Full greetd + tuigreet bring-up (services.greetd.enable, session
+- [x] Full greetd + tuigreet bring-up (services.greetd.enable, session
       launch command) wired to modules/tuigreet-theme.nix's
-      config.lib.tuigreet.themeArg. Gated on Sway session existing - see
-      "Port sway config" / "Sway desktop config" in
-      [[migrate-arch-laptop-to-nixos|Migrate Arch laptop to NixOS]]
+      config.lib.tuigreet.themeArg - done in modules/greetd-sway.nix
+      (red-sun-whorl only; bubu-brain is headless). Checklist was stale -
+      this shipped already (tuigreet launches sway, plus pipewire/polkit/
+      brightnessctl udev perms that sway's keybindings assumed existed).
 - [ ] Now that the oreb Plymouth port is complete (above), prune
       arch-reference/themer/'s Python engine (main.py, input/, output/,
       .venv/, uv.lock, pyproject.toml) as dead code - deliberately left
