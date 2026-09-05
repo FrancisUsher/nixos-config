@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   wayland.windowManager.sway = {
@@ -18,6 +18,11 @@
       gaps.smartBorders = "on";
 
       bars = [ { command = "waybar"; } ];
+
+      # needed for interactive auth in e.g. fprintd enrollment
+      startup = [
+        { command = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"; }
+      ];
 
       keybindings =
         let
@@ -40,4 +45,5 @@
   };
 
   stylix.targets.sway.enable = true;
+  stylix.targets.gtk.enable = true;
 }
