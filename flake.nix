@@ -53,7 +53,10 @@
     {
       nixosConfigurations = {
         bubu-brain = mkHost "bubu-brain" "soong" [ ];
-        red-sun-whorl = mkHost "red-sun-whorl" "silk" [ nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1 ];
+        red-sun-whorl = mkHost "red-sun-whorl" "silk" [
+          nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
+          { home-manager.users.silk.imports = [ ./modules/programs/power-menu.nix ]; }
+        ];
       };
     };
 }
