@@ -39,7 +39,7 @@
           home-manager.nixosModules.home-manager
           stylix.nixosModules.stylix
           {
-            home-manager.sharedModules = [ nixvim.homeManagerModules.nixvim ];
+            home-manager.sharedModules = [ nixvim.homeModules.nixvim ];
           }
           {
             home-manager.useGlobalPkgs = true;
