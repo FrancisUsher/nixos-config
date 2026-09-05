@@ -203,17 +203,48 @@
       modules/stylix.nix and modules/themes/ancient-ruins.nix (the "Ancient
       Ruins" palette ported to base16). arch-reference/themer/ is kept, not
       deleted, since plymouth_themes/oreb/ is still needed below.
-- [ ] Port oreb Plymouth theme (arch-reference/themer/plymouth_themes/oreb/ -
+- [x] Port oreb Plymouth theme (arch-reference/themer/plymouth_themes/oreb/ -
       owl.script + animation frames) to consume config.lib.stylix.colors,
-      replacing Stylix's built-in Plymouth theme/logo currently in use
+      replacing Stylix's built-in Plymouth theme/logo currently in use -
+      packaged as modules/plymouth-oreb.nix + modules/plymouth-oreb/theme/
+      (the 151 progress-N.png frames, LICENSE, and script/theme files copied
+      out of the gitignored arch-reference/ into the tracked repo, since a
+      flake can't reference gitignored paths). This theme is a vendored
+      third-party one (adi1090x's, GPLv3, LICENSE carried along) renamed
+      "oreb" - not yet the custom bird/whorl animation from refile.org's
+      TODO, which is a separate future undertaking. Two real bugs fixed in
+      the port, not just recolored: (1) owl.plymouth's ScriptFile pointed at
+      "oreb.script" but the shipped file was named "owl.script" - this
+      theme could never have actually loaded on the old Arch box either;
+      (2) ImageDir/ScriptFile hardcoded /usr/share/plymouth/themes/oreb,
+      an FHS path that doesn't exist on NixOS - repointed at
+      /etc/plymouth/themes/oreb, which is where NixOS's boot.plymouth
+      module actually exposes theme packages (both in the real root and,
+      separately, inside the initrd - confirmed by reading nixpkgs'
+      nixos/modules/system/boot/plymouth.nix). The 5 hardcoded
+      `Image.Text(..., 1, 1, 1)` (white) calls become
+      `config.lib.stylix.colors.base05-dec-{r,g,b}` via pkgs.replaceVars
+      against a .tmpl file, so password/message text now tracks whatever
+      base16 scheme is active instead of being frozen to white. Verified
+      by building `boot.plymouth.themePackages` directly and reading the
+      generated oreb.script out of the store (colors substituted correctly)
+      alongside the usual `nixos-rebuild build` for both hosts.
+      stylix.targets.plymouth.enable is now off in modules/stylix.nix in
+      favor of this theme. Deliberately NOT flipping boot.plymouth.enable
+      itself (still false, as it was before this) - actually turning the
+      boot splash on is a separate decision with real on-device boot
+      behavior, left for later. Now unblocks the next item below.
 - [ ] Full greetd + tuigreet bring-up (services.greetd.enable, session
       launch command) wired to modules/tuigreet-theme.nix's
       config.lib.tuigreet.themeArg. Gated on Sway session existing - see
       "Port sway config" / "Sway desktop config" in
       [[migrate-arch-laptop-to-nixos|Migrate Arch laptop to NixOS]]
-- [ ] Once the oreb Plymouth port (if it happens) is complete, prune
+- [ ] Now that the oreb Plymouth port is complete (above), prune
       arch-reference/themer/'s Python engine (main.py, input/, output/,
-      .venv/, uv.lock, pyproject.toml) as dead code
+      .venv/, uv.lock, pyproject.toml) as dead code - deliberately left
+      alone for now since it's a destructive delete of local files outside
+      git (arch-reference/ is gitignored) that wasn't explicitly asked for
+      this session; do it whenever it's actually wanted.
 - [x] Review system-config/collect.zsh - old Arch dotfiles-workflow experiment,
       list of /etc files it tracked may be useful as a checklist. Reviewed:
       it synced /etc/mkinitcpio.conf, /etc/pacman.conf, /etc/vconsole.conf,

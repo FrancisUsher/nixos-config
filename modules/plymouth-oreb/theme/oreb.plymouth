@@ -1,0 +1,9 @@
+[Plymouth Theme]
+Name=oreb
+Description=display oreb from book of the long sun
+Comment=made to accompany the long sun whorl theme by @FrancisUsher
+ModuleName=script
+
+[script]
+ImageDir=/etc/plymouth/themes/oreb
+ScriptFile=/etc/plymouth/themes/oreb/oreb.script
