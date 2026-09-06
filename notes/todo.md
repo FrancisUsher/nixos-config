@@ -13,3 +13,7 @@
 - [ ] [[notes-cleanup|Notes cleanup: prune completed checkboxes]]
 - [ ] [[build-warnings|Build warnings to clean up]]
 - [ ] [[dynamic-keymaps-utility|Dynamic keymaps utility]]
+- [ ] Secondary fuzzel/dmenu launcher on its own hotkey, scoped to a
+      curated set of desktop entries (nvim, htop, etc.) hidden from the
+      main launcher via `xdg.desktopEntries.*.noDisplay` in
+      modules/programs/fuzzel.nix

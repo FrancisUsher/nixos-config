@@ -55,7 +55,6 @@
 
   # Basic packages
   environment.systemPackages = with pkgs; [
-    vim
     git
     wget
     htop

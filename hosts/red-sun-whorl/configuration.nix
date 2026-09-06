@@ -57,7 +57,6 @@
   services.fprintd.enable = true;
 
   environment.systemPackages = with pkgs; [
-    vim
     git
     wget
     htop
