@@ -33,7 +33,7 @@ in
 {
   home.packages = [ hotkeyOverlay ];
 
-  wayland.windowManager.sway.config.keybindings = {
+  wayland.windowManager.sway.config.keybindings = lib.mkOptionDefault {
     "${modifier}+question" = "exec ${lib.getExe hotkeyOverlay}";
   };
 }
