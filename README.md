@@ -1,5 +1,36 @@
 # nixos-config
 
+The purpose of this repo is to make it easier for me to reproduce
+my preferred applications and settings on every computer I use.
+Just to list a few categories of things it helps with:
+
+- Initial setup of operating system, hardware drivers, partitioning
+  drives, and other items needed to create a minimal but fully
+  operational system. This includes kernel, bootloader configuration,
+  and opinionated versions of typical OS-install type goals.
+- Provisioning of applications, user accounts, secrets, and anything
+  else necessary to take the system beyond a minimal operational
+  state to one that is actually effective at doing simple tasks. This
+  includes code sharing utilities like `git`, tools to help with
+  networked system administation like `mosh`, `tmux`, and `tailscale`,
+  as well as others. I would also put `neovim` in this category since
+  I use it for more than just editing code.
+- Applications and configurations oriented to working in specific
+  problem spaces.
+- Provisioning of settings for specific "users" that are oriented
+  towards certain workflows. For me this includes window manager
+  configuration (or lack thereof) and shapes the core mode of
+  interaction between the user and the computer.
+- Theming, which I consider a separable enough concern to not include
+  in the "user" problem space. This is because the theme I have in
+  mind of my personal computer type machines is pretty rich.
+- Aside from personal computers, configuration also for home servers
+  or small linux-capable computers like raspberry pis. These devices
+  would tend to be unthemed and mostly just a composition of functional
+  "modules" on top of the effective operational state. Think of this
+  like servers hosting containerized applications; except instead of
+  using containerization, it is using modular units of Nix code.
+
 Personal NixOS + home-manager configuration.
 
 ## Conventions
