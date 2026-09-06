@@ -16,3 +16,6 @@ MVP. Next steps to make it more useful:
       to just the subset someone actually wants to focus on
       learning/practicing - full reference is useful but overwhelming
       as a learning tool.
+- [ ] Restyle it to actually fit red-sun-whorl's aesthetic - current
+      look is generic GTK theme colors, not aligned with the rest of
+      the machine's vibe.
