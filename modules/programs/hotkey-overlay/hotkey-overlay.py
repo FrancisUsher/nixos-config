@@ -24,6 +24,44 @@ MOD_NAMES = {
 BIND_RE = re.compile(r"^(?:bindsym|bindcode)\s+(?:--\S+\s+)*(\S+)\s+(.+)$")
 SET_RE = re.compile(r"^set\s+(\$\S+)\s+(.+?)\s*$")
 
+DESC_RULES = [
+    (re.compile(r"^workspace number (\d+)$"), lambda m: f"Workspace {m.group(1)}"),
+    (re.compile(r"^move container to workspace number (\d+)$"), lambda m: f"Move to workspace {m.group(1)}"),
+    (re.compile(r"^focus (left|right|up|down)$"), lambda m: f"Focus {m.group(1)}"),
+    (re.compile(r"^move (left|right|up|down)$"), lambda m: f"Move {m.group(1)}"),
+    (re.compile(r"^move scratchpad$"), lambda m: "Move to scratchpad"),
+    (re.compile(r"^scratchpad show$"), lambda m: "Show scratchpad"),
+    (re.compile(r"^focus parent$"), lambda m: "Focus parent"),
+    (re.compile(r"^focus mode_toggle$"), lambda m: "Toggle focus mode"),
+    (re.compile(r"^layout stacking$"), lambda m: "Stacking layout"),
+    (re.compile(r"^layout tabbed$"), lambda m: "Tabbed layout"),
+    (re.compile(r"^layout toggle split$"), lambda m: "Toggle split layout"),
+    (re.compile(r"^splith$"), lambda m: "Split horizontal"),
+    (re.compile(r"^splitv$"), lambda m: "Split vertical"),
+    (re.compile(r"^fullscreen toggle$"), lambda m: "Toggle fullscreen"),
+    (re.compile(r"^floating toggle$"), lambda m: "Toggle floating"),
+    (re.compile(r"^kill$"), lambda m: "Close window"),
+    (re.compile(r"^reload$"), lambda m: "Reload config"),
+    (re.compile(r"^mode resize$"), lambda m: "Resize mode"),
+    (re.compile(r"^mode default$"), lambda m: "Exit resize mode"),
+    (re.compile(r"^resize grow height"), lambda m: "Grow height"),
+    (re.compile(r"^resize shrink height"), lambda m: "Shrink height"),
+    (re.compile(r"^resize grow width"), lambda m: "Grow width"),
+    (re.compile(r"^resize shrink width"), lambda m: "Shrink width"),
+    (re.compile(r"^exec grim$"), lambda m: "Screenshot"),
+    (re.compile(r"^exec wpctl set-volume \S+ 5%-$"), lambda m: "Volume down"),
+    (re.compile(r"^exec wpctl set-volume \S+ 5%\+$"), lambda m: "Volume up"),
+    (re.compile(r"^exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle$"), lambda m: "Toggle mic mute"),
+    (re.compile(r"^exec wpctl set-mute \S+ toggle$"), lambda m: "Toggle mute"),
+    (re.compile(r"^exec brightnessctl set 5%-$"), lambda m: "Brightness down"),
+    (re.compile(r"^exec brightnessctl set 5%\+$"), lambda m: "Brightness up"),
+    (re.compile(r"^exec kitty$"), lambda m: "Open terminal"),
+    (re.compile(r"^exec fuzzel$"), lambda m: "Open launcher"),
+    (re.compile(r"^exec fuzzel-cliphist$"), lambda m: "Clipboard history"),
+    (re.compile(r"fuzzel-cliphist.*wtype"), lambda m: "Paste from history"),
+    (re.compile(r"^exec swaynag.*exit sway"), lambda m: "Exit sway"),
+]
+
 CSS = b"""
 .hotkey-overlay {
     border: 4px solid @borders;
@@ -72,10 +110,26 @@ def prettify_combo(combo):
     return " + ".join(parts)
 
 
+def shorten_exec(cmd):
+    token = cmd.split()[0] if cmd.split() else cmd
+    match = re.match(r"^/nix/store/[a-z0-9]+-(.+)$", token)
+    if match:
+        rest = match.group(1)
+        token = rest.split("/bin/")[-1] if "/bin/" in rest else rest.split("/")[0]
+    token = re.sub(r"-[\d.]+$", "", token)
+    token = token.replace("-", " ").replace("_", " ").strip()
+    return token.title() if token else cmd
+
+
 def prettify_description(desc):
+    desc = desc.strip()
+    for pattern, handler in DESC_RULES:
+        match = pattern.search(desc)
+        if match:
+            return handler(match)
     if desc.startswith("exec "):
-        desc = desc[len("exec "):]
-    return desc.strip()
+        return shorten_exec(desc[len("exec "):])
+    return " ".join(desc.split()[:3]).capitalize()
 
 
 def load_bindings():
@@ -103,16 +157,23 @@ def load_bindings():
     return bindings
 
 
+TILE_WIDTH = 150
+
+
 def build_tile(combo, desc):
     tile = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
     tile.get_style_context().add_class("hotkey-tile")
+    tile.set_size_request(TILE_WIDTH, -1)
 
     combo_label = Gtk.Label(label=combo, xalign=0)
+    combo_label.set_line_wrap(True)
+    combo_label.set_max_width_chars(1)
     combo_label.get_style_context().add_class("hotkey-combo")
     tile.pack_start(combo_label, False, False, 0)
 
     desc_label = Gtk.Label(label=desc, xalign=0)
     desc_label.set_line_wrap(True)
+    desc_label.set_max_width_chars(1)
     desc_label.get_style_context().add_class("hotkey-desc")
     tile.pack_start(desc_label, False, False, 0)
 
@@ -147,6 +208,8 @@ def build_window(bindings):
     flow_box.set_valign(Gtk.Align.START)
     flow_box.set_selection_mode(Gtk.SelectionMode.NONE)
     flow_box.set_homogeneous(True)
+    flow_box.set_min_children_per_line(1)
+    flow_box.set_max_children_per_line(max(1, width // TILE_WIDTH))
     flow_box.set_row_spacing(8)
     flow_box.set_column_spacing(8)
     flow_box.set_margin_start(12)
