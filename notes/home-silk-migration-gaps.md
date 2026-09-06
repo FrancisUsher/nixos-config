@@ -25,4 +25,8 @@ ported.
       [[dynamic-keymaps-utility|Dynamic keymaps utility]] (that's a
       cheat-sheet display tool; this is static hardware-level
       remapping) - signals old unfinished intent worth picking up
-      separately. Backup path: `home/silk/keymap-remap.hwdb`.
+      separately. Backup path: `home/silk/keymap-remap.hwdb`. An old
+      `.todo/todo.txt` on the same backup also had "read
+      Alekamerlin/keyboard-remap-guide" and "make a command to show secret
+      fn shortcuts" as open items - both relevant context for whenever this
+      gets picked up.
