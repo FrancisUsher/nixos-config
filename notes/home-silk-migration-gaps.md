@@ -1,9 +1,10 @@
 # home/silk migration gaps
 
-Found while reviewing `/mnt/backup-ssd/arch-backup-2026-09-03/home/silk/`
-for things that were never even pulled into `arch-reference/` in the first
-pass. See [[dotfiles-and-editor|Dotfiles and editor]] for what's already
-ported.
+Found while auditing `/mnt/backup-ssd/arch-backup-2026-09-03/home/silk/` for
+things that were never even pulled into `arch-reference/` in the first pass.
+See [[dotfiles-and-editor|Dotfiles and editor]] for what's already ported.
+
+This audit is partial - see the last item below for what's left to look at.
 
 - [ ] `.zshenv` was never ported - two real settings:
       `PATH=(~/.local/bin ~/.npm-global/bin $PATH)` and
@@ -30,3 +31,19 @@ ported.
       Alekamerlin/keyboard-remap-guide" and "make a command to show secret
       fn shortcuts" as open items - both relevant context for whenever this
       gets picked up.
+- [ ] Finish auditing `home/silk` - only the dotfiles-shaped parts have been
+      looked at closely so far. Still unreviewed: `.config/{chromium, dconf,
+      kritarc, kritadisplayrc, nvim.bkp, procps, pulse, QtProject.conf,
+      tailscale}`, and top-level `.bash_history`, `.bash_logout`,
+      `.bash_profile`, `.bashrc`, `.cargo`, `.claude`/`.claude.json`,
+      `container_hist.txt`, `dev/` (actual project repos - e.g. `power-tui`,
+      `themer`, several `zmk-*` firmware forks - a different kind of review
+      than dotfiles, whether they're pushed/backed up elsewhere rather than
+      config to port), `Downloads`, `.gemini`, `.histfile`, `.inxi`,
+      `.lesshst`, `.local/share` (most of this backup's 2.9G lives here,
+      unreviewed), `.pulse-cookie`, `to-add.txt` (now stale - referenced the
+      since-deleted `.dotfiles` bare repo), `.wget-hsts`, `.wordgrinder`,
+      `.zcompdump`. `etc/` and `var/` at the top of the backup were checked
+      and ruled out - stock Arch/etckeeper system files with no NixOS
+      equivalent to port, same conclusion the old `system-config/collect.zsh`
+      review already reached.
