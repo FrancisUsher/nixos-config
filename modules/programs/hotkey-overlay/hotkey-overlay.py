@@ -130,7 +130,10 @@ def build_window(bindings):
     if monitor is None:
         monitor = Gdk.Display.get_default().get_monitor(0)
     geometry = monitor.get_geometry()
-    window.set_default_size(int(geometry.width * 0.7), int(geometry.height * 0.7))
+    width = int(geometry.width * 0.7)
+    height = int(geometry.height * 0.7)
+    window.set_size_request(width, height)
+    window.set_default_size(width, height)
 
     outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
     outer.get_style_context().add_class("hotkey-overlay")
