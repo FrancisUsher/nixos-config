@@ -18,6 +18,7 @@
     ./modules/programs/swaylock.nix
     ./modules/programs/waybar.nix
     ./modules/programs/fuzzel.nix
+    ./modules/programs/hotkey-overlay.nix
     ./modules/programs/qutebrowser.nix
   ];
 
