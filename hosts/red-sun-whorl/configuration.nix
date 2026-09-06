@@ -45,6 +45,7 @@
     shell = pkgs.zsh;
     openssh.authorizedKeys.keyFiles = [
       ../../soong.pub
+      ../../bubu-brain.pub
     ];
   };
 
