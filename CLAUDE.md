@@ -31,6 +31,9 @@
   master).
 - Further research or iteration goes into issue comments as it happens —
   brief and technical, for future reference, not narrative.
+- Commit messages stay concise (what and why), even for the commit that
+  closes an issue. They are not an archive either — detailed blow-by-blow
+  belongs in issue comments, not in `notes/` and not in the commit log.
 - No ADRs or decision docs live in-repo at this scale. If something here
   ever gets architecturally complex enough to warrant one, that's a
   decision to make then, not the default now.

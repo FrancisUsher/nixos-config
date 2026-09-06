@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  home.packages = [ pkgs.gitleaks ];
+  home.packages = [ pkgs.gitleaks pkgs.kicad ];
 
   programs.bash.enable = true;
   programs.bat.enable = true;
