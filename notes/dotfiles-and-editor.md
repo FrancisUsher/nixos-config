@@ -140,6 +140,24 @@
       palette names instead of hardcoded hex. Verified the rendered
       starship.toml in the Nix store resolves those palette names to the
       exact Ancient Ruins hex values.
+- [ ] Starship prompt is missing the original's segment-separator glyphs -
+      arch-reference's oh-my-posh theme.omp.toml used two Nerd Font
+      "Powerline Extra Symbols" glyphs as leading/trailing diamond
+      delimiters between segments (U+E0CA leading, U+E0C6 trailing - the
+      blocky/pixelated diamond shapes, not the plain powerline arrows).
+      The starship port above carries over the colors/layout but dropped
+      these, so segments currently butt up against each other with no
+      separator. Revisit once starship's `format`/segment `style` strings
+      are being tuned again - starship supports arbitrary glyphs in each
+      module's format string, this would just be re-adding those two
+      codepoints as separators.
+- [ ] Zsh config is functional but was never actually designed - francis
+      accidentally deleted the in-progress config partway through the
+      original port and redid it quickly out of frustration rather than
+      going through the intended setup carefully. Todo: sit down together
+      and go through zsh config deliberately (aliases, prompt integration,
+      plugins/completions worth having, etc.) rather than treating the
+      current modules/programs/zsh.nix (or wherever it landed) as final.
 - [x] Port fastfetch config - home.nix's programs.fastfetch, dropped the
       "editor" module (arch-reference's own config had it commented
       "TODO: this doesn't work") and the aspirational qutebrowser/launcher/

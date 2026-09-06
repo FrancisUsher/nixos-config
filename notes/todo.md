@@ -13,3 +13,6 @@
 - [ ] [[notes-cleanup|Notes cleanup: prune completed checkboxes]]
 - [ ] [[build-warnings|Build warnings to clean up]]
 - [ ] [[dynamic-keymaps-utility|Dynamic keymaps utility]]
+- [ ] [[swaylock-auth|Swaylock auth]]
+- [ ] [[dotfiles-migration-gaps|Dotfiles migration gaps]]
+- [ ] [[home-silk-migration-gaps|home/silk migration gaps]]
