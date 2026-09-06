@@ -12,7 +12,7 @@
 - [ ] [[laptop-wipe|Laptop wipe and fresh install]]
 - [ ] [[notes-cleanup|Notes cleanup: prune completed checkboxes]]
 - [ ] [[build-warnings|Build warnings to clean up]]
-- [ ] [[dynamic-keymaps-utility|Dynamic keymaps utility]]
+- [ ] [[hotkey-overlay-followups|Hotkey overlay follow-ups]]
 - [ ] [[swaylock-auth|Swaylock auth]]
 - [ ] [[dotfiles-migration-gaps|Dotfiles migration gaps]]
 - [ ] [[home-silk-migration-gaps|home/silk migration gaps]]
