@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import re
 import subprocess
 import sys
@@ -50,14 +51,14 @@ CSS = b"""
 def get_sway_config():
     try:
         result = subprocess.run(
-            ["swaymsg", "-t", "get_config"],
+            ["swaymsg", "-t", "get_config", "--raw"],
             capture_output=True,
             text=True,
             check=True,
         )
     except (FileNotFoundError, subprocess.CalledProcessError) as exc:
         sys.exit(f"hotkey-overlay: couldn't read sway config: {exc}")
-    return result.stdout
+    return json.loads(result.stdout)["config"]
 
 
 def substitute_vars(combo, variables):
