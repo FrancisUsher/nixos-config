@@ -58,7 +58,6 @@
     htop
     go
     uv
-    kicad
   ];
 
   services.captivePortalAccept = {

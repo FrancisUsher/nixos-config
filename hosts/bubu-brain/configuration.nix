@@ -61,7 +61,6 @@
     htop
     go
     uv
-    kicad
   ] ++ [
     unstableUnfreePkgs.claude-code
   ];
