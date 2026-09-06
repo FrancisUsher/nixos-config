@@ -1,6 +1,13 @@
 { config, lib, pkgs, ... }:
 
+let
+  fuzzel-cliphist = pkgs.writeShellScriptBin "fuzzel-cliphist" ''
+    ${pkgs.cliphist}/bin/cliphist list | ${pkgs.fuzzel}/bin/fuzzel -d -p "Clipboard History" | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy
+  '';
+in
 {
+  home.packages = [ pkgs.cliphist pkgs.wl-clipboard pkgs.wtype fuzzel-cliphist ];
+
   wayland.windowManager.sway = {
     enable = true;
     config = {
@@ -19,6 +26,11 @@
 
       bars = [ { command = "waybar"; } ];
 
+      startup = [
+        { command = "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"; }
+        { command = "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store"; }
+      ];
+
       keybindings =
         let
           modifier = config.wayland.windowManager.sway.config.modifier;
@@ -27,6 +39,8 @@
         lib.mkOptionDefault {
           "${modifier}+d" = null;
           "${modifier}+p" = "exec ${menu}";
+          "${modifier}+v" = "exec fuzzel-cliphist";
+          "${modifier}+Shift+v" = "exec ${pkgs.bash}/bin/bash -c \"fuzzel-cliphist && wtype -M ctrl -M shift v -m shift -m ctrl\"";
 
           "Print" = "exec grim";
           "--locked XF86AudioMute" = "exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
