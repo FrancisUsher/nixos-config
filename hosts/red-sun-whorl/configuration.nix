@@ -2,9 +2,12 @@
 
 {
   imports = [
-    # Generated on-device via `nixos-generate-config` - see BOOTSTRAP.md.
     ./hardware-configuration.nix
     ../../remote-operations.nix
+    # This is supposed to be a script that detects when you connect to an unsecured
+    # network that has a "click this button to get internet access" screen, and does
+    # the clicking for you. It unfortunately doesn't do anything yet but it has some
+    # code written to get pretty close when we want to go for it later.
     ../../modules/captive-portal.nix
     ../../modules/stylix.nix
     ../../modules/greetd-sway.nix
