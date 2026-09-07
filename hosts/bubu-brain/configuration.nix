@@ -5,6 +5,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./rgb.nix
+      ./label-printer.nix
       ../../remote-operations.nix
       ../../modules/stylix.nix
     ];
@@ -90,9 +91,6 @@
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
-
-  # Enable CUPS to print documents.
-  # services.printing.enable = true;
 
   # Enable sound.
   # hardware.pulseaudio.enable = true;
