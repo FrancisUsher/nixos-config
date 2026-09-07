@@ -1,6 +1,7 @@
 # Todo
 
 - [ ] [[bubu-brain-hardware-module|bubu-brain hardware module]]
+- [ ] [[ql600-network-print-server|QL-600 raw print queue: verify real end-to-end print with Brother's driver]]
 - [ ] [[dotfiles-and-editor|Dotfiles and editor]]
 - [ ] [[remote-desktop|Remote desktop]]
 - [ ] [[migrate-arch-laptop-to-nixos|Migrate Arch laptop to NixOS]]
