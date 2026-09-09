@@ -23,21 +23,21 @@ in
     };
   };
 
-  # Without this, dnsmasq can start before dhcpcd finishes acquiring the
-  # WiFi lease and silently bind only to loopback/IPv6, missing the LAN
-  # IPv4 address entirely (observed on first deploy).
-  systemd.services.dnsmasq = {
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
-  };
-
   services.dnsmasq = {
     enable = true;
     settings = {
       address = [ "/usher.zone/${lanIP}" ];
       server = [ "1.1.1.1" "1.0.0.1" ];
       interface = [ "lo" lanInterface ];
-      bind-interfaces = true;
+      # bind-dynamic (rather than bind-interfaces) binds a wildcard socket
+      # and tracks interface addresses dynamically, so dnsmasq serves the
+      # LAN IPv4 address correctly even if it starts (or restarts, e.g.
+      # during nixos-rebuild switch) before dhcpcd has finished acquiring
+      # the WiFi lease - bind-interfaces requires the address to already
+      # exist at bind time and silently drops it otherwise (observed both
+      # on first deploy and on a later switch that restarted dhcpcd and
+      # dnsmasq together).
+      bind-dynamic = true;
     };
   };
 
