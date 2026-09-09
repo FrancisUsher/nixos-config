@@ -12,6 +12,18 @@
   the working-directory checkout. If a worktree's branch still needs
   attention, just re-enter it (`EnterWorktree` with `path`) or merge it;
   removing the checkout doesn't lose anything already committed and pushed.
+- When finished work needs merging in, merge it into the `worktree-target`
+  branch, not `master` — `git fetch . <worktree-branch>:worktree-target`
+  (or plain `git merge` from a worktree already on `worktree-target`) works
+  with zero manual intervention because nothing ever has `worktree-target`
+  checked out. `master` stays checked out in the primary checkout for
+  interactive use, so git refuses any worktree-isolated session that tries
+  to update it directly (`refusing to fetch into branch 'refs/heads/master'
+  checked out at ...`) — that's not a bug to work around, it's why this
+  second branch exists. Periodically fold `worktree-target` into `master`
+  from the primary checkout (`git merge worktree-target`) at your own
+  convenience; that step still needs a human, but it's batched instead of
+  blocking every single task.
 
 ## Tracking work
 
