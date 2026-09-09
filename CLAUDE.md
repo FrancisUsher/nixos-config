@@ -12,18 +12,17 @@
   the working-directory checkout. If a worktree's branch still needs
   attention, just re-enter it (`EnterWorktree` with `path`) or merge it;
   removing the checkout doesn't lose anything already committed and pushed.
-- When finished work needs merging in, merge it into the `worktree-target`
-  branch, not `master` — `git fetch . <worktree-branch>:worktree-target`
-  (or plain `git merge` from a worktree already on `worktree-target`) works
-  with zero manual intervention because nothing ever has `worktree-target`
-  checked out. `master` stays checked out in the primary checkout for
-  interactive use, so git refuses any worktree-isolated session that tries
-  to update it directly (`refusing to fetch into branch 'refs/heads/master'
-  checked out at ...`) — that's not a bug to work around, it's why this
-  second branch exists. Periodically fold `worktree-target` into `master`
-  from the primary checkout (`git merge worktree-target`) at your own
-  convenience; that step still needs a human, but it's batched instead of
-  blocking every single task.
+- When finished work needs merging in, merge it into `dev`, not `main` —
+  `git fetch . <worktree-branch>:dev` (or plain `git merge` from a worktree
+  already on `dev`) works with zero manual intervention because nothing
+  ever has `dev` checked out. `main` stays checked out in the primary
+  checkout for interactive use, so git refuses any worktree-isolated
+  session that tries to update it directly (`refusing to fetch into branch
+  'refs/heads/main' checked out at ...`) — that's not a bug to work
+  around, it's why `dev` exists as a separate branch. Periodically fold
+  `dev` into `main` from the primary checkout (`git merge dev`) at your
+  own convenience; that step still needs a human, but it's batched instead
+  of blocking every single task.
 
 ## Tracking work
 
@@ -40,7 +39,7 @@
   and its `todo.md` entry.
 - Commit footers reference the issue: `Refs #N` while work is ongoing,
   `Closes #N` on the commit that finishes it (auto-closes on merge to
-  master).
+  main).
 - Further research or iteration goes into issue comments as it happens —
   brief and technical, for future reference, not narrative.
 - Commit messages stay concise (what and why), even for the commit that
