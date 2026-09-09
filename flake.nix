@@ -52,7 +52,9 @@
     in
     {
       nixosConfigurations = {
-        bubu-brain = mkHost "bubu-brain" "soong" [ ];
+        bubu-brain = mkHost "bubu-brain" "soong" [
+          { home-manager.users.soong.imports = [ ./hosts/bubu-brain/ssh-red-sun-whorl.nix ]; }
+        ];
         red-sun-whorl = mkHost "red-sun-whorl" "silk" [
           nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
           { home-manager.users.silk.imports = [ ./modules/programs/power-menu.nix ]; }
