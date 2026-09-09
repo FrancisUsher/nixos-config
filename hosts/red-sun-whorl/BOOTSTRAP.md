@@ -22,7 +22,7 @@ no deploy key needed.
    device:
    ```
    nix-shell -p git curl
-   curl -LO https://raw.githubusercontent.com/FrancisUsher/nixos-config/master/hosts/red-sun-whorl/bootstrap-install.sh
+   curl -LO https://raw.githubusercontent.com/FrancisUsher/nixos-config/main/hosts/red-sun-whorl/bootstrap-install.sh
    chmod +x bootstrap-install.sh
    sudo ./bootstrap-install.sh /dev/nvme0n1
    ```
