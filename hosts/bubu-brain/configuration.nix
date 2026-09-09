@@ -6,6 +6,7 @@
       ./hardware-configuration.nix
       ./rgb.nix
       ./label-printer.nix
+      ./lan-https.nix
       ../../remote-operations.nix
       ../../modules/stylix.nix
     ];

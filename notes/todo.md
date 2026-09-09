@@ -31,3 +31,6 @@
       curated set of desktop entries (nvim, htop, etc.) hidden from the
       main launcher via `xdg.desktopEntries.*.noDisplay` in
       modules/programs/fuzzel.nix
+- [ ] Investigate whether sops-nix is worth adopting for secrets (currently
+      using plain out-of-store files like /etc/cloudflare-dns-token.env,
+      /etc/wifi-secrets.env, /etc/tailscale-authkey)
