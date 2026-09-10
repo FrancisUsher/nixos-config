@@ -1,12 +1,5 @@
 # Todo
 
-- [ ] home-manager-soong.service fails on bubu-brain during `dconfSettings`
-      activation (`GDBus.Error: ServiceUnknown: The name is not
-      activatable`) - likely a GTK-related home-manager module (pulled in
-      via qutebrowser/fuzzel/sway, meant for red-sun-whorl's desktop)
-      trying to write dconf settings on bubu-brain, which is headless
-      (autologin getty, no D-Bus session bus). Was previously masked by
-      the ~/.ssh/config clobber failing first.
 - [ ] [[bubu-brain-hardware-module|bubu-brain hardware module]]
 - [ ] [[ql600-network-print-server|QL-600 raw print queue: verify real end-to-end print with Brother's driver]]
 - [ ] [[dotfiles-and-editor|Dotfiles and editor]]

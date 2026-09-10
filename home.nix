@@ -1,4 +1,4 @@
-{ username, ... }:
+{ hostName, username, lib, ... }:
 
 {
   imports = [
@@ -14,6 +14,7 @@
     ./modules/programs/cli-tools.nix
     ./modules/programs/starship.nix
     ./modules/programs/kitty.nix
+  ] ++ lib.optionals (hostName == "red-sun-whorl") [
     ./modules/programs/sway.nix
     ./modules/programs/swaylock.nix
     ./modules/programs/waybar.nix
