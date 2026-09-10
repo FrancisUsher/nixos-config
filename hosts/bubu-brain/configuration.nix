@@ -8,6 +8,9 @@
       ./label-printer.nix
       ../../remote-operations.nix
       ../../modules/stylix.nix
+      (import ../../modules/pas-automation.nix {
+        authorizedKeyFiles = [ ../../red-sun-whorl-pas.pub ];
+      })
     ];
 
   # Use the systemd-boot EFI boot loader.

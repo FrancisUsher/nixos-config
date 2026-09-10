@@ -11,6 +11,9 @@
     ../../modules/captive-portal.nix
     ../../modules/stylix.nix
     ../../modules/greetd-sway.nix
+    (import ../../modules/pas-automation.nix {
+      authorizedKeyFiles = [ ../../bubu-brain-pas.pub ];
+    })
   ];
 
   boot.loader.systemd-boot.enable = true;

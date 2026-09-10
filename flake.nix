@@ -57,7 +57,12 @@
         ];
         red-sun-whorl = mkHost "red-sun-whorl" "silk" [
           nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
-          { home-manager.users.silk.imports = [ ./modules/programs/power-menu.nix ]; }
+          {
+            home-manager.users.silk.imports = [
+              ./modules/programs/power-menu.nix
+              ./hosts/red-sun-whorl/ssh-pas-bubu-brain.nix
+            ];
+          }
         ];
       };
     };

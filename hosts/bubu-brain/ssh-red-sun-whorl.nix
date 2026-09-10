@@ -8,4 +8,11 @@
     IdentityFile = "~/.ssh/id_ed25519_red-sun-whorl";
     IdentitiesOnly = "yes";
   };
+
+  programs.ssh.settings.pas-red-sun-whorl = {
+    HostName = "red-sun-whorl";
+    User = "pas";
+    IdentityFile = "~/.ssh/id_ed25519_pas-red-sun-whorl";
+    IdentitiesOnly = "yes";
+  };
 }
