@@ -15,7 +15,6 @@
 - [ ] [[notes-cleanup|Notes cleanup: prune completed checkboxes]]
 - [ ] [[build-warnings|Build warnings to clean up]]
 - [ ] [[hotkey-overlay-followups|Hotkey overlay follow-ups]]
-- [ ] [[swaylock-auth|Swaylock auth]]
 - [ ] [[dotfiles-migration-gaps|Dotfiles migration gaps]]
 - [ ] [[home-silk-migration-gaps|home/silk migration gaps]]
 - [ ] [[thinkpad-power-script|ThinkPad power script]]
