@@ -7,8 +7,8 @@
       general.ignore_empty_input = true;
       auth.fingerprint = {
         enabled = true;
-        ready_message = "󰈷  Touch sensor to unlock";
-        present_message = "󰈷  Scanning...";
+        ready_message = "󰈷  Present the sacred sign";
+        present_message = "󰈷  Reading the sign...";
       };
       label = [
         {
@@ -28,7 +28,10 @@
           position = "0, 70";
         }
       ];
-      input-field.fail_text = "$FAIL ($ATTEMPTS)";
+      input-field = {
+        placeholder_text = "Speak the words of command";
+        fail_text = "$FAIL ($ATTEMPTS)";
+      };
     };
   };
 
