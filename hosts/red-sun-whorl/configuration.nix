@@ -48,6 +48,7 @@
   users.users.silk = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
+    homeMode = "0711";
     shell = pkgs.zsh;
     openssh.authorizedKeys.keyFiles = [
       ../../soong.pub

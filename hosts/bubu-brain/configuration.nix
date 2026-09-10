@@ -43,6 +43,7 @@
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
     hashedPassword = "!";
+    homeMode = "0711";
     shell = pkgs.zsh;
     openssh.authorizedKeys.keyFiles = [
       ../../soong.pub
