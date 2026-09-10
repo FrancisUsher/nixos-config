@@ -59,7 +59,6 @@ in
     enable = true;
     virtualHosts."_" = {
       default = true;
-      locations."/print".proxyPass = "http://127.0.0.1:8180/print";
     };
     virtualHosts."print.local" = {
       locations."/".proxyPass = "http://192.168.1.161";
