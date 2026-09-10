@@ -10,6 +10,13 @@
         ready_message = "Scan fingerprint to unlock";
         present_message = "Scanning...";
       };
+      label = {
+        text = "$FPRINTPROMPT";
+        halign = "center";
+        valign = "center";
+        position = "0, 150";
+      };
+      input-field.fail_text = "$FAIL ($ATTEMPTS)";
     };
   };
 
