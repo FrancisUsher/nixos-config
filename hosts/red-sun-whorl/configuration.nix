@@ -64,6 +64,10 @@
   # after first boot, enroll with `fprintd-enroll`.
   services.fprintd.enable = true;
 
+  # home-manager's programs.swaylock doesn't set up a system PAM service;
+  # swaylock needs one to authenticate at all.
+  security.pam.services.swaylock = { };
+
   environment.systemPackages = with pkgs; [
     git
     wget
