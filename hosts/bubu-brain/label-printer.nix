@@ -69,6 +69,11 @@ in
 
   networking.firewall.allowedTCPPorts = [ 80 ];
 
+  # avahi-publish (used below to register print.local) goes through the
+  # same D-Bus API as user-initiated service publishing, which
+  # remote-operations.nix's services.avahi config leaves disabled.
+  services.avahi.publish.userServices = true;
+
   systemd.services.avahi-alias-print-local = {
     description = "Publish print.local as an mDNS alias for this host";
     after = [ "avahi-daemon.service" "network-online.target" ];
