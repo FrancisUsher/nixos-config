@@ -62,6 +62,19 @@
               ./modules/programs/power-menu.nix
               ./hosts/red-sun-whorl/ssh-pas-bubu-brain.nix
             ];
+            # jahlee (issue #4): pure clone of silk's desktop, isolated for
+            # Hyprland exploration. home.nix takes `username` from
+            # specialArgs, which home-manager.extraSpecialArgs fixes to
+            # "silk" host-wide - so this overrides it per-user by calling
+            # home.nix directly instead of relying on module args.
+            home-manager.users.jahlee = { lib, ... }@args:
+              let
+                base = import ./home.nix (args // {
+                  hostName = "red-sun-whorl";
+                  username = "jahlee";
+                });
+              in
+              base // { imports = base.imports ++ [ ./modules/programs/power-menu.nix ]; };
           }
         ];
       };

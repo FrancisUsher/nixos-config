@@ -56,6 +56,16 @@
     ];
   };
 
+  # Sandboxed account for Hyprland exploration (issue #4) - starts as a
+  # clone of silk's desktop, isolated from it. wheel is needed since jahlee
+  # rebuilds the system locally to test changes; no SSH keys otherwise.
+  users.users.jahlee = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "networkmanager" ];
+    homeMode = "0711";
+    shell = pkgs.zsh;
+  };
+
   hardware.graphics.enable = true;
 
   # From nixos-hardware's lenovo-thinkpad-x1-nano-gen1 module (imported in
