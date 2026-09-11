@@ -4,15 +4,7 @@ set -euo pipefail
 repo_root=$(git rev-parse --show-toplevel)
 cd "$repo_root"
 
-if command -v gitleaks >/dev/null 2>&1; then
-  gitleaks protect --staged --redact -v
-else
-  echo "pre-commit: gitleaks not on PATH (needs a home-manager switch to pick up pkgs.gitleaks) - skipping secret scan" >&2
-fi
-
-if [ -x ./check-hosts.sh ]; then
-  if ! ./check-hosts.sh; then
-    echo "check-hosts.sh failed - commit blocked until every host builds clean." >&2
-    exit 1
-  fi
-fi
+for hook in .githooks/pre-commit.d/*; do
+  [ -x "$hook" ] || continue
+  "$hook" || exit 1
+done
