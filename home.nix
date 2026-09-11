@@ -1,4 +1,4 @@
-{ hostName, username, lib, pkgs, ... }:
+{ hostName, username, lib, ... }:
 
 {
   imports = [
@@ -40,11 +40,12 @@
     MANROFFOPT = "-c";
   };
 
-  home.activation.cloneNixosConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    if [ ! -e "$HOME/nixos-config/.git" ]; then
-      $DRY_RUN_CMD rm -rf "$HOME/nixos-config"
-      $DRY_RUN_CMD ${pkgs.git}/bin/git -c safe.directory=/etc/nixos clone /etc/nixos "$HOME/nixos-config"
-      $DRY_RUN_CMD ${pkgs.git}/bin/git -C "$HOME/nixos-config" config core.hooksPath .githooks
+  home.activation.linkNixosConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [ ! -e "$HOME/nixos-config" ]; then
+      $DRY_RUN_CMD ln -s /etc/nixos "$HOME/nixos-config"
+    elif [ -d "$HOME/nixos-config" ] && [ ! -L "$HOME/nixos-config" ] && [ -z "$(ls -A "$HOME/nixos-config" 2>/dev/null)" ]; then
+      $DRY_RUN_CMD rmdir "$HOME/nixos-config"
+      $DRY_RUN_CMD ln -s /etc/nixos "$HOME/nixos-config"
     fi
   '';
 }
