@@ -41,8 +41,9 @@
   };
 
   home.activation.cloneNixosConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    if [ ! -e "$HOME/nixos-config" ]; then
-      $DRY_RUN_CMD ${pkgs.git}/bin/git clone /etc/nixos "$HOME/nixos-config"
+    if [ ! -e "$HOME/nixos-config/.git" ]; then
+      $DRY_RUN_CMD rm -rf "$HOME/nixos-config"
+      $DRY_RUN_CMD ${pkgs.git}/bin/git -c safe.directory=/etc/nixos clone /etc/nixos "$HOME/nixos-config"
       $DRY_RUN_CMD ${pkgs.git}/bin/git -C "$HOME/nixos-config" config core.hooksPath .githooks
     fi
   '';
