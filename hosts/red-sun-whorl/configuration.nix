@@ -88,6 +88,8 @@
     go
     uv
     jq
+    python3
+    nodejs
   ];
 
   services.captivePortalAccept = {

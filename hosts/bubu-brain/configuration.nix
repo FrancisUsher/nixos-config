@@ -66,6 +66,8 @@
     go
     uv
     jq
+    python3
+    nodejs
   ] ++ [
     unstableUnfreePkgs.claude-code
   ];
