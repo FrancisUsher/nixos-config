@@ -34,3 +34,6 @@
 - [ ] Investigate whether sops-nix is worth adopting for secrets (currently
       using plain out-of-store files like /etc/cloudflare-dns-token.env,
       /etc/wifi-secrets.env, /etc/tailscale-authkey)
+- [ ] Refine red-sun-whorl's wallpaper aesthetic further
+      (modules/themes/red-sun-whorl-wallpaper.nix) - current sun-line/ridges
+      scene is an acceptable first pass, not a final look
