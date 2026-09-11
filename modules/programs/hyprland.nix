@@ -76,6 +76,7 @@ in
   };
 
   stylix.targets.hyprland.enable = true;
+  stylix.targets.hyprland.hyprpaper.enable = true;
   stylix.targets.gtk.enable = true;
 
   # needed for interactive auth in e.g. fprintd enrollment
