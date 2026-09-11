@@ -3,6 +3,25 @@
   "worktree": {
     "baseRef": "head"
   },
+  "permissions": {
+    "allow": [
+      "Bash(nix flake check *)",
+      "Bash(nix eval *)",
+      "Bash(nixos-rebuild build *)",
+      "Bash(./check-hosts.sh*)",
+      "Bash(nix flake metadata *)",
+      "Bash(journalctl *)",
+      "Bash(nix search *)",
+      "Bash(systemctl status *)",
+      "Bash(systemctl is-active *)",
+      "Bash(git merge-tree *)",
+      "Bash(git commit-tree *)",
+      "Bash(nix-store -q*)",
+      "Bash(systemctl cat *)",
+      "Bash(nixos-rebuild dry-build *)",
+      "Bash(nix-instantiate --eval *)"
+    ]
+  },
   "hooks": {
     "SessionEnd": [
       {

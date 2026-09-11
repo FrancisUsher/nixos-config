@@ -23,6 +23,13 @@
   `dev` into `main` from the primary checkout (`git merge dev`) at your
   own convenience; that step still needs a human, but it's batched instead
   of blocking every single task.
+- Before merging into `dev`, run `./check-hosts.sh` from the worktree. It
+  builds (not switches — no host's running config is touched) every host
+  in `flake.nix`'s `nixosConfigurations` against the worktree's tree: the
+  local host directly, others over SSH via their `pas-<host>` alias.
+  `[SKIP]` for an unreachable host is fine to merge past; a `[FAIL]`
+  means fix it before merging — it means the change breaks eval/build on
+  a host you're not sitting at.
 
 ## Tracking work
 

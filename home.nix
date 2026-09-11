@@ -15,12 +15,11 @@
     ./modules/programs/starship.nix
     ./modules/programs/kitty.nix
   ] ++ lib.optionals (hostName == "red-sun-whorl") [
-    ./modules/programs/sway.nix
-    ./modules/programs/swaylock.nix
+    ./modules/programs/hyprlock.nix
     ./modules/programs/waybar.nix
     ./modules/programs/fuzzel.nix
-    ./modules/programs/hotkey-overlay.nix
     ./modules/programs/qutebrowser.nix
+    ./modules/programs/hyprland.nix
   ];
 
   home.username = username;

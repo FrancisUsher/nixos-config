@@ -59,9 +59,38 @@ in
     enable = true;
     virtualHosts."_" = {
       default = true;
-      locations."/print".proxyPass = "http://127.0.0.1:8180/print";
+    };
+    virtualHosts."print.local" = {
+      locations."/".proxyPass = "http://192.168.1.161";
+      locations."/label".proxyPass = "http://127.0.0.1:8180/print";
     };
   };
 
   networking.firewall.allowedTCPPorts = [ 80 ];
+
+  # avahi-publish (used below to register print.local) goes through the
+  # same D-Bus API as user-initiated service publishing, which
+  # remote-operations.nix's services.avahi config leaves disabled.
+  services.avahi.publish.userServices = true;
+
+  systemd.services.avahi-alias-print-local = {
+    description = "Publish print.local as an mDNS alias for this host";
+    after = [ "avahi-daemon.service" "network-online.target" ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Restart = "always";
+      RestartSec = "5s";
+    };
+    script = ''
+      while true; do
+        ip=$(${pkgs.iproute2}/bin/ip -4 -o addr show scope global | ${pkgs.gawk}/bin/awk '{split($4, a, "/"); print a[1]; exit}')
+        if [ -n "$ip" ]; then
+          timeout 300 ${pkgs.avahi}/bin/avahi-publish -a -R print.local "$ip" || true
+        else
+          sleep 10
+        fi
+      done
+    '';
+  };
 }

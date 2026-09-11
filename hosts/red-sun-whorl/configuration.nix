@@ -10,7 +10,7 @@
     # code written to get pretty close when we want to go for it later.
     ../../modules/captive-portal.nix
     ../../modules/stylix.nix
-    ../../modules/greetd-sway.nix
+    ../../modules/greetd-hyprland.nix
     (import ../../modules/pas-automation.nix {
       authorizedKeyFiles = [ ../../bubu-brain-pas.pub ];
     })
@@ -58,11 +58,18 @@
 
   hardware.graphics.enable = true;
 
+  # Hyprland's home-manager module enables xdg.portal by default, which
+  # needs these paths linked into /run/current-system/sw - home-manager
+  # asserts on this itself.
+  environment.pathsToLink = [ "/share/applications" "/share/xdg-desktop-portal" ];
+
   # From nixos-hardware's lenovo-thinkpad-x1-nano-gen1 module (imported in
   # flake.nix): trackpoint, the alsa audio-interference fix, and TLP power
   # management all come pre-wired. This just flips on fingerprint login -
   # after first boot, enroll with `fprintd-enroll`.
   services.fprintd.enable = true;
+
+  security.pam.services.hyprlock.fprintAuth = false;
 
   environment.systemPackages = with pkgs; [
     git
@@ -70,6 +77,9 @@
     htop
     go
     uv
+    jq
+    python3
+    nodejs
   ];
 
   services.captivePortalAccept = {

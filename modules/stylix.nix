@@ -21,21 +21,8 @@
   stylix.polarity = "dark";
 
   # stylix.image has no default and is required even with an explicit
-  # base16Scheme (some targets read it unconditionally). No real wallpaper
-  # exists yet (sway isn't ported), so this is a 1x1 placeholder in the
-  # palette's own background color - swap for a real wallpaper once a Sway
-  # session exists.
-  stylix.image =
-    let
-      bg = (import ./themes/ancient-ruins.nix).base00;
-    in
-    pkgs.runCommand "ancient-ruins-placeholder-wallpaper.png"
-      {
-        nativeBuildInputs = [ pkgs.imagemagick ];
-      }
-      ''
-        convert -size 1x1 xc:'#${bg}' $out
-      '';
+  # base16Scheme (some targets read it unconditionally).
+  stylix.image = import ./themes/red-sun-whorl-wallpaper.nix { inherit pkgs; };
 
   stylix.fonts.monospace = {
     package = pkgs.nerd-fonts.meslo-lg;

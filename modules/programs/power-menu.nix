@@ -1,11 +1,20 @@
-{ ... }:
+{ pkgs, ... }:
 
+let
+  logoutScript = pkgs.writeShellScript "power-menu-logout" ''
+    if [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
+      hyprctl dispatch exit
+    else
+      swaymsg exit
+    fi
+  '';
+in
 {
   xdg.desktopEntries = {
     "lock-screen" = {
       name = "System -> Lock screen";
-      comment = "Lock the screen using swaylock";
-      exec = "swaylock";
+      comment = "Lock the screen using hyprlock";
+      exec = "hyprlock";
       icon = "icon-lock-128";
       terminal = true;
       type = "Application";
@@ -14,7 +23,7 @@
     "logout" = {
       name = "Session -> Logout";
       comment = "Exit the user session and return to the greeter";
-      exec = "swaymsg exit";
+      exec = "${logoutScript}";
       icon = "icon-logout-128";
       terminal = true;
       type = "Application";

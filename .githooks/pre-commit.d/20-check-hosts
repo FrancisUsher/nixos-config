@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root=$(git rev-parse --show-toplevel)
+cd "$repo_root"
+
+[ -x ./check-hosts.sh ] || exit 0
+
+if ! ./check-hosts.sh; then
+  echo "check-hosts.sh failed - commit blocked until every host builds clean." >&2
+  exit 1
+fi

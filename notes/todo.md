@@ -15,7 +15,6 @@
 - [ ] [[notes-cleanup|Notes cleanup: prune completed checkboxes]]
 - [ ] [[build-warnings|Build warnings to clean up]]
 - [ ] [[hotkey-overlay-followups|Hotkey overlay follow-ups]]
-- [ ] [[swaylock-auth|Swaylock auth]]
 - [ ] [[dotfiles-migration-gaps|Dotfiles migration gaps]]
 - [ ] [[home-silk-migration-gaps|home/silk migration gaps]]
 - [ ] [[thinkpad-power-script|ThinkPad power script]]
@@ -35,3 +34,6 @@
 - [ ] Investigate whether sops-nix is worth adopting for secrets (currently
       using plain out-of-store files like /etc/cloudflare-dns-token.env,
       /etc/wifi-secrets.env, /etc/tailscale-authkey)
+- [ ] Refine red-sun-whorl's wallpaper aesthetic further
+      (modules/themes/red-sun-whorl-wallpaper.nix) - current sun-line/ridges
+      scene is an acceptable first pass, not a final look
