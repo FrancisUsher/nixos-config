@@ -20,10 +20,11 @@
   "theme": "dark",
   "prefersReducedMotion": true,
   "feedbackSurveyRate": 0,
+  "spinnerTipsEnabled": false,
   "preferredNotifChannel": "notifications_disabled",
-  "voiceEnabled": true,
+  "voiceEnabled": false,
   "voice": {
-    "enabled": true,
+    "enabled": false,
     "mode": "hold"
   }
 }
