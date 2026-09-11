@@ -1,4 +1,4 @@
-{ hostName, username, lib, ... }:
+{ hostName, username, lib, pkgs, ... }:
 
 {
   imports = [
@@ -39,4 +39,11 @@
     MANPAGER = "sh -c 'col -bx | bat -l man -p'";
     MANROFFOPT = "-c";
   };
+
+  home.activation.cloneNixosConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [ ! -e "$HOME/nixos-config" ]; then
+      $DRY_RUN_CMD ${pkgs.git}/bin/git clone /etc/nixos "$HOME/nixos-config"
+      $DRY_RUN_CMD ${pkgs.git}/bin/git -C "$HOME/nixos-config" config core.hooksPath .githooks
+    fi
+  '';
 }

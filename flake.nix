@@ -67,7 +67,7 @@
             # specialArgs, which home-manager.extraSpecialArgs fixes to
             # "silk" host-wide - so this overrides it per-user by calling
             # home.nix directly instead of relying on module args.
-            home-manager.users.jahlee = { lib, ... }@args:
+            home-manager.users.jahlee = { lib, pkgs, ... }@args:
               let
                 base = import ./home.nix (args // {
                   hostName = "red-sun-whorl";
