@@ -18,6 +18,8 @@
     "commit": ""
   },
   "theme": "dark",
+  "prefersReducedMotion": true,
+  "feedbackSurveyRate": 0,
   "preferredNotifChannel": "notifications_disabled",
   "voiceEnabled": true,
   "voice": {
