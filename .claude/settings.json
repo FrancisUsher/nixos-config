@@ -3,6 +3,25 @@
   "worktree": {
     "baseRef": "head"
   },
+  "permissions": {
+    "allow": [
+      "Bash(nix flake check *)",
+      "Bash(nix eval *)",
+      "Bash(nixos-rebuild build *)",
+      "Bash(./check-hosts.sh*)",
+      "Bash(nix flake metadata *)",
+      "Bash(journalctl *)",
+      "Bash(nix search *)",
+      "Bash(systemctl status *)",
+      "Bash(systemctl is-active *)",
+      "Bash(git merge-tree *)",
+      "Bash(git commit-tree *)",
+      "Bash(nix-store -q*)",
+      "Bash(systemctl cat *)",
+      "Bash(nixos-rebuild dry-build *)",
+      "Bash(nix-instantiate --eval *)"
+    ]
+  },
   "hooks": {
     "SessionEnd": [
       {
@@ -11,6 +30,18 @@
             "type": "command",
             "command": "bash .claude/hooks/cleanup-worktrees.sh 2>/dev/null || true",
             "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/require-check-hosts.sh",
+            "timeout": 600
           }
         ]
       }

@@ -65,6 +65,7 @@
     htop
     go
     uv
+    jq
   ] ++ [
     unstableUnfreePkgs.claude-code
   ];

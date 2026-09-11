@@ -87,6 +87,7 @@
     htop
     go
     uv
+    jq
   ];
 
   services.captivePortalAccept = {
