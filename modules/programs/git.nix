@@ -10,7 +10,6 @@
       core.editor = "nvim";
       push.autoSetupRemote = true;
       pull.rebase = true;
-      safe.directory = "/home/silk/nixos-config";
     };
   };
 }

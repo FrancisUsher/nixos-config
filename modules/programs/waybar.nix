@@ -7,25 +7,15 @@
       height = 30;
       spacing = 4;
       modules-left = [
-        "sway/workspaces"
-        "sway/mode"
-        "sway/scratchpad"
+        "hyprland/workspaces"
       ];
-      modules-center = [ "sway/window" ];
+      modules-center = [ "hyprland/window" ];
       modules-right = [
         "network"
         "battery"
         "clock"
         "tray"
       ];
-      "sway/mode".format = "<span style=\"italic\">{}</span>";
-      "sway/scratchpad" = {
-        format = "{icon} {count}";
-        show-empty = false;
-        format-icons = [ "" "" ];
-        tooltip = true;
-        tooltip-format = "{app}: {title}";
-      };
       tray.spacing = 10;
       clock = {
         format = "{:%Y-%m-%d@%H%M}";
@@ -96,9 +86,7 @@
       #clock,
       #battery,
       #network,
-      #tray,
-      #mode,
-      #scratchpad {
+      #tray {
           padding: 0 10px;
       }
 

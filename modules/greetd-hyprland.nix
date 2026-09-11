@@ -1,13 +1,5 @@
 { config, lib, pkgs, ... }:
 
-let
-  sessionCommand = pkgs.writeShellScript "red-sun-whorl-session" ''
-    case "$(whoami)" in
-      jahlee) exec start-hyprland ;;
-      *) exec sway ;;
-    esac
-  '';
-in
 {
   services.greetd = {
     enable = true;
@@ -16,7 +8,7 @@ in
         ${pkgs.tuigreet}/bin/tuigreet \
           --time --asterisks \
           --user-menu --user-menu-min-uid 1000 --user-menu-max-uid 29999 \
-          --cmd ${sessionCommand} --theme "${config.lib.tuigreet.themeArg}"
+          --cmd start-hyprland --theme "${config.lib.tuigreet.themeArg}"
       '';
       user = "greeter";
     };
