@@ -74,6 +74,8 @@
   # after first boot, enroll with `fprintd-enroll`.
   services.fprintd.enable = true;
 
+  security.pam.services.hyprlock.fprintAuth = false;
+
   environment.systemPackages = with pkgs; [
     git
     wget

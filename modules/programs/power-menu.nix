@@ -4,8 +4,8 @@
   xdg.desktopEntries = {
     "lock-screen" = {
       name = "System -> Lock screen";
-      comment = "Lock the screen using swaylock";
-      exec = "swaylock";
+      comment = "Lock the screen using hyprlock";
+      exec = "hyprlock";
       icon = "icon-lock-128";
       terminal = true;
       type = "Application";
