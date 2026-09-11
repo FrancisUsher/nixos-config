@@ -80,6 +80,7 @@
   services.fprintd.enable = true;
 
   security.pam.services.hyprlock.fprintAuth = false;
+  security.pam.services.greetd.fprintAuth = false;
 
   environment.systemPackages = with pkgs; [
     git
