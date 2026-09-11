@@ -4,6 +4,8 @@ let
   fuzzel-cliphist = pkgs.writeShellScriptBin "fuzzel-cliphist" ''
     ${pkgs.cliphist}/bin/cliphist list | ${pkgs.fuzzel}/bin/fuzzel -d -p "Clipboard History" | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy
   '';
+
+  mod0 = n: if n == 10 then 0 else n;
 in
 {
   home.packages = [ pkgs.cliphist pkgs.wl-clipboard pkgs.wtype fuzzel-cliphist ];
@@ -15,6 +17,7 @@ in
 
     settings = {
       "$mod" = "SUPER";
+      "$terminal" = "kitty";
       "$menu" = "fuzzel";
 
       general = {
@@ -30,12 +33,31 @@ in
         "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store"
       ];
 
-      bind = [
-        "$mod, P, exec, $menu"
-        "$mod, V, exec, fuzzel-cliphist"
-        "$mod SHIFT, V, exec, ${pkgs.bash}/bin/bash -c \"fuzzel-cliphist && wtype -M ctrl -M shift v -m shift -m ctrl\""
-        ", Print, exec, grim"
-      ];
+      bind =
+        [
+          "$mod, Return, exec, $terminal"
+          "$mod, P, exec, $menu"
+          "$mod, V, exec, fuzzel-cliphist"
+          "$mod SHIFT, V, exec, ${pkgs.bash}/bin/bash -c \"fuzzel-cliphist && wtype -M ctrl -M shift v -m shift -m ctrl\""
+          ", Print, exec, grim"
+
+          "$mod SHIFT, Q, killactive"
+          "$mod SHIFT, E, exit"
+          "$mod SHIFT, Space, togglefloating"
+          "$mod, F, fullscreen, 0"
+
+          "$mod, H, movefocus, l"
+          "$mod, L, movefocus, r"
+          "$mod, K, movefocus, u"
+          "$mod, J, movefocus, d"
+
+          "$mod SHIFT, H, movewindow, l"
+          "$mod SHIFT, L, movewindow, r"
+          "$mod SHIFT, K, movewindow, u"
+          "$mod SHIFT, J, movewindow, d"
+        ]
+        ++ (map (n: "$mod, ${toString (mod0 n)}, workspace, ${toString n}") (lib.range 1 10))
+        ++ (map (n: "$mod SHIFT, ${toString (mod0 n)}, movetoworkspace, ${toString n}") (lib.range 1 10));
 
       bindl = [
         ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
