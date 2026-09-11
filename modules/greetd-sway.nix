@@ -3,7 +3,7 @@
 let
   sessionCommand = pkgs.writeShellScript "red-sun-whorl-session" ''
     case "$(whoami)" in
-      jahlee) exec Hyprland ;;
+      jahlee) exec start-hyprland ;;
       *) exec sway ;;
     esac
   '';

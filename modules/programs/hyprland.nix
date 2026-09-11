@@ -25,6 +25,8 @@ in
         gaps_out = 10;
       };
 
+      ecosystem.no_update_news = true;
+
       decoration.rounding = 0;
 
       exec-once = [
