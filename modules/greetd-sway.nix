@@ -14,7 +14,8 @@ in
     settings.default_session = {
       command = ''
         ${pkgs.tuigreet}/bin/tuigreet \
-          --time --remember --asterisks \
+          --time --asterisks \
+          --user-menu --user-menu-min-uid 1000 --user-menu-max-uid 29999 \
           --cmd ${sessionCommand} --theme "${config.lib.tuigreet.themeArg}"
       '';
       user = "greeter";
