@@ -14,14 +14,17 @@
     ./modules/programs/cli-tools.nix
     ./modules/programs/starship.nix
     ./modules/programs/kitty.nix
-  ] ++ lib.optionals (hostName == "red-sun-whorl") [
-    ./modules/programs/sway.nix
+  ] ++ lib.optionals (hostName == "red-sun-whorl") ([
     ./modules/programs/hyprlock.nix
     ./modules/programs/waybar.nix
     ./modules/programs/fuzzel.nix
-    ./modules/programs/hotkey-overlay.nix
     ./modules/programs/qutebrowser.nix
-  ];
+  ] ++ lib.optionals (username == "jahlee") [
+    ./modules/programs/hyprland.nix
+  ] ++ lib.optionals (username != "jahlee") [
+    ./modules/programs/sway.nix
+    ./modules/programs/hotkey-overlay.nix
+  ]);
 
   home.username = username;
   home.homeDirectory = "/home/${username}";

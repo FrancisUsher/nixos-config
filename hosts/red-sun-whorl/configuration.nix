@@ -68,6 +68,11 @@
 
   hardware.graphics.enable = true;
 
+  # Hyprland's home-manager module enables xdg.portal by default, which
+  # needs these paths linked into /run/current-system/sw - home-manager
+  # asserts on this itself.
+  environment.pathsToLink = [ "/share/applications" "/share/xdg-desktop-portal" ];
+
   # From nixos-hardware's lenovo-thinkpad-x1-nano-gen1 module (imported in
   # flake.nix): trackpoint, the alsa audio-interference fix, and TLP power
   # management all come pre-wired. This just flips on fingerprint login -
