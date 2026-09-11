@@ -14,7 +14,7 @@
     "logout" = {
       name = "Session -> Logout";
       comment = "Exit the user session and return to the greeter";
-      exec = "swaymsg exit";
+      exec = "sh -c 'if [ -n \"$HYPRLAND_INSTANCE_SIGNATURE\" ]; then hyprctl dispatch exit; else swaymsg exit; fi'";
       icon = "icon-logout-128";
       terminal = true;
       type = "Application";
