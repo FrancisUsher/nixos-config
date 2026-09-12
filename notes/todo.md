@@ -37,3 +37,7 @@
 - [ ] Refine red-sun-whorl's wallpaper aesthetic further
       (modules/themes/red-sun-whorl-wallpaper.nix) - current sun-line/ridges
       scene is an acceptable first pass, not a final look
+- [ ] Better terminal autocomplete for command params/flags (had this on
+      the old Arch machine) - research the best way to set it up on NixOS
+- [ ] Review and flesh out the full zsh setup - first-time setup was
+      aborted early due to time constraints, worth revisiting properly
