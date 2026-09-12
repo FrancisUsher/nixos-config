@@ -10,7 +10,7 @@ let
   # apply: names = every connected output; external = names minus eDP-1
   # (eDP-1 is the fixed connector name for the laptop's built-in panel).
   # If external is non-empty, disable eDP-1 and bring up each external
-  # output at preferred/auto/scale-1; otherwise (external empty) enable
+  # output at preferred/auto/auto-scale; otherwise (external empty) enable
   # eDP-1 the same way. Runs once at start, then again on every
   # monitoradded/monitorremoved line read off Hyprland's IPC event socket.
   hypr-monitor-autoswitch = pkgs.writeShellScriptBin "hypr-monitor-autoswitch" ''
@@ -24,10 +24,10 @@ let
       if [ -n "$external" ]; then
         ${hyprctl} keyword monitor "eDP-1,disable"
         while IFS= read -r name; do
-          ${hyprctl} keyword monitor "$name,preferred,auto,1"
+          ${hyprctl} keyword monitor "$name,preferred,auto,auto"
         done <<< "$external"
       else
-        ${hyprctl} keyword monitor "eDP-1,preferred,auto,1"
+        ${hyprctl} keyword monitor "eDP-1,preferred,auto,auto"
       fi
     }
 
