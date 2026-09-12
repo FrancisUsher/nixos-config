@@ -50,6 +50,7 @@ in
         "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
         "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store"
         "${pkgs.quickshell}/bin/qs -c display-options"
+        "${pkgs.quickshell}/bin/qs -c rebuild-sweep"
       ];
 
       bind =
@@ -57,7 +58,7 @@ in
           "$mod, Return, exec, $terminal"
           "$mod, P, exec, $menu"
           "$mod, V, exec, fuzzel-cliphist"
-          "$mod, D, exec, ${pkgs.quickshell}/bin/qs ipc call -c display-options displayOptions toggle"
+          "$mod, D, exec, ${pkgs.quickshell}/bin/qs ipc -c display-options call displayOptions toggle"
           "$mod SHIFT, V, exec, ${pkgs.bash}/bin/bash -c \"fuzzel-cliphist && wtype -M ctrl -M shift v -m shift -m ctrl\""
           ", Print, exec, grim"
 
