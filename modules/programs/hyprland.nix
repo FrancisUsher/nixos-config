@@ -117,6 +117,8 @@ in
         blur = false;
       };
 
+      dwindle.preserve_split = true;
+
       exec-once = [
         "waybar"
         "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
