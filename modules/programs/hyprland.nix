@@ -101,7 +101,7 @@ in
   stylix.cursor = {
     name = "phinger-cursors-dark";
     package = pkgs.phinger-cursors;
-    size = 20;
+    size = 24;
   };
 
   # needed for interactive auth in e.g. fprintd enrollment
