@@ -79,6 +79,12 @@ in
   stylix.targets.hyprland.hyprpaper.enable = true;
   stylix.targets.gtk.enable = true;
 
+  stylix.cursor = {
+    name = "phinger-cursors-dark";
+    package = pkgs.phinger-cursors;
+    size = 20;
+  };
+
   # needed for interactive auth in e.g. fprintd enrollment
   systemd.user.services.polkit-gnome-authentication-agent-1 = {
     Unit = {
