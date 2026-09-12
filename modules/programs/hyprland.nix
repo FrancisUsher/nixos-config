@@ -107,7 +107,7 @@ in
       decoration.rounding = 0;
 
       windowrule = [
-        "match:class ^(kitty-mirror)$, float on, size 45% 45%, move 27% 5%"
+        "match:class ^(kitty-mirror)$, float on, size 1200 700, move 1000 60"
       ];
 
       plugin.imgborders = {
