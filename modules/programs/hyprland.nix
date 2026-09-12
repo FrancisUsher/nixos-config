@@ -102,10 +102,8 @@ in
 
       decoration.rounding = 0;
 
-      windowrulev2 = [
-        "float,class:^(kitty-mirror)$"
-        "size 45% 45%,class:^(kitty-mirror)$"
-        "move 27% 5%,class:^(kitty-mirror)$"
+      windowrule = [
+        "match:class ^(kitty-mirror)$, float on, size 45% 45%, move 27% 5%"
       ];
 
       plugin.imgborders = {
