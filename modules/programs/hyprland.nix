@@ -23,11 +23,15 @@ let
 
       [[ "$active_class" == "kitty" ]] || exit 0
 
-      child_pid=$(pgrep -P "$active_pid" | head -n1)
-      [[ -n "''${child_pid:-}" ]] || exit 0
-
-      tty_short=$(ps -o tty= -p "$child_pid" | tr -d ' ')
-      [[ -n "$tty_short" && "$tty_short" != "?" ]] || exit 0
+      tty_short=""
+      for cand_pid in $(pgrep -P "$active_pid"); do
+        cand_tty=$(ps -o tty= -p "$cand_pid" | tr -d ' ')
+        if [[ "$cand_tty" == pts/* ]]; then
+          tty_short="$cand_tty"
+          break
+        fi
+      done
+      [[ -n "$tty_short" ]] || exit 0
       tty_path="/dev/$tty_short"
 
       session=$(tmux list-clients -F '#{client_tty} #{client_session}' 2>/dev/null | awk -v t="$tty_path" '$1==t {print $2}')
