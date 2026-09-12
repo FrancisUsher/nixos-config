@@ -71,6 +71,10 @@
 
   security.pam.services.hyprlock.fprintAuth = false;
 
+  security.sudo.extraConfig = ''
+    Defaults timestamp_timeout=30
+  '';
+
   environment.systemPackages = with pkgs; [
     git
     wget
