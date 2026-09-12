@@ -35,7 +35,8 @@ in
           "windows, 1, 4, slamSettle, slide"
           "windowsOut, 1, 3, slam, slide"
           "workspaces, 1, 5, slamSettle, slide"
-          "fade, 0"
+          "fadeIn, 0"
+          "fadeOut, 1, 3, slam"
         ];
       };
 
