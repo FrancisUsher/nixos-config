@@ -71,6 +71,8 @@
 
   security.pam.services.hyprlock.fprintAuth = false;
 
+  services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
+
   environment.systemPackages = with pkgs; [
     git
     wget

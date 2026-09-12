@@ -5,10 +5,46 @@ let
     ${pkgs.cliphist}/bin/cliphist list | ${pkgs.fuzzel}/bin/fuzzel -d -p "Clipboard History" | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy
   '';
 
+  hyprctl = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl";
+
+  hypr-monitor-autoswitch = pkgs.writeShellScriptBin "hypr-monitor-autoswitch" ''
+    set -euo pipefail
+
+    apply() {
+      local names external
+      names=$(${hyprctl} monitors -j | ${pkgs.jq}/bin/jq -r '.[].name')
+      external=$(grep -v '^eDP-1$' <<< "$names" || true)
+
+      if [ -n "$external" ]; then
+        ${hyprctl} keyword monitor "eDP-1,disable"
+        while IFS= read -r name; do
+          ${hyprctl} keyword monitor "$name,preferred,auto,1"
+        done <<< "$external"
+      else
+        ${hyprctl} keyword monitor "eDP-1,preferred,auto,1"
+      fi
+    }
+
+    apply
+
+    socket="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
+    ${pkgs.socat}/bin/socat -U - UNIX-CONNECT:"$socket" | while read -r line; do
+      case "$line" in
+        monitoradded*|monitorremoved*) apply ;;
+      esac
+    done
+  '';
+
   mod0 = n: if n == 10 then 0 else n;
 in
 {
-  home.packages = [ pkgs.cliphist pkgs.wl-clipboard pkgs.wtype fuzzel-cliphist ];
+  home.packages = [
+    pkgs.cliphist
+    pkgs.wl-clipboard
+    pkgs.wtype
+    fuzzel-cliphist
+    hypr-monitor-autoswitch
+  ];
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -88,6 +124,20 @@ in
     Service = {
       Type = "simple";
       ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.hypr-monitor-autoswitch = {
+    Unit = {
+      Description = "hypr-monitor-autoswitch";
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${hypr-monitor-autoswitch}/bin/hypr-monitor-autoswitch";
       Restart = "on-failure";
       RestartSec = 1;
     };
