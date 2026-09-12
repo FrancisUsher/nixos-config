@@ -3,7 +3,7 @@
 let
   mirrorTmuxConf = pkgs.writeText "kitty-mirror-tmux.conf" ''
     set -g status off
-    set -g prefix F24
+    set -g prefix M-F12
     unbind C-b
   '';
 in
