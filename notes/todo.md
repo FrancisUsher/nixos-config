@@ -42,3 +42,7 @@
       (configType = "lua") before Hyprland 0.57 drops .conf support - a
       deprecation notice for .conf landed in 0.56.1
 - [ ] [[red-sun-whorl-seamless-startup|Seamless themed startup process for red-sun-whorl]]
+- [ ] Better terminal autocomplete for command params/flags (had this on
+      the old Arch machine) - research the best way to set it up on NixOS
+- [ ] Review and flesh out the full zsh setup - first-time setup was
+      aborted early due to time constraints, worth revisiting properly
