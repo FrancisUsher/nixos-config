@@ -6,6 +6,10 @@ let
     set -g prefix M-F12
     unbind C-b
   '';
+
+  kittyMirrorShell = pkgs.writeShellScript "kitty-mirror-shell" ''
+    exec ${pkgs.tmux}/bin/tmux -f ${mirrorTmuxConf} new-session -A -s "kw-$$"
+  '';
 in
 {
   programs.kitty = {
@@ -17,7 +21,7 @@ in
       tab_bar_style = "powerline";
       tab_powerline_style = "round";
       allow_remote_control = true;
-      shell = "${pkgs.bash}/bin/bash -c 'exec ${pkgs.tmux}/bin/tmux -f ${mirrorTmuxConf} new-session -s kw-$$'";
+      shell = "${kittyMirrorShell}";
     };
     shellIntegration = {
       enableBashIntegration = true;
