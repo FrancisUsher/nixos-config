@@ -30,13 +30,14 @@ in
         bezier = [
           "slam, 0.64, 0, 0.78, 0"
           "slamSettle, 0.64, 0, 0.36, 1.15"
+          "vanish, 0.9, 0, 0.95, 0"
         ];
         animation = [
           "windows, 1, 4, slamSettle, slide"
           "windowsOut, 1, 3, slam, slide"
           "workspaces, 1, 5, slamSettle, slide"
           "fadeIn, 0"
-          "fadeOut, 1, 3, slam"
+          "fadeOut, 1, 3, vanish"
         ];
       };
 
