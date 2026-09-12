@@ -31,6 +31,7 @@ in
 
       exec-once = [
         "waybar"
+        "${pkgs.quickshell}/bin/qs"
         "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
         "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store"
       ];
