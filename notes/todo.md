@@ -37,3 +37,10 @@
 - [ ] Refine red-sun-whorl's wallpaper aesthetic further
       (modules/themes/red-sun-whorl-wallpaper.nix) - current sun-line/ridges
       scene is an acceptable first pass, not a final look
+- [ ] Migrate red-sun-whorl's Hyprland config from hyprlang to Lua
+      (modules/programs/hyprland.nix, `configType = "hyprlang"`) - Hyprland
+      warns on startup that hyprlang is deprecated as of 0.55
+      (https://wiki.hypr.land/Configuring/Start/: "Since Hyprland 0.55,
+      hyprlang is deprecated in favor of lua"). Needs research into whether
+      home-manager's hyprland module supports `configType = "lua"` yet and
+      what the settings-attrset-to-Lua translation looks like.

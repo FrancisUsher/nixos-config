@@ -47,7 +47,7 @@ in
           "$mod SHIFT, E, exit"
           "$mod SHIFT, Space, togglefloating"
           "$mod, F, fullscreen, 0"
-          "$mod, S, togglesplit"
+          "$mod, S, layoutmsg, togglesplit"
 
           "$mod, H, movefocus, l"
           "$mod, L, movefocus, r"
