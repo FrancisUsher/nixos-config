@@ -25,6 +25,16 @@ in
         gaps_out = 10;
       };
 
+      animations = {
+        enabled = true;
+        bezier = "slam, 0.64, 0, 0.78, 0";
+        animation = [
+          "windows, 1, 3, slam, slide"
+          "windowsOut, 1, 3, slam, slide"
+          "workspaces, 1, 4, slam, slide"
+        ];
+      };
+
       ecosystem.no_update_news = true;
 
       decoration.rounding = 0;
