@@ -5,42 +5,6 @@ let
     ${pkgs.cliphist}/bin/cliphist list | ${pkgs.fuzzel}/bin/fuzzel -d -p "Clipboard History" | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy
   '';
 
-  kitty-mirror-toggle = pkgs.writeShellApplication {
-    name = "kitty-mirror-toggle";
-    runtimeInputs = [ unstableUnfreePkgs.hyprland pkgs.jq pkgs.procps pkgs.util-linux pkgs.tmux pkgs.kitty ];
-    text = ''
-      class="kitty-mirror"
-
-      existing=$(hyprctl clients -j | jq -r --arg c "$class" '.[] | select(.class==$c) | .address' | head -n1)
-      if [[ -n "$existing" ]]; then
-        hyprctl dispatch closewindow "address:$existing"
-        exit 0
-      fi
-
-      active=$(hyprctl activewindow -j)
-      active_class=$(jq -r '.class' <<<"$active")
-      active_pid=$(jq -r '.pid' <<<"$active")
-
-      [[ "$active_class" == "kitty" ]] || exit 0
-
-      tty_short=""
-      for cand_pid in $(pgrep -P "$active_pid"); do
-        cand_tty=$(ps -o tty= -p "$cand_pid" | tr -d ' ')
-        if [[ "$cand_tty" == pts/* ]]; then
-          tty_short="$cand_tty"
-          break
-        fi
-      done
-      [[ -n "$tty_short" ]] || exit 0
-      tty_path="/dev/$tty_short"
-
-      session=$(tmux list-clients -F '#{client_tty} #{client_session}' 2>/dev/null | awk -v t="$tty_path" '$1==t {print $2}')
-      [[ -n "$session" ]] || exit 0
-
-      setsid -f kitty --class "$class" -e tmux attach -t "$session" >/dev/null 2>&1 &
-    '';
-  };
-
   mod0 = n: if n == 10 then 0 else n;
 
   ancientRuinsBorder = pkgs.runCommand "ancient-ruins-border.png" {
@@ -106,12 +70,6 @@ in
 
       decoration.rounding = 0;
 
-      # keeps the Win+I mirrored-typing popup floating in a fixed spot
-      # instead of tiling with everything else
-      windowrule = [
-        "match:class ^(kitty-mirror)$, float on, size 1200 100, move 1000 60"
-      ];
-
       plugin.imgborders = {
         image = "${ancientRuinsBorder}";
         sizes = 8;
@@ -134,7 +92,6 @@ in
       bind =
         [
           "$mod, Return, exec, $terminal"
-          "$mod, I, exec, ${kitty-mirror-toggle}/bin/kitty-mirror-toggle"
           "$mod, P, exec, $menu"
           "$mod, V, exec, fuzzel-cliphist"
           "$mod, D, exec, ${pkgs.quickshell}/bin/qs ipc -c display-options call displayOptions toggle"
