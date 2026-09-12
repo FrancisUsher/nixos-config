@@ -106,6 +106,8 @@ in
 
       decoration.rounding = 0;
 
+      # keeps the Win+I mirrored-typing popup floating in a fixed spot
+      # instead of tiling with everything else
       windowrule = [
         "match:class ^(kitty-mirror)$, float on, size 1200 700, move 1000 60"
       ];
