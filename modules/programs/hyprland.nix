@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, unstableUnfreePkgs, ... }:
 
 let
   fuzzel-cliphist = pkgs.writeShellScriptBin "fuzzel-cliphist" ''
@@ -7,7 +7,7 @@ let
 
   kitty-mirror-toggle = pkgs.writeShellApplication {
     name = "kitty-mirror-toggle";
-    runtimeInputs = [ pkgs.hyprland pkgs.jq pkgs.procps pkgs.util-linux pkgs.tmux pkgs.kitty ];
+    runtimeInputs = [ unstableUnfreePkgs.hyprland pkgs.jq pkgs.procps pkgs.util-linux pkgs.tmux pkgs.kitty ];
     text = ''
       class="kitty-mirror"
 
@@ -38,14 +38,38 @@ let
   };
 
   mod0 = n: if n == 10 then 0 else n;
+
+  ancientRuinsBorder = pkgs.runCommand "ancient-ruins-border.png" {
+    nativeBuildInputs = [ (pkgs.python3.withPackages (ps: [ ps.pillow ])) ];
+  } ''
+    python3 ${./ancient-ruins-border-gen.py} $out
+  '';
+
+  imgborders = unstableUnfreePkgs.hyprlandPlugins.imgborders.overrideAttrs (_: {
+    version = "2026-08-16";
+    src = pkgs.fetchzip {
+      url = "https://codeberg.org/zacoons/imgborders/archive/08be22236144d3c91607bcfa955ed0d457f4f50b.tar.gz";
+      hash = "sha256-O+896T2qrisxiWTotB5HlzKw8XEJqPDTgSUHAAVUD18=";
+    };
+  });
 in
 {
-  home.packages = [ pkgs.cliphist pkgs.wl-clipboard pkgs.wtype fuzzel-cliphist ];
+  home.packages = [
+    pkgs.cliphist
+    pkgs.wl-clipboard
+    pkgs.wtype
+    fuzzel-cliphist
+    pkgs.wlr-randr
+    pkgs.nwg-displays
+  ];
 
   wayland.windowManager.hyprland = {
     enable = true;
+    package = unstableUnfreePkgs.hyprland;
     systemd.variables = [ "--all" ];
     configType = "hyprlang";
+
+    plugins = [ imgborders ];
 
     settings = {
       "$mod" = "SUPER";
@@ -55,6 +79,23 @@ in
       general = {
         gaps_in = 5;
         gaps_out = 10;
+        border_size = 0;
+      };
+
+      animations = {
+        enabled = true;
+        bezier = [
+          "slam, 0.64, 0, 0.78, 0"
+          "slamSettle, 0.64, 0, 0.36, 1.15"
+          "vanish, 0.9, 0, 0.95, 0"
+        ];
+        animation = [
+          "windows, 1, 4, slamSettle, slide"
+          "windowsOut, 1, 3, slam, slide"
+          "workspaces, 1, 5, slamSettle, slide"
+          "fadeIn, 0"
+          "fadeOut, 1, 3, vanish"
+        ];
       };
 
       ecosystem.no_update_news = true;
@@ -67,10 +108,21 @@ in
         "move 27% 5%,class:^(kitty-mirror)$"
       ];
 
+      plugin.imgborders = {
+        image = "${ancientRuinsBorder}";
+        sizes = 8;
+        insets = 0;
+        scale = 3;
+        smooth = false;
+        blur = false;
+      };
+
       exec-once = [
         "waybar"
         "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
         "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store"
+        "${pkgs.quickshell}/bin/qs -c display-options"
+        "${pkgs.quickshell}/bin/qs -c rebuild-sweep"
       ];
 
       bind =
@@ -79,6 +131,7 @@ in
           "$mod, I, exec, ${kitty-mirror-toggle}/bin/kitty-mirror-toggle"
           "$mod, P, exec, $menu"
           "$mod, V, exec, fuzzel-cliphist"
+          "$mod, D, exec, ${pkgs.quickshell}/bin/qs ipc -c display-options call displayOptions toggle"
           "$mod SHIFT, V, exec, ${pkgs.bash}/bin/bash -c \"fuzzel-cliphist && wtype -M ctrl -M shift v -m shift -m ctrl\""
           ", Print, exec, grim"
 
@@ -86,6 +139,7 @@ in
           "$mod SHIFT, E, exit"
           "$mod SHIFT, Space, togglefloating"
           "$mod, F, fullscreen, 0"
+          "$mod, S, layoutmsg, togglesplit"
 
           "$mod, H, movefocus, l"
           "$mod, L, movefocus, r"
@@ -118,6 +172,12 @@ in
   stylix.targets.hyprland.hyprpaper.enable = true;
   stylix.targets.gtk.enable = true;
 
+  stylix.cursor = {
+    name = "phinger-cursors-dark";
+    package = pkgs.phinger-cursors;
+    size = 24;
+  };
+
   # needed for interactive auth in e.g. fprintd enrollment
   systemd.user.services.polkit-gnome-authentication-agent-1 = {
     Unit = {
@@ -131,5 +191,30 @@ in
       RestartSec = 1;
     };
     Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  services.kanshi = {
+    enable = true;
+    systemdTarget = "graphical-session.target";
+    settings = [
+      {
+        profile.name = "docked";
+        profile.outputs = [
+          { criteria = "eDP-1"; status = "disable"; }
+          {
+            criteria = "Dell Inc. DELL U4021QW 2C1D6H3";
+            mode = "5120x2160";
+            position = "0,0";
+            scale = 1.6;
+          }
+        ];
+      }
+      {
+        profile.name = "undocked";
+        profile.outputs = [
+          { criteria = "eDP-1"; status = "enable"; }
+        ];
+      }
+    ];
   };
 }

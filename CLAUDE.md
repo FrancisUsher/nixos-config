@@ -41,12 +41,15 @@
 - When a todo is picked up: if the fix is obvious, just make it — no issue
   needed.
 - If it needs research or iteration, or is more than a few lines / a
-  standard config block, open a GitHub issue on this repo before starting.
-  Move the note's content into the issue body, then delete the note file
-  and its `todo.md` entry.
+  standard config block, open a GitHub issue on this repo before starting
+  and move the note's content into the issue body. Leave the note file and
+  its `todo.md` entry in place while the issue is open — they're deleted
+  only as part of the commit that closes the issue, not when the issue is
+  opened.
 - Commit footers reference the issue: `Refs #N` while work is ongoing,
   `Closes #N` on the commit that finishes it (auto-closes on merge to
-  main).
+  main). That closing commit is also what deletes the note file and its
+  `todo.md` entry, if one was created.
 - Further research or iteration goes into issue comments as it happens —
   brief and technical, for future reference, not narrative.
 - Commit messages stay concise (what and why), even for the commit that
