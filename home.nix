@@ -20,6 +20,7 @@
     ./modules/programs/fuzzel.nix
     ./modules/programs/qutebrowser.nix
     ./modules/programs/hyprland.nix
+    ./modules/programs/quickshell-harness.nix
   ];
 
   home.username = username;
