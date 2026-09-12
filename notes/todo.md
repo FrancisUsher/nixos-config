@@ -41,3 +41,4 @@
 - [ ] Migrate red-sun-whorl's Hyprland config from hyprlang (.conf) to Lua
       (configType = "lua") before Hyprland 0.57 drops .conf support - a
       deprecation notice for .conf landed in 0.56.1
+- [ ] [[red-sun-whorl-seamless-startup|Seamless themed startup process for red-sun-whorl]]
