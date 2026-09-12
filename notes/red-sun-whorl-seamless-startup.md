@@ -22,9 +22,13 @@ Stages, roughly in boot order:
       thing visible after the power button, before systemd-boot or
       Plymouth even run. Firmware-level, independent of everything else
       below.
-- [ ] systemd-boot menu / kernel handoff - currently stock. Needs at
+- [ ] systemd-boot menu / kernel handoff - currently stock, including the
+      NixOS generation (build history) selection list itself. Needs at
       least a color-matched background so there's no flash at the
-      boundary to Plymouth.
+      boundary to Plymouth. This list is also the natural home for the
+      "press Del for settings"-style interactivity from the original
+      brainstorm - it's already the closest thing this system has to a
+      boot settings screen, just themed generically today.
 - [ ] Plymouth boot splash - currently `oreb`
       (`modules/plymouth-oreb.nix`), just recolored, not Whorl-themed.
       Candidate: animate the wallpaper's sun-line motif, sun position
