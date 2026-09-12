@@ -37,3 +37,4 @@
 - [ ] Refine red-sun-whorl's wallpaper aesthetic further
       (modules/themes/red-sun-whorl-wallpaper.nix) - current sun-line/ridges
       scene is an acceptable first pass, not a final look
+- [ ] [[pixel-art-window-borders|Pixel-art brick/stone window borders + runtime render-mode test harness]]
