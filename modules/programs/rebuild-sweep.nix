@@ -56,10 +56,10 @@ let
       # We need to run the success animation as the sudoing user, even
       # though nixos-rebuild is running as root via sudo.
       if [ "$(${pkgs.coreutils}/bin/id -u)" -eq "$targetUid" ]; then
-        ${pkgs.quickshell}/bin/qs ipc -c rebuild-sweep call rebuildSweep trigger 2>/dev/null || true
+        ${pkgs.quickshell}/bin/qs ipc --any-display -c rebuild-sweep call rebuildSweep trigger 2>/dev/null || true
       else
         ${pkgs.util-linux}/bin/runuser -u ${targetUser} -- \
-          env XDG_RUNTIME_DIR="/run/user/$targetUid" ${pkgs.quickshell}/bin/qs ipc -c rebuild-sweep call rebuildSweep trigger \
+          env XDG_RUNTIME_DIR="/run/user/$targetUid" ${pkgs.quickshell}/bin/qs ipc --any-display -c rebuild-sweep call rebuildSweep trigger \
           2>/dev/null || true
       fi
     fi
