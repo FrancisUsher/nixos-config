@@ -5,6 +5,38 @@ let
     ${pkgs.cliphist}/bin/cliphist list | ${pkgs.fuzzel}/bin/fuzzel -d -p "Clipboard History" | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy
   '';
 
+  kitty-mirror-toggle = pkgs.writeShellApplication {
+    name = "kitty-mirror-toggle";
+    runtimeInputs = [ pkgs.hyprland pkgs.jq pkgs.procps pkgs.util-linux pkgs.tmux pkgs.kitty ];
+    text = ''
+      class="kitty-mirror"
+
+      existing=$(hyprctl clients -j | jq -r --arg c "$class" '.[] | select(.class==$c) | .address' | head -n1)
+      if [[ -n "$existing" ]]; then
+        hyprctl dispatch closewindow "address:$existing"
+        exit 0
+      fi
+
+      active=$(hyprctl activewindow -j)
+      active_class=$(jq -r '.class' <<<"$active")
+      active_pid=$(jq -r '.pid' <<<"$active")
+
+      [[ "$active_class" == "kitty" ]] || exit 0
+
+      child_pid=$(pgrep -P "$active_pid" | head -n1)
+      [[ -n "''${child_pid:-}" ]] || exit 0
+
+      tty_short=$(ps -o tty= -p "$child_pid" | tr -d ' ')
+      [[ -n "$tty_short" && "$tty_short" != "?" ]] || exit 0
+      tty_path="/dev/$tty_short"
+
+      session=$(tmux list-clients -F '#{client_tty} #{client_session}' 2>/dev/null | awk -v t="$tty_path" '$1==t {print $2}')
+      [[ -n "$session" ]] || exit 0
+
+      setsid -f kitty --class "$class" -e tmux attach -t "$session" >/dev/null 2>&1 &
+    '';
+  };
+
   mod0 = n: if n == 10 then 0 else n;
 in
 {
@@ -29,6 +61,12 @@ in
 
       decoration.rounding = 0;
 
+      windowrulev2 = [
+        "float,class:^(kitty-mirror)$"
+        "size 45% 45%,class:^(kitty-mirror)$"
+        "move 27% 5%,class:^(kitty-mirror)$"
+      ];
+
       exec-once = [
         "waybar"
         "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
@@ -38,6 +76,7 @@ in
       bind =
         [
           "$mod, Return, exec, $terminal"
+          "$mod, I, exec, ${kitty-mirror-toggle}/bin/kitty-mirror-toggle"
           "$mod, P, exec, $menu"
           "$mod, V, exec, fuzzel-cliphist"
           "$mod SHIFT, V, exec, ${pkgs.bash}/bin/bash -c \"fuzzel-cliphist && wtype -M ctrl -M shift v -m shift -m ctrl\""
