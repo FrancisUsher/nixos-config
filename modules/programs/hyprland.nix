@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, unstableUnfreePkgs, ... }:
 
 let
   fuzzel-cliphist = pkgs.writeShellScriptBin "fuzzel-cliphist" ''
@@ -6,14 +6,31 @@ let
   '';
 
   mod0 = n: if n == 10 then 0 else n;
+
+  ancientRuinsBorder = pkgs.runCommand "ancient-ruins-border.png" {
+    nativeBuildInputs = [ (pkgs.python3.withPackages (ps: [ ps.pillow ])) ];
+  } ''
+    python3 ${./ancient-ruins-border-gen.py} $out
+  '';
+
+  imgborders = unstableUnfreePkgs.hyprlandPlugins.imgborders.overrideAttrs (_: {
+    version = "2026-08-16";
+    src = pkgs.fetchzip {
+      url = "https://codeberg.org/zacoons/imgborders/archive/08be22236144d3c91607bcfa955ed0d457f4f50b.tar.gz";
+      hash = "sha256-O+896T2qrisxiWTotB5HlzKw8XEJqPDTgSUHAAVUD18=";
+    };
+  });
 in
 {
   home.packages = [ pkgs.cliphist pkgs.wl-clipboard pkgs.wtype fuzzel-cliphist ];
 
   wayland.windowManager.hyprland = {
     enable = true;
+    package = unstableUnfreePkgs.hyprland;
     systemd.variables = [ "--all" ];
     configType = "hyprlang";
+
+    plugins = [ imgborders ];
 
     settings = {
       "$mod" = "SUPER";
@@ -23,6 +40,7 @@ in
       general = {
         gaps_in = 5;
         gaps_out = 10;
+        border_size = 0;
       };
 
       animations = {
@@ -44,6 +62,15 @@ in
       ecosystem.no_update_news = true;
 
       decoration.rounding = 0;
+
+      plugin.imgborders = {
+        image = "${ancientRuinsBorder}";
+        sizes = 8;
+        insets = 0;
+        scale = 3;
+        smooth = false;
+        blur = false;
+      };
 
       exec-once = [
         "waybar"

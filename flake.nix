@@ -44,7 +44,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit hostName username; };
+            home-manager.extraSpecialArgs = { inherit hostName username unstableUnfreePkgs; };
             home-manager.users.${username} = import ./home.nix;
           }
         ] ++ extraModules;
