@@ -6,22 +6,7 @@ process]] - the firmware POST screen, before systemd-boot or Plymouth run.
 Hardware: ThinkPad X1 Nano Gen1, MTM 20UNS02400, Insyde H2O firmware,
 currently BIOS N2TET89W v1.67 (2025-07-10).
 
-## Ruled out
-
-- **No-reflash EFI variable swap** (the mechanism used by
-  `chnzzh/lenovo-logo-changer`, reading/writing the `LBLDESP`/`LBLDVC` EFI
-  vars): confirmed absent on this machine (`ls
-  /sys/firmware/efi/efivars/ | grep LBLD` finds nothing) and structurally
-  absent - per the tool maintainer's own diagnostic approach (downloading
-  a model's BIOS image and checking whether the relevant DXE modules were
-  even compiled in), this is an ODM build-time decision per model, not
-  something a future BIOS update would add. Won't appear on this
-  hardware, ever.
-- **coreboot**: dead end. Coreboot's ThinkPad support tops out at the
-  2012-13 X1/X1 Carbon Gen 1, pre-Boot-Guard hardware. The 2021 X1 Nano
-  Gen1 almost certainly has Intel Boot Guard fused on.
-
-## Most likely approach: `BIOS_LOGO.TXT` mechanism
+## Approach: `BIOS_LOGO.TXT` mechanism
 
 Confirmed present in the actual current BIOS update package for this
 model (Lenovo support downloads page, package containing `WINUPTP.EXE`
