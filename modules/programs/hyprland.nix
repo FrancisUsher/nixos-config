@@ -27,11 +27,14 @@ in
 
       animations = {
         enabled = true;
-        bezier = "slam, 0.64, 0, 0.78, 0";
+        bezier = [
+          "slam, 0.64, 0, 0.78, 0"
+          "slamSettle, 0.64, 0, 0.36, 1.15"
+        ];
         animation = [
-          "windows, 1, 3, slam, slide"
+          "windows, 1, 4, slamSettle, slide"
           "windowsOut, 1, 3, slam, slide"
-          "workspaces, 1, 4, slam, slide"
+          "workspaces, 1, 5, slamSettle, slide"
         ];
       };
 
