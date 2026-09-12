@@ -50,7 +50,7 @@ let
     /run/current-system/sw/bin/nixos-rebuild "$@"
     status=$?
     if [ "$status" -eq 0 ]; then
-      ${pkgs.quickshell}/bin/qs ipc call -c rebuild-sweep rebuildSweep trigger 2>/dev/null || true
+      ${pkgs.quickshell}/bin/qs ipc -c rebuild-sweep call rebuildSweep trigger 2>/dev/null || true
     fi
     exit "$status"
   '';
