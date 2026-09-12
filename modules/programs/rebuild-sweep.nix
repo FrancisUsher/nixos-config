@@ -1,6 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 let
+  targetUser = config.home.username;
+
   shellQml = pkgs.writeText "rebuild-sweep-shell.qml" ''
     import QtQuick
     import Quickshell
@@ -50,7 +52,16 @@ let
     /run/current-system/sw/bin/nixos-rebuild "$@"
     status=$?
     if [ "$status" -eq 0 ]; then
-      ${pkgs.quickshell}/bin/qs ipc -c rebuild-sweep call rebuildSweep trigger 2>/dev/null || true
+      targetUid=$(${pkgs.coreutils}/bin/id -u ${targetUser})
+      # We need to run the success animation as the sudoing user, even
+      # though nixos-rebuild is running as root via sudo.
+      if [ "$(${pkgs.coreutils}/bin/id -u)" -eq "$targetUid" ]; then
+        ${pkgs.quickshell}/bin/qs ipc -c rebuild-sweep call rebuildSweep trigger 2>/dev/null || true
+      else
+        ${pkgs.util-linux}/bin/runuser -u ${targetUser} -- \
+          env XDG_RUNTIME_DIR="/run/user/$targetUid" ${pkgs.quickshell}/bin/qs ipc -c rebuild-sweep call rebuildSweep trigger \
+          2>/dev/null || true
+      fi
     fi
     exit "$status"
   '';
