@@ -6,16 +6,6 @@ See [[dotfiles-and-editor|Dotfiles and editor]] for what's already ported.
 
 This audit is partial - see the last item below for what's left to look at.
 
-- [ ] `.zshenv` was never ported - two real settings:
-      `PATH=(~/.local/bin ~/.npm-global/bin $PATH)` and
-      `QT_QPA_PLATFORM=wayland` (forces Krita to run natively on Wayland
-      instead of XWayland). Backup path:
-      `home/silk/.zshenv`.
-- [ ] `icat` alias (`kitten icat`) - the zsh port deliberately deferred
-      this "until kitty itself is ported" (see
-      [[dotfiles-and-editor|Dotfiles and editor]]'s zsh item). Kitty's
-      been ported since; the alias never got added. Backup path:
-      `home/silk/.bashrc` (line: `alias icat='kitten icat'`).
 - [ ] `run-zmk.zsh` - a devcontainer-based ZMK firmware build workflow
       (`devcontainer up --workspace-folder ~/dev/zmk`, then `docker exec`
       into it). `zmk.ini` itself got ported; this build workflow didn't.

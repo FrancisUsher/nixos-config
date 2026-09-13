@@ -46,3 +46,7 @@
       the old Arch machine) - research the best way to set it up on NixOS
 - [ ] Review and flesh out the full zsh setup - first-time setup was
       aborted early due to time constraints, worth revisiting properly
+- [ ] Fix brightness keys (XF86MonBrightnessUp/Down) on red-sun-whorl - not
+      working; pre-existing, unrelated to the Hyprland hyprlang-to-Lua
+      migration (confirmed the binds themselves survived that migration
+      unchanged)

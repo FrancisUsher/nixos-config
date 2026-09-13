@@ -1,39 +1,32 @@
-import sys
+import argparse
+import json
 
 from PIL import Image
 
-# Urth under a dying sun: stone should read as barely-lit shapes emerging
-# from black, not sunlit brick. STONE/HIGHLIGHT are heavy blends of the
-# background black toward a single warm ember hue (base09 terracotta from
-# ancient-ruins.nix) - color, but very low-key. A second hue is deliberately
-# left unused, reserved for a future vine tone.
-MORTAR = (0x1c, 0x1b, 0x1a)  # base00 - background/mortar
-EMBER = (0x9d, 0x5d, 0x40)   # base09 terracotta - reference hue, not used directly
+N = 32
+B = 8  # border thickness in source pixels
+
+
+def hex_to_rgb(h):
+    return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
 
 
 def blend(c1, c2, t):
     return tuple(round(a + (b - a) * t) for a, b in zip(c1, c2))
 
 
-STONE = blend(MORTAR, EMBER, 0.20)      # dark warm brown-black
-HIGHLIGHT = blend(MORTAR, EMBER, 0.45)  # faint ember edge, still dark
-
-N = 32
-B = 8  # border thickness in source pixels
-
-
-def brick_module():
+def brick_module(mortar, stone, highlight):
     """8x8 RGBA pixel block: a single stone brick, barely lit from black."""
-    px = [[MORTAR for _ in range(8)] for _ in range(8)]
+    px = [[mortar for _ in range(8)] for _ in range(8)]
     for y in range(1, 7):
         for x in range(1, 7):
-            px[y][x] = STONE
+            px[y][x] = stone
     # faint bevel: a single highlighted pixel-line on the top/left edge,
     # nothing on the bottom/right (fades back to mortar/black)
     for x in range(1, 7):
-        px[1][x] = HIGHLIGHT
+        px[1][x] = highlight
     for y in range(2, 7):
-        px[y][1] = HIGHLIGHT
+        px[y][1] = highlight
     return px
 
 
@@ -43,10 +36,27 @@ def paste(canvas, block, ox, oy):
             canvas.putpixel((ox + x, oy + y), (*block[y][x], 255))
 
 
-def main(out_path):
-    img = Image.new("RGBA", (N, N), (*MORTAR, 255))
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--palette", required=True, help="path to palette.json")
+    parser.add_argument("--accent", default="base09", help="palette slot for the brick hue")
+    parser.add_argument("--mortar", default="base00", help="palette slot for background/mortar")
+    parser.add_argument("--stone-blend", type=float, default=0.20)
+    parser.add_argument("--highlight-blend", type=float, default=0.45)
+    parser.add_argument("--out", required=True)
+    args = parser.parse_args()
 
-    brick = brick_module()
+    with open(args.palette) as f:
+        palette = json.load(f)
+
+    mortar = hex_to_rgb(palette[args.mortar])
+    ember = hex_to_rgb(palette[args.accent])
+    stone = blend(mortar, ember, args.stone_blend)
+    highlight = blend(mortar, ember, args.highlight_blend)
+
+    img = Image.new("RGBA", (N, N), (*mortar, 255))
+
+    brick = brick_module(mortar, stone, highlight)
 
     paste(img, brick, 0, 0)
     paste(img, brick, N - B, 0)
@@ -68,10 +78,10 @@ def main(out_path):
     # unused middle - fill with mortar so nothing looks broken if ever sampled
     for y in range(B, N - B):
         for x in range(B, N - B):
-            img.putpixel((x, y), (*MORTAR, 255))
+            img.putpixel((x, y), (*mortar, 255))
 
-    img.save(out_path)
+    img.save(args.out)
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main()
