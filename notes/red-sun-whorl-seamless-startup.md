@@ -18,11 +18,14 @@ themed at best.
 
 Stages, roughly in boot order:
 
-- [x] Custom UEFI boot logo - the very first thing visible after the power
+- [ ] Custom UEFI boot logo - the very first thing visible after the power
       button, before systemd-boot or Plymouth even run. Firmware-level,
-      independent of everything else below. Done: dying-sun-behind-a-
-      crumbling-city pixel art, flashed and confirmed working on real
-      hardware (details/history: issue #9).
+      independent of everything else below. Proof of concept done: the
+      flashing pipeline (reverse-engineered mechanism, hand-built USB key,
+      dying-sun-behind-a-crumbling-city pixel art) works end to end on
+      real hardware, but the artwork isn't final, the USB-key build isn't
+      scripted, and the reflash-with-a-new-logo path is only confirmed by
+      disassembly, not tried in practice yet (details/history: issue #9).
 - [ ] systemd-boot menu / kernel handoff - currently stock, including the
       NixOS generation (build history) selection list itself. Needs at
       least a color-matched background so there's no flash at the
