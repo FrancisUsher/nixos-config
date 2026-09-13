@@ -77,6 +77,9 @@
     Defaults timestamp_timeout=30
   '';
 
+  # This tool udisksctl makes managing USB drives way easier.
+  services.udisks2.enable = true;
+
   environment.systemPackages = with pkgs; [
     git
     wget
