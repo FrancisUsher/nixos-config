@@ -2,6 +2,7 @@
 
 {
   home.packages = [ pkgs.acpi ]; # needed by the battery alias below
+  home.sessionPath = [ "$HOME/.local/bin" "$HOME/.npm-global/bin" ];
 
   programs.zsh = {
     enable = true;
@@ -16,6 +17,7 @@
       ls = "ls --color=auto -la";
       vim = "nvim";
       battery = "acpi -b";
+      icat = "kitten icat";
     };
     initContent = ''
       # Quickly connect to home server: try local mDNS first, fall back to
