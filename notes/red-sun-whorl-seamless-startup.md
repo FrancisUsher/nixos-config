@@ -18,10 +18,11 @@ themed at best.
 
 Stages, roughly in boot order:
 
-- [ ] [[red-sun-whorl-boot-logo|Custom UEFI boot logo]] - the very first
-      thing visible after the power button, before systemd-boot or
-      Plymouth even run. Firmware-level, independent of everything else
-      below.
+- [x] Custom UEFI boot logo - the very first thing visible after the power
+      button, before systemd-boot or Plymouth even run. Firmware-level,
+      independent of everything else below. Done: dying-sun-behind-a-
+      crumbling-city pixel art, flashed and confirmed working on real
+      hardware (details/history: issue #9).
 - [ ] systemd-boot menu / kernel handoff - currently stock, including the
       NixOS generation (build history) selection list itself. Needs at
       least a color-matched background so there's no flash at the
