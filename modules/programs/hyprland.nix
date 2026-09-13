@@ -26,12 +26,6 @@ let
 
   mkBezier = name: points: { _args = [ name { type = "bezier"; inherit points; } ]; };
 
-  ancientRuinsBorder = pkgs.runCommand "ancient-ruins-border.png" {
-    nativeBuildInputs = [ (pkgs.python3.withPackages (ps: [ ps.pillow ])) ];
-  } ''
-    python3 ${./ancient-ruins-border-gen.py} $out
-  '';
-
   imgborders = unstableUnfreePkgs.hyprlandPlugins.imgborders.overrideAttrs (_: {
     version = "2026-08-16";
     src = pkgs.fetchzip {
@@ -69,7 +63,7 @@ in
         ecosystem.no_update_news = true;
         decoration.rounding = 0;
         plugin.imgborders = {
-          image = "${ancientRuinsBorder}";
+          image = "~/.cache/border-harness/current.png";
           sizes = 8;
           insets = 0;
           scale = 3;
