@@ -130,9 +130,174 @@ update system - but we're on Linux! So we have a couple options.
 We could either emulate windows to run this executable, or figure
 out what it does and write a script to do the same thing.
 
-Before we investigate other approaches, let's just dive deeper here
-to see what `WINUPTP.EXE` actually does. We will need a couple utils
-from the package `binutils`, called `strings` and `objdump`.
+...Or that's what I had initially thought. But on closer inspection
+of `WINUPTP.EXE` it appears to not just be a "prep" step but also
+conduct the actual live flashing of the firmware! It does this by
+being deeply rooted in some Windows-specific tooling involving some
+sort of system files and kernel drivers that just are not available
+when emulating Windows applications on Linux. So unless we wanna
+totally reverse engineer the whole shebang, we will probably have
+to find another way.
+
+Fortunately we did have one other possibility. There is a "manual"
+process to create a bootable USB drive, called `mkusbkey.bat`.
+Looking at the file it's just a windows batch script that copies
+some specific files around to a USB drive, nothing fancy. The
+questions we have to ask ourselves now are:
+
+1. Does WINUPTP kick off any fancy pre-processing on our image before
+   executing the flash, that would also be required in order to prepare
+   for loading onto the USB drive?
+2. What happens to the file during the actual flashing process, and
+   is the USB flashing process essentially the same as the on-Windows
+   version that would be handled by `WINUPTP` with respect to how it
+   loads the logo image into firmware?
+
+We can poke a little bit into the binaries using the `strings` tool from
+the package `binutils`. In this case it is looking for all strings of
+length 4 or more in the binaries, and then filtering for the string
+`"logo"` to look for references to the logo:
+
+```
+❯ strings -n 4 WINUPTP.EXE | rg -i logo
+chklogo
+logo.gif 1 
+logo.jpg 1 
+logo.bmp 1 
+/logo 
+logo.gif
+logo.jpg
+logo.bmp
+
+❯ strings -n 4 SHELLFLASH.EFI | rg -i logo
+
+❯ strings -n 4 BootX64.efi | rg -i logo
+bcplogo
+logo
+Failed on logo operation
+Error during replace BCP logo
+Replace logo image stored in BCP.
+Replace logo.
+Reserve logo in BIOS ROM.
+Failed to read replacement logo file!
+Unsupported: Logo is not located in NvStorage!
+Failed on logo operation
+Error during replace BCP logo
+Missing logo filename.
+Replace logo. Index = 1.
+Missing logo command argument.
+Replace logo. Index = %d.
+Reserve original logo. Index = 1.
+Reserve original logo. Index = %d.
+../../Lib/API/TdkBcpLogoSet.c
+../../Lib/API/TdkLogoSet.c
+SplashLogoPackage
+SplashLogoPackage
+../../Lib/API/TdkLogoGet.c
+
+> strings -n 4 chklogo.exe | rg -i "size|kb|resolution|logo|bi?t?ma?p|jpe?g|gif"
+chklogo.exe
+chklogo
+Bitmap
+get_Bmp
+get_Gif
+get_Jpeg
+```
+
+This is a sorta interesting result because it tells us a few things:
+
+1. As we suspected `WINUPTP` does have some logic in its own binary for
+   how to handle the logo images. And it looks like it might hand off
+   some of responsibility of checking the constraints we mentioned
+   earlier to a tool called `chklogo.exe` (yes I should have noticed
+   that filename way sooner...)
+2. The `SHELLFLASH.EFI` flashing utility has zero awareness of the logos'
+   existence at all. Actually looking closer at its strings it looks as
+   if it is in a totally different encoding. if we wanna dig deeper on
+   this avenue it's worth probing the strings using a different approach.
+3. On the other hand `Bootx64.efi` has numerous references to the logo.
+   This file in all likelihood does the real work of putting the logo
+   into the BIOS ROM or wherever it ends up, during the flashing process.
+4. Now that we're at it, `chklogo.exe` of course references the logo,
+   but we can also probe for a few more things while we're at it.
+   The most interesting part of this is the format of the variables
+   `get_Bmp`, `get_Gif`, and `get_Jpeg`. These look like property-getters
+   from a .NET program. Which would be nice because it might be really
+   easy to decompile that and see exactly how the sausage is made.
+
+Actually there was one more file in here called `chklogo.exe.config` we
+can probably use to confirm our suspicion:
+
+```
+❯ cat chklogo.exe.config -p
+<configuration>
+  <startup>
+    <supportedRuntime version="v1.0.3705"/>
+    <supportedRuntime version="vv1.1.4322"/>
+    <supportedRuntime version="v2.0.50727"/>
+    <supportedRuntime version="v4.0"/>
+  </startup>
+</configuration>
+```
+
+This pretty much confirms it looks like a .NEW assembly. (Also, not sure
+what that double `v` character is in that second version nubmer - maybe
+an artifact of some ancient build script, still shipping unfixed decades
+later?) Anywho, there are really good tools for decompiling .NET assemblies
+so let's just get crackin:
+
+```
+> ilspycmd chklogo.exe -o chklogo-decompiled/
+```
+
+This program is extremely simple. The source code is only 64 lines long,
+including the copious whitespace of C# style brace formatting (eww!).
+Functionally it does exactly what we thought though:
+
+```c#
+// checks if the file is > 64KB
+28: if (fileInfo.Length > 61440)
+
+// checks if the file is one of the required image formats (my spacing)
+// added for readability
+33: if (
+        !((object)((Image)val).RawFormat).Equals((object?)ImageFormat.Bmp)
+     && !((object)((Image)val).RawFormat).Equals((object?)ImageFormat.Gif)
+     && !((object)((Image)val).RawFormat).Equals((object?)ImageFormat.Jpeg)
+    )
+```
+
+If these and some other very basic checks pass, then the program exits with
+code `0` and the checks are satisfied.
+
+We can see the other half of this if
+we load up `WINUPTP.EXE` in `ghidra` and take a look at how it handles
+the various exit codes of `chklogo`. After it finishes analyzing we search
+strings for "logo" as usual, and find references to code that deals with
+the logos. This is just the same as when we used `strings` above except
+this time we have a tool to jump to the actual code that is running with
+these strings. For example:
+
+```
+FUN_005a7f23(DAT_0071011c,&DAT_0067acd8,"Apply the custom start up image to the system.\n");
+if (DAT_0071039c == 0) {
+  if (DAT_007103a0 != 0) {
+LAB_0040958c:
+    iVar5 = __spawnlp(0,"chklogo","chklogo","logo.jpg",0)
+```
+
+We don't have to understand exactly what all of this means to see the
+basic shape. There is a string prompt as to the action taking place,
+and then a number of branches (only showing the first here) that call
+`chklogo` conditionally on the right file format (those `DAT` checks
+before actually turn out to be variables set in some validation steps
+this program runs to make sure it's calling `chklogo` correctly).
+
+And down lower we have some inspections of `iVar5` value, the exit code
+of `chklogo`, to handle success or error as is appropriate. The one we
+care about is that success code, `0`. We can trace where it leads,
+which I won't really go into here, except where we land:
+
 
 
 
