@@ -1,3 +1,8 @@
+---
+id: red-sun-whorl-boot-logo
+aliases: []
+tags: []
+---
 # Custom UEFI boot logo (red-sun-whorl)
 
 First stage of [[red-sun-whorl-seamless-startup|the seamless themed startup
@@ -8,19 +13,136 @@ v1.67, dated 2025-07-10 (source: `cat
 /sys/class/dmi/id/{product_name,product_version,bios_version,bios_date}`
 run on red-sun-whorl).
 
-## Approach: `BIOS_LOGO.TXT` mechanism
+## Background
 
 A community guide (source: https://1832jsh.github.io/thinkpad/BIOS_logo.html)
 describes some ThinkPads shipping a built-in custom boot-logo option in
 Lenovo's own signed update tooling, via a renamed `LOGO` file dropped
 into the BIOS package's `FLASH` folder before running `winuptp.exe`. It
 notes support varies per model and says to check that model's own
-`BIOS_LOGO.txt`/README - promising because, unlike raw firmware patching,
-it carries no Boot Guard risk if this model turned out to support it.
+`BIOS_LOGO.txt`/README.
 
-In order to verify support for this exact model, we downloaded the BIOS
-Update Utility package for Type 20UN/20UQ from
-support.lenovo.com/us/en/downloads/ds547748. It's an Inno Setup installer
+The reason we are interested in this particular approach is because unlike raw
+firmware patching, there is supposedly no risk of "Boot Guard" misbehavior
+if this laptop model turns out to support it. In order to verify support for
+this exact model, we will proceed to inspect the relevant Lenovo BIOS Update
+Utility package for our X1 Nano Gen1 model (Type 20UN/20UQ) from
+support.lenovo.com/us/en/downloads/ds547748.
+
+## Initial Firmware Update package inspection
+
+Once we have downloaded the file, we can proceed with inspection. We got a
+file from Lenovo called `n2tuj37w.exe`. Obviously this looks like a Windows
+executable file but it's worth stepping down in order to discover exactly
+what is going on in this file, to help us analyze.
+
+The most basic tool to try is called `file`. It just prints the "file type",
+which it determines by running a number of tests on the file:
+
+```
+> file n2tuj37w.exe
+n2tuj37w.exe: PE32 executable for MS Windows 5.00 (GUI), Intel i386, 10 sections
+```
+
+Nothing too surprising here. PE32 is the standard "Portable Executable"
+format Windows uses for pretty much everything it runs - .exes, DLLs,
+drivers, etc. Despite the naming convention "32" this is actually just
+a container format, and it doesn't actually tell us anything about the
+content of the code like whether it targets 32 or 64-bit execution
+platforms. This is just a genric Windows-loadable binary.
+
+Based on a bit of digging around in the ThinkPad modding community we
+can try the next step. Various online sources mention Lenovo's Windows
+BIOS update packages are usually 7-zip self-extracting archives. So we
+might try probing this with a 7-Zip command:
+
+```
+> 7z x n2tuj37w.exe -o./output-dir -y
+```
+
+Nothing fancy just a standard 7zip command, and not much to report in
+here either. Actually it does sorta extract some stuff but everything
+seems to still be in binary format. However there is one interesting
+tidbit nestled in the scanned metadata that's worth diving into more:
+
+```
+  38 │ ProductVersion: 1.71.1.49                                         
+  39 │ Comments: This installation was built with Inno Setup.
+  40 │ CompanyName: Lenovo Group Limited                                        
+  41 │ FileDescription: For Lenovo Updates Catalog
+```
+
+On line 39 we can see the name of the installer packaging software is
+called "Inno Setup". So in order to unpack it, we should target that
+installer platform. There is a well-known tool called `innoextract`
+for doing just this:
+
+```
+❯ rm -rf ./output-dir; innoextract -e -m -d output-dir/ n2tuj37w.exe 
+Extracting "version 1.71-1.49 (N2TET93W-N2THT73W)" - setup data version 5.5.7 (unicode)
+ - "code$GetExtractPath$/WINUPTP.EXE" - overwritten
+ - "code$GetExtractPath$/806A1.PAT"
+ - "code$GetExtractPath$/806C0.PAT"
+ - "code$GetExtractPath$/806C1.PAT"
+ - "code$GetExtractPath$/806D1.PAT"
+ - "code$GetExtractPath$/BCP.evs"
+ - "code$GetExtractPath$/BIOS_LOGO.TXT"
+ - "code$GetExtractPath$/BootX64.efi"
+ - "code$GetExtractPath$/chklogo.exe"
+ - "code$GetExtractPath$/chklogo.exe.config"
+ - "code$GetExtractPath$/DeleteFolder.xml"
+ - "code$GetExtractPath$/DeleteTasks.xml"
+ - "code$GetExtractPath$/Instruction - Update model number.txt"
+ - "code$GetExtractPath$/Instruction JP - BIOS flash USB memory key.txt"
+ - "code$GetExtractPath$/Instruction US - BIOS flash USB memory key.txt"
+ - "code$GetExtractPath$/mkusbkey.bat"
+ - "code$GetExtractPath$/pwdchk.exe"
+ - "code$GetExtractPath$/pwdchk64.exe"
+ - "code$GetExtractPath$/SHELLFLASH.EFI"
+ - "code$GetExtractPath$/WinFlash32.exe"
+ - "code$GetExtractPath$/WinFlash32s.exe"
+ - "code$GetExtractPath$/WinFlash64.exe"
+ - "code$GetExtractPath$/WinFlash64s.exe"
+ - "code$GetExtractPath$/wininfo.exe"
+ - "code$GetExtractPath$/wininfo64.exe"
+ - "code$GetExtractPath$/WINUPTP.EXE"
+ - "code$GetExtractPath$/WINUPTP64.EXE"
+ - "code$GetExtractPath$/32bit/tpnflhlp.sys"
+ - "code$GetExtractPath$/64bit/tpnflhlp.sys"
+ - "code$GetExtractPath$/N2TET93W/$0AN2T00.FL1"
+ - "code$GetExtractPath$/N2TET93W/$0AN2T00.FL2"
+Done.
+```
+
+Now that's more like it! There are a number of interesting files in
+there but among the gems is what we were looking for: `BIOS_LOGO.TXT`.
+This file contains exactly the instructions for how to replace your
+"Lenovo" startup logo with a custom image. It's actually really
+simple - I won't copy it all here but there are a few constraints:
+
+- Max of 60KB;
+- BMP, JPEG, or GIF format;
+- Max of 40% of the built-in LCD panel resolution (per dimension).
+
+Unfortunately there's one other catch. We have to run another Windows
+`.exe` file called `WINUPTP.EXE` to compile the image into the BIOS
+update system - but we're on Linux! So we have a couple options.
+We could either emulate windows to run this executable, or figure
+out what it does and write a script to do the same thing.
+
+Before we investigate other approaches, let's just dive deeper here
+to see what `WINUPTP.EXE` actually does. We will need a couple utils
+from the package `binutils`, called `strings` and `objdump`.
+
+
+
+
+-----
+ABOVE HERE IS HUMAN WRITTEN CONTENT
+BELOW HERE IS AI WRITTEN CONTENT
+-----
+
+It's an Inno Setup installer
 (`ProductName: ThinkPad BIOS Update Utility -Package 1.5.11.5`), so a
 generic archive tool won't unpack the real payload - `innoextract` is
 required. Extracting it confirmed BIOS payload version N2TET93W and
