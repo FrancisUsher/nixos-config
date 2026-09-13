@@ -25,7 +25,8 @@ Stages, roughly in boot order:
           (reverse-engineered mechanism, hand-built USB key,
           dying-sun-behind-a-crumbling-city pixel art)
     - [ ] Final artwork
-    - [ ] USB-key build scripted (currently manual)
+    - [x] USB-key build scripted
+          (`modules/themes/red-sun-whorl-usb-key-build.py`)
     - [ ] Reflash-with-a-new-logo path actually tried (only confirmed by
           disassembly so far)
 - [ ] systemd-boot menu / kernel handoff - currently stock, including the
