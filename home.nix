@@ -20,6 +20,7 @@
     ./modules/programs/fuzzel.nix
     ./modules/programs/qutebrowser.nix
     ./modules/programs/hyprland.nix
+    ./modules/programs/border-harness.nix
     ./modules/programs/quickshell-harness.nix
     ./modules/programs/rebuild-sweep.nix
     ./modules/programs/krita.nix
