@@ -12,8 +12,6 @@
 - [ ] [[nixos-rebuild-health-checks|Post-rebuild health checks]]
 - [ ] [[git-sync-check-hosts|Sync check-hosts.sh via git instead of rsync]]
 - [ ] [[laptop-wipe|Laptop wipe and fresh install]]
-- [ ] [[notes-cleanup|Notes cleanup: prune completed checkboxes]]
-- [ ] [[build-warnings|Build warnings to clean up]]
 - [ ] [[hotkey-overlay-followups|Hotkey overlay follow-ups]]
 - [ ] [[dotfiles-migration-gaps|Dotfiles migration gaps]]
 - [ ] [[home-silk-migration-gaps|home/silk migration gaps]]
