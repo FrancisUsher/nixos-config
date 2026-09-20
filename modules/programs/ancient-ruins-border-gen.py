@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 
 from PIL import Image
 
@@ -44,6 +45,11 @@ def main():
     parser.add_argument("--stone-blend", type=float, default=0.20)
     parser.add_argument("--highlight-blend", type=float, default=0.45)
     parser.add_argument("--out", required=True)
+    parser.add_argument(
+        "--write-selection",
+        help="also write the applied accent/blend params as JSON to this path, "
+        "if its parent directory exists",
+    )
     args = parser.parse_args()
 
     with open(args.palette) as f:
@@ -81,6 +87,19 @@ def main():
             img.putpixel((x, y), (*mortar, 255))
 
     img.save(args.out)
+
+    if args.write_selection and os.path.isdir(os.path.dirname(args.write_selection)):
+        with open(args.write_selection, "w") as f:
+            json.dump(
+                {
+                    "accent": args.accent,
+                    "stone_blend": args.stone_blend,
+                    "highlight_blend": args.highlight_blend,
+                },
+                f,
+                indent=2,
+            )
+            f.write("\n")
 
 
 if __name__ == "__main__":

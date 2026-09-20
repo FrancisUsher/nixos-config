@@ -4,6 +4,8 @@ let
   palette = removeAttrs (import ../themes/ancient-ruins.nix) [ "slug" "scheme" "author" ];
   paletteJson = pkgs.writeText "border-harness-palette.json" (builtins.toJSON palette);
 
+  selection = builtins.fromJSON (builtins.readFile ./border-harness-selection.json);
+
   generatorScript = ./ancient-ruins-border-gen.py;
   pythonWithPillow = pkgs.python3.withPackages (ps: [ ps.pillow ]);
 
@@ -13,8 +15,9 @@ let
     text = ''
       palette="''${BORDER_HARNESS_PALETTE:-$HOME/.config/border-harness/palette.json}"
       out="''${BORDER_HARNESS_OUT:-$HOME/.cache/border-harness/current.png}"
+      selection="''${BORDER_HARNESS_SELECTION:-$HOME/nixos-config/modules/programs/border-harness-selection.json}"
       mkdir -p "$(dirname "$out")"
-      python3 ${generatorScript} --palette "$palette" --out "$out" "$@"
+      python3 ${generatorScript} --palette "$palette" --out "$out" --write-selection "$selection" "$@"
       hyprctl reload >/dev/null 2>&1 || true
     '';
   };
@@ -22,7 +25,10 @@ let
   defaultBorderImage = pkgs.runCommand "ancient-ruins-border-default.png" {
     nativeBuildInputs = [ pythonWithPillow ];
   } ''
-    python3 ${generatorScript} --palette ${paletteJson} --out $out
+    python3 ${generatorScript} --palette ${paletteJson} --out $out \
+      --accent ${selection.accent} \
+      --stone-blend ${toString selection.stone_blend} \
+      --highlight-blend ${toString selection.highlight_blend}
   '';
 in
 {
@@ -32,6 +38,6 @@ in
 
   home.activation.borderHarnessSeed = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     $DRY_RUN_CMD mkdir -p "$HOME/.cache/border-harness"
-    $DRY_RUN_CMD cp -f ${defaultBorderImage} "$HOME/.cache/border-harness/current.png"
+    $DRY_RUN_CMD install -m 644 ${defaultBorderImage} "$HOME/.cache/border-harness/current.png"
   '';
 }
