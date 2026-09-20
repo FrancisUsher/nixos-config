@@ -5,6 +5,7 @@ let
   paletteJson = pkgs.writeText "border-harness-palette.json" (builtins.toJSON palette);
 
   selection = builtins.fromJSON (builtins.readFile ./border-harness-selection.json);
+  selectionJson = pkgs.writeText "border-harness-selection.json" (builtins.toJSON selection);
 
   generatorScript = ./ancient-ruins-border-gen.py;
   pythonWithPillow = pkgs.python3.withPackages (ps: [ ps.pillow ]);
@@ -35,6 +36,7 @@ in
   home.packages = [ borderHarnessGenerate ];
 
   xdg.configFile."border-harness/palette.json".source = paletteJson;
+  xdg.configFile."border-harness/selection.json".source = selectionJson;
 
   home.activation.borderHarnessSeed = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     $DRY_RUN_CMD mkdir -p "$HOME/.cache/border-harness"

@@ -30,6 +30,24 @@ ShellRoot {
         onTriggered: root.regenerate()
     }
 
+    FileView {
+        id: selectionFile
+        path: Quickshell.env("HOME") + "/.config/border-harness/selection.json"
+        preload: true
+        blockLoading: true
+    }
+
+    Component.onCompleted: {
+        try {
+            const saved = JSON.parse(selectionFile.text());
+            root.selectedAccent = saved.accent;
+            root.stoneBlend = saved.stone_blend;
+            root.highlightBlend = saved.highlight_blend;
+        } catch (e) {
+            console.warn("border-harness: could not load saved selection, using built-in defaults", e);
+        }
+    }
+
     PanelWindow {
         id: window
         visible: false
