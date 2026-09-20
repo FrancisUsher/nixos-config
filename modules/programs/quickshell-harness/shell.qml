@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import Quickshell.Io
 
 ShellRoot {
@@ -10,6 +11,7 @@ ShellRoot {
     property string selectedAccent: "base09"
     property real stoneBlend: 0.20
     property real highlightBlend: 0.45
+    property var accentSlots: ["base08", "base09", "base0A", "base0B", "base0C", "base0D", "base0E", "base0F"]
 
     function regenerate() {
         Quickshell.execDetached([
@@ -68,12 +70,27 @@ ShellRoot {
         implicitWidth: 360
         implicitHeight: 440
 
+        onVisibleChanged: if (visible) content.forceActiveFocus()
+
+        // closes the panel when focus moves elsewhere, e.g. a click outside it
+        HyprlandFocusGrab {
+            id: focusGrab
+            windows: [window]
+            active: window.visible
+            onCleared: window.visible = false
+        }
+
+        // the panel's visible frame
         Rectangle {
+            id: content
             anchors.fill: parent
             color: theme.hex("base00")
             border.color: theme.hex("base02")
             border.width: 1
             radius: 8
+            focus: true
+
+            Keys.onEscapePressed: window.visible = false
 
             Column {
                 anchors.fill: parent
@@ -114,13 +131,13 @@ ShellRoot {
                     Row {
                         spacing: 6
                         Repeater {
-                            model: ["base08", "base09", "base0A", "base0B", "base0C", "base0D", "base0E", "base0F"]
+                            model: root.accentSlots
                             Swatch {
                                 theme: theme
-                                slot: modelData
-                                selected: root.selectedAccent === modelData
+                                slot: root.accentSlots[index]
+                                selected: root.selectedAccent === root.accentSlots[index]
                                 onPicked: {
-                                    root.selectedAccent = modelData;
+                                    root.selectedAccent = root.accentSlots[index];
                                     regenDebounce.restart();
                                 }
                             }
