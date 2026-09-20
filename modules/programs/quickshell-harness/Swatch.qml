@@ -16,6 +16,7 @@ Rectangle {
     border.width: selected ? 2 : 1
     border.color: selected ? theme.hex("base06") : theme.hex("base02")
 
+    // click this color to make it the accent
     MouseArea {
         anchors.fill: parent
         onClicked: root.picked()

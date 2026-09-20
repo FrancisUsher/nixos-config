@@ -12,6 +12,7 @@ Item {
     width: parent ? parent.width : 0
     height: 16
 
+    // the full [from, to] span the slider covers
     Rectangle {
         id: track
         anchors.verticalCenter: parent.verticalCenter
@@ -20,6 +21,7 @@ Item {
         radius: 2
         color: root.theme.hex("base02")
     }
+    // the portion of the track below the current value
     Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         width: track.width * ((root.value - root.from) / (root.to - root.from))
@@ -27,6 +29,7 @@ Item {
         radius: 2
         color: root.theme.hex("base0A")
     }
+    // what the user grabs to move the slider
     Rectangle {
         id: handle
         width: 12
@@ -37,6 +40,7 @@ Item {
             track.width * ((root.value - root.from) / (root.to - root.from)) - width / 2))
         color: root.theme.hex("base06")
     }
+    // clicking or dragging anywhere on the slider jumps/drags the value
     MouseArea {
         anchors.fill: parent
 

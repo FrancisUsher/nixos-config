@@ -10,6 +10,7 @@ Item {
     width: parent ? parent.width : 0
     height: 24
 
+    // radio-style indicator showing whether this option is the active one
     Rectangle {
         id: dot
         width: 12
@@ -22,6 +23,7 @@ Item {
         color: root.checked ? root.theme.hex("base0A") : "transparent"
     }
 
+    // the option's name, next to its indicator
     Text {
         anchors.left: dot.right
         anchors.leftMargin: 8
