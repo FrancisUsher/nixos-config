@@ -53,15 +53,22 @@ let
     status=$?
     if [ "$status" -eq 0 ]; then
       targetUid=$(${pkgs.coreutils}/bin/id -u ${targetUser})
-      # We need to run the success animation as the sudoing user, even
-      # though nixos-rebuild is running as root via sudo.
-      if [ "$(${pkgs.coreutils}/bin/id -u)" -eq "$targetUid" ]; then
-        ${pkgs.quickshell}/bin/qs ipc --any-display -c rebuild-sweep call rebuildSweep trigger 2>/dev/null || true
-      else
-        ${pkgs.util-linux}/bin/runuser -u ${targetUser} -- \
-          env XDG_RUNTIME_DIR="/run/user/$targetUid" ${pkgs.quickshell}/bin/qs ipc --any-display -c rebuild-sweep call rebuildSweep trigger \
-          2>/dev/null || true
-      fi
+      # We need to run these as the sudoing user, even though nixos-rebuild
+      # is running as root via sudo.
+      runAsUser() {
+        if [ "$(${pkgs.coreutils}/bin/id -u)" -eq "$targetUid" ]; then
+          "$@"
+        else
+          ${pkgs.util-linux}/bin/runuser -u ${targetUser} -- \
+            env XDG_RUNTIME_DIR="/run/user/$targetUid" "$@"
+        fi
+      }
+      runAsUser ${pkgs.quickshell}/bin/qs ipc --any-display -c rebuild-sweep call rebuildSweep trigger 2>/dev/null || true
+
+      # Quickshell doesn't reread its QML on its own. Force a restart.
+      runAsUser ${pkgs.quickshell}/bin/qs kill --any-display -c display-options 2>/dev/null || true
+      sleep 0.3
+      runAsUser ${pkgs.quickshell}/bin/qs -c display-options -d 2>/dev/null || true
     fi
     exit "$status"
   '';
