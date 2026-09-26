@@ -48,3 +48,8 @@
       working; pre-existing, unrelated to the Hyprland hyprlang-to-Lua
       migration (confirmed the binds themselves survived that migration
       unchanged)
+- [ ] Investigate splitting the `nixpkgs-unstable-unfree` flake input so
+      claude-code (hosts/bubu-brain/configuration.nix) and Hyprland
+      (modules/programs/hyprland.nix, used on every host via home.nix) don't
+      share one pin - currently bumping the input for claude-code also
+      forces a full Hyprland/Qt closure rebuild on red-sun-whorl
