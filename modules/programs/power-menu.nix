@@ -3,7 +3,7 @@
 let
   logoutScript = pkgs.writeShellScript "power-menu-logout" ''
     if [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
-      hyprctl dispatch exit
+      hyprctl dispatch 'hl.dsp.exit()'
     else
       swaymsg exit
     fi
