@@ -50,6 +50,34 @@ test('typed lines become notes on the current section and are sent as one prompt
   expect(await ui.find({ type: 'Text', text: 'engine band' })).toBeDefined()
 })
 
+test('a hint appears after a reply and pressing it starts the review', async ($, on) => {
+  on('turn.complete', () => ({ text: '' }))
+  on('ui.render', () => ({ type: 'Text', props: {}, children: ['engine band'] }))
+
+  const ui = await $.ui.mount(BAND)
+  expect(await ui.find({ key: 'start' })).toBeUndefined()
+
+  await $.turn.complete({ turnId: 't1', answer: ANSWER, durationMs: 1, isAborted: false, usage: null })
+  const hint = await ui.find({ key: 'start' })
+  expect(hint?.props.label).toBe('ctrl+↓ annotate · 3 sections')
+  expect(hint?.props.action).toBe('app:diffFileListDown')
+
+  await ui.press({ key: 'start' })
+  expect(await ui.find({ type: 'Text', text: /section 1\/3/ })).toBeDefined()
+})
+
+test('the hint clears when the next turn starts', async ($, on) => {
+  on('turn.complete', () => ({ text: '' }))
+  on('turn.start', ($, e) => ({ turnId: e.turnId }))
+  on('ui.render', () => ({ type: 'Text', props: {}, children: ['engine band'] }))
+
+  await $.turn.complete({ turnId: 't1', answer: ANSWER, durationMs: 1, isAborted: false, usage: null })
+  await $.turn.start({ turnId: 't2' })
+  const ui = await $.ui.mount(BAND)
+  expect(await ui.find({ key: 'start' })).toBeUndefined()
+  expect(await ui.find({ type: 'Text', text: 'engine band' })).toBeDefined()
+})
+
 test('slash commands pass through while reviewing', async ($, on) => {
   on('turn.complete', () => ({ text: '' }))
   on('prompt.submit', ($, e) => ({ text: e.text }))

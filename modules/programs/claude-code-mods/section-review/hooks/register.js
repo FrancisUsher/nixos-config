@@ -1,6 +1,7 @@
 import { splitSections } from './split.js'
 import { composeFeedback } from './feedback.js'
 import { reviewBand } from './band.js'
+import { annotateHint } from './hint.js'
 
 const TYPED_BY_USER = ['composer', 'bridge']
 
@@ -31,6 +32,7 @@ async function sendReview($) {
   if (review.notes.length === 0) return { text: 'No notes yet. Type one and press Enter, or /annotate-cancel.' }
   const text = composeFeedback(review.sections, review.notes)
   review = null
+  latestSections = []
   $.ui.invalidate('ui.render')
   await $.prompt.submit({ text, asUser: true })
   return {}
@@ -44,8 +46,15 @@ export function register(on) {
     return next(e)
   })
 
+  on('turn.start', async ($, e, next) => {
+    latestSections = []
+    $.ui.invalidate('ui.render')
+    return next(e)
+  })
+
   on('turn.complete', async ($, e, next) => {
     if (!e.agentId && !e.isAborted && e.answer.trim()) latestSections = splitSections(e.answer)
+    $.ui.invalidate('ui.render')
     return next(e)
   })
 
@@ -61,7 +70,8 @@ export function register(on) {
   })
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
-    if (!review) return next(e)
+    if (!review && latestSections.length === 0) return next(e)
+    if (!review) return annotateHint($.ui.resolve(e), latestSections.length, () => startReview($))
     return reviewBand($.ui.resolve(e), review, {
       prev: () => page($, -1),
       next: () => page($, 1),
