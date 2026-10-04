@@ -6,6 +6,9 @@
     nixpkgs-unstable-unfree = {
       url = "github:NixOS/nixpkgs/nixos-unstable";
     };
+    nixpkgs-claude-code = {
+      url = "github:NixOS/nixpkgs/nixos-unstable";
+    };
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -24,16 +27,20 @@
     };
   };
 
-  outputs = { nixpkgs, nixpkgs-unstable-unfree, home-manager, nixos-hardware, nixvim, stylix, ... }:
+  outputs = { nixpkgs, nixpkgs-unstable-unfree, nixpkgs-claude-code, home-manager, nixos-hardware, nixvim, stylix, ... }:
     let
       system = "x86_64-linux";
       unstableUnfreePkgs = import nixpkgs-unstable-unfree {
         inherit system;
         config.allowUnfree = true;
       };
+      claudeCodePkgs = import nixpkgs-claude-code {
+        inherit system;
+        config.allowUnfree = true;
+      };
       mkHost = hostName: username: extraModules: nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit unstableUnfreePkgs; };
+        specialArgs = { inherit unstableUnfreePkgs claudeCodePkgs; };
         modules = [
           ./hosts/${hostName}/configuration.nix
           home-manager.nixosModules.home-manager

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, unstableUnfreePkgs, ... }:
+{ config, lib, pkgs, claudeCodePkgs, ... }:
 
 {
   imports =
@@ -69,7 +69,7 @@
     python3
     nodejs
   ] ++ [
-    unstableUnfreePkgs.claude-code
+    claudeCodePkgs.claude-code
   ];
 
   nixpkgs.config.allowUnfreePredicate = pkg:
