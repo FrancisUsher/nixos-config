@@ -1,0 +1,6 @@
+{
+  "name": "section-review",
+  "version": "0.1.0",
+  "author": { "name": "Francis Usher" },
+  "description": "Page through Claude's last reply section by section and send per-section feedback as one prompt"
+}
