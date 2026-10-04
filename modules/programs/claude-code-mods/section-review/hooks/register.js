@@ -4,26 +4,32 @@ import { reviewBand } from './band.js'
 import { annotateHint } from './hint.js'
 
 const TYPED_BY_USER = ['composer', 'bridge']
+const STORE_KEY = 'review'
 
 let latestSections = []
 let review = null
 
-function startReview($) {
-  if (latestSections.length === 0) return { text: 'No reply to review yet.' }
-  review = { sections: latestSections, index: 0, notes: [] }
+async function setReview($, value) {
+  review = value
   $.ui.invalidate('ui.render')
+  if (value) await $.store.set(STORE_KEY, value)
+  else await $.store.delete(STORE_KEY)
+}
+
+async function startReview($) {
+  if (review) return { text: `Resumed the review in progress (${review.notes.length} notes).` }
+  if (latestSections.length === 0) return { text: 'No reply to review yet.' }
+  await setReview($, { sections: latestSections, index: 0, notes: [] })
   return {}
 }
 
-function page($, step) {
+async function page($, step) {
   if (!review) return
-  review = { ...review, index: Math.min(Math.max(review.index + step, 0), review.sections.length - 1) }
-  $.ui.invalidate('ui.render')
+  await setReview($, { ...review, index: Math.min(Math.max(review.index + step, 0), review.sections.length - 1) })
 }
 
-function cancelReview($) {
-  review = null
-  $.ui.invalidate('ui.render')
+async function cancelReview($) {
+  await setReview($, null)
   return {}
 }
 
@@ -32,18 +38,19 @@ function unsendable() {
   if (review.notes.length === 0) return 'No notes yet. Type one and press Enter, or /annotate-cancel.'
 }
 
-function takeFeedback($) {
-  const text = composeFeedback(review.sections, review.notes)
-  review = null
-  latestSections = []
-  $.ui.invalidate('ui.render')
-  return text
+async function submitFeedback($, submit) {
+  const result = await submit(composeFeedback(review.sections, review.notes))
+  if (result.drop === undefined) {
+    latestSections = []
+    await setReview($, null)
+  }
+  return result
 }
 
 async function sendReview($) {
   const reason = unsendable()
   if (reason) return { text: reason }
-  await $.prompt.submit({ text: takeFeedback($), asUser: true })
+  await submitFeedback($, (text) => $.prompt.submit({ text, asUser: true }))
   return {}
 }
 
@@ -52,6 +59,8 @@ export function register(on) {
     await $.command.register({ name: 'annotate', description: "Page through Claude's last reply section by section and note feedback" })
     await $.command.register({ name: 'annotate-send', description: 'Send the review notes as the next prompt' })
     await $.command.register({ name: 'annotate-cancel', description: 'Discard the review notes' })
+    review = (await $.store.get(STORE_KEY)) ?? null
+    $.ui.invalidate('ui.render')
     return next(e)
   })
 
@@ -72,10 +81,9 @@ export function register(on) {
   on('command.run', { command: 'annotate-cancel' }, async ($) => cancelReview($))
 
   on('prompt.submit', async ($, e, next) => {
-    if (e.text.trim() === '/annotate-send' && !unsendable()) return next({ ...e, text: takeFeedback($) })
+    if (e.text.trim() === '/annotate-send' && !unsendable()) return submitFeedback($, (text) => next({ ...e, text }))
     if (!review || !TYPED_BY_USER.includes(e.origin.kind) || e.text.trimStart().startsWith('/')) return next(e)
-    review = { ...review, notes: [...review.notes, { section: review.index, text: e.text.trim() }] }
-    $.ui.invalidate('ui.render')
+    await setReview($, { ...review, notes: [...review.notes, { section: review.index, text: e.text.trim() }] })
     return { drop: `Noted on section ${review.index + 1}` }
   })
 
