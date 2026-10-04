@@ -27,14 +27,23 @@ function cancelReview($) {
   return {}
 }
 
-async function sendReview($) {
-  if (!review) return { text: 'No review in progress.' }
-  if (review.notes.length === 0) return { text: 'No notes yet. Type one and press Enter, or /annotate-cancel.' }
+function unsendable() {
+  if (!review) return 'No review in progress.'
+  if (review.notes.length === 0) return 'No notes yet. Type one and press Enter, or /annotate-cancel.'
+}
+
+function takeFeedback($) {
   const text = composeFeedback(review.sections, review.notes)
   review = null
   latestSections = []
   $.ui.invalidate('ui.render')
-  await $.prompt.submit({ text, asUser: true })
+  return text
+}
+
+async function sendReview($) {
+  const reason = unsendable()
+  if (reason) return { text: reason }
+  await $.prompt.submit({ text: takeFeedback($), asUser: true })
   return {}
 }
 
@@ -59,10 +68,11 @@ export function register(on) {
   })
 
   on('command.run', { command: 'annotate' }, async ($) => startReview($))
-  on('command.run', { command: 'annotate-send' }, async ($) => sendReview($))
+  on('command.run', { command: 'annotate-send' }, async () => ({ text: unsendable() }))
   on('command.run', { command: 'annotate-cancel' }, async ($) => cancelReview($))
 
   on('prompt.submit', async ($, e, next) => {
+    if (e.text.trim() === '/annotate-send' && !unsendable()) return next({ ...e, text: takeFeedback($) })
     if (!review || !TYPED_BY_USER.includes(e.origin.kind) || e.text.trimStart().startsWith('/')) return next(e)
     review = { ...review, notes: [...review.notes, { section: review.index, text: e.text.trim() }] }
     $.ui.invalidate('ui.render')
