@@ -27,11 +27,8 @@ let
   mkBezier = name: points: { _args = [ name { type = "bezier"; inherit points; } ]; };
 
   imgborders = unstableUnfreePkgs.hyprlandPlugins.imgborders.overrideAttrs (_: {
-    version = "2026-08-16";
-    src = pkgs.fetchzip {
-      url = "https://codeberg.org/zacoons/imgborders/archive/08be22236144d3c91607bcfa955ed0d457f4f50b.tar.gz";
-      hash = "sha256-O+896T2qrisxiWTotB5HlzKw8XEJqPDTgSUHAAVUD18=";
-    };
+    version = "2026-08-16-local";
+    src = ./imgborders;
   });
 in
 {
