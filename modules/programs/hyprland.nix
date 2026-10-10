@@ -164,6 +164,7 @@ in
         hl.exec_cmd("${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store")
         hl.exec_cmd("${pkgs.quickshell}/bin/qs -c display-options")
         hl.exec_cmd("${pkgs.quickshell}/bin/qs -c rebuild-sweep")
+        hl.exec_cmd("${pkgs.quickshell}/bin/qs -c volume-osd")
       end)
     '';
   };
