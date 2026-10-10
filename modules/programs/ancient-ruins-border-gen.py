@@ -51,6 +51,49 @@ def write_live_lua(path, args, palette):
     os.replace(tmp, path)
 
 
+def autotile_quadrant_bit(x, y):
+    north = y < 4
+    west = x < 4
+    return {(True, True): 8, (True, False): 4, (False, True): 2, (False, False): 1}[(north, west)]
+
+
+def autotile_tile(tile, mortar, highlight):
+    px = [[None for _ in range(8)] for _ in range(8)]
+    holes = [(x, y) for y in range(8) for x in range(8) if not tile & autotile_quadrant_bit(x, y)]
+    if not holes:
+        return px
+    convex = tile in (1, 2, 4, 8)
+    for y in range(8):
+        for x in range(8):
+            if not tile & autotile_quadrant_bit(x, y):
+                continue
+            d = min(max(abs(x - hx), abs(y - hy)) for hx, hy in holes)
+            if convex and x in (3, 4) and y in (3, 4):
+                px[y][x] = mortar
+            elif d == 1:
+                px[y][x] = highlight
+            elif d == 2:
+                px[y][x] = mortar
+    return px
+
+
+def autotile_sheet(args, palette):
+    mortar = hex_to_rgb(palette[args.mortar])
+    ember = hex_to_rgb(palette[args.accent])
+    stone = blend(mortar, ember, args.stone_blend)
+    highlight = blend(mortar, ember, args.highlight_blend)
+    brick = brick_module(mortar, stone, highlight)
+    sheet = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
+    for tile in range(16):
+        ox, oy = (tile % 4) * 8, (tile // 4) * 8
+        block = brick if tile == 15 else autotile_tile(tile, mortar, highlight)
+        for y in range(8):
+            for x in range(8):
+                if block[y][x] is not None:
+                    sheet.putpixel((ox + x, oy + y), (*block[y][x], 255))
+    return sheet
+
+
 def paste(canvas, block, ox, oy):
     for y in range(8):
         for x in range(8):
@@ -64,13 +107,14 @@ def main():
     parser.add_argument("--mortar", default="base00", help="palette slot for background/mortar")
     parser.add_argument("--stone-blend", type=float, default=0.20)
     parser.add_argument("--highlight-blend", type=float, default=0.45)
-    parser.add_argument("--algorithm", choices=("sprite", "procedural"), default="sprite")
+    parser.add_argument("--algorithm", choices=("sprite", "procedural", "autotile"), default="sprite")
     parser.add_argument("--seed", type=int, default=1)
     parser.add_argument("--roughness", type=float, default=0.5)
     parser.add_argument("--chipping", type=float, default=0.4)
     parser.add_argument("--moss", type=float, default=0.2)
     parser.add_argument("--moss-slot", default="base0B")
     parser.add_argument("--out", required=True)
+    parser.add_argument("--sheet-out", help="also write the 16-tile dual-grid autotile sheet here")
     parser.add_argument("--live-lua", help="write plugin params as a Lua table to this path")
     parser.add_argument(
         "--write-selection",
@@ -82,8 +126,13 @@ def main():
     with open(args.palette) as f:
         palette = json.load(f)
 
-    if args.algorithm == "sprite":
+    if args.algorithm == "autotile":
+        Image.new("RGBA", (N, N), (0, 0, 0, 0)).save(args.out)
+    else:
         sprite(args, palette).save(args.out)
+
+    if args.sheet_out:
+        autotile_sheet(args, palette).save(args.sheet_out)
 
     if args.live_lua:
         write_live_lua(args.live_lua, args, palette)

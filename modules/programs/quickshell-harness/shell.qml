@@ -17,9 +17,16 @@ ShellRoot {
     property real chipping: 0.4
     property real moss: 0.2
     property var accentSlots: ["base08", "base09", "base0A", "base0B", "base0C", "base0D", "base0E", "base0F"]
+    property int sheetVersion: 0
+    readonly property url autotileSheet: "file://" + Quickshell.env("HOME") + "/.cache/border-harness/autotile.png?v=" + sheetVersion
+    property var wallOptions: ({ reach: 29, edgeReach: 34, pixelScale: 3 })
 
     function regenerate() {
-        Quickshell.execDetached([
+        if (generator.running) {
+            regenDebounce.restart();
+            return;
+        }
+        generator.command = [
             "border-harness-generate",
             "--algorithm", root.algorithm,
             "--accent", root.selectedAccent,
@@ -29,12 +36,34 @@ ShellRoot {
             "--roughness", root.roughness.toFixed(2),
             "--chipping", root.chipping.toFixed(2),
             "--moss", root.moss.toFixed(2)
-        ]);
+        ];
+        generator.running = true;
     }
 
     function pickAlgorithm(name) {
         root.algorithm = name;
         regenDebounce.restart();
+    }
+
+    Process {
+        id: generator
+        onExited: root.sheetVersion++
+    }
+
+    HyprlandLayout {
+        id: hyprLayout
+        active: root.algorithm === "autotile"
+    }
+
+    Variants {
+        model: root.algorithm === "autotile" ? Quickshell.screens : []
+
+        WallLayer {
+            clients: hyprLayout.clients
+            monitors: hyprLayout.monitors
+            wallOptions: root.wallOptions
+            sheet: root.autotileSheet
+        }
     }
 
     Theme {
@@ -54,7 +83,19 @@ ShellRoot {
         blockLoading: true
     }
 
+    FileView {
+        id: wallFile
+        path: Quickshell.env("HOME") + "/.config/border-harness/wall.json"
+        preload: true
+        blockLoading: true
+    }
+
     Component.onCompleted: {
+        try {
+            root.wallOptions = JSON.parse(wallFile.text());
+        } catch (e) {
+            console.warn("border-harness: could not load wall.json, using built-in defaults", e);
+        }
         try {
             const saved = JSON.parse(selectionFile.text());
             root.selectedAccent = saved.accent;
@@ -136,7 +177,12 @@ ShellRoot {
                         checked: root.algorithm === "sprite"
                         onPicked: root.pickAlgorithm("sprite")
                     }
-                    OptionRow { theme: theme; label: "Neighbor-aware autotile (soon)"; checked: false; enabled: false }
+                    OptionRow {
+                        theme: theme
+                        label: "Neighbor-aware autotile"
+                        checked: root.algorithm === "autotile"
+                        onPicked: root.pickAlgorithm("autotile")
+                    }
                     OptionRow {
                         theme: theme
                         label: "Procedural generation"
