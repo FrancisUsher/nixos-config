@@ -19,12 +19,6 @@ Item {
         }
     }
 
-    MouseArea {
-        anchors.fill: parent
-        enabled: root.enabled
-        onClicked: { root.forceActiveFocus(); root.picked(); }
-    }
-
     // radio-style indicator showing whether this option is the active one
     Rectangle {
         id: dot
@@ -34,7 +28,8 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         border.width: root.activeFocus ? 2 : 1
-        border.color: root.activeFocus ? root.theme.hex("base06") : root.enabled ? root.theme.hex("base05") : root.theme.hex("base03")
+        border.color: !root.enabled ? root.theme.hex("base03")
+            : root.activeFocus ? root.theme.hex("base06") : root.theme.hex("base05")
         color: root.checked ? root.theme.hex("base0A") : "transparent"
     }
 
@@ -45,5 +40,11 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         text: root.label
         color: root.enabled ? root.theme.hex("base05") : root.theme.hex("base03")
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        enabled: root.enabled
+        onClicked: { root.forceActiveFocus(); root.picked(); }
     }
 }
