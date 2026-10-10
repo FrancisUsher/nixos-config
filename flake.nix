@@ -67,6 +67,7 @@
           {
             home-manager.users.silk.imports = [
               ./modules/programs/power-menu.nix
+              ./modules/programs/chromium.nix
               ./hosts/red-sun-whorl/ssh-pas-bubu-brain.nix
             ];
           }
