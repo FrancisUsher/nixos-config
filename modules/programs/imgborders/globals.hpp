@@ -3,6 +3,7 @@
 #include <hyprland/src/config/values/types/BoolValue.hpp>
 #include <hyprland/src/config/values/types/CssGapValue.hpp>
 #include <hyprland/src/config/values/types/FloatValue.hpp>
+#include <hyprland/src/config/values/types/IntValue.hpp>
 #include <hyprland/src/config/values/types/StringValue.hpp>
 #include <hyprland/src/plugins/PluginAPI.hpp>
 
@@ -22,6 +23,16 @@ struct SGlobalState {
     SP<Config::Values::CFloatValue> scale;
     SP<Config::Values::CBoolValue> smooth;
     SP<Config::Values::CBoolValue> blur;
+    SP<Config::Values::CStringValue> mode;
+    SP<Config::Values::CIntValue> seed;
+    SP<Config::Values::CFloatValue> roughness;
+    SP<Config::Values::CFloatValue> chipping;
+    SP<Config::Values::CFloatValue> moss;
+    SP<Config::Values::CFloatValue> stoneBlend;
+    SP<Config::Values::CFloatValue> highlightBlend;
+    SP<Config::Values::CStringValue> colorMortar;
+    SP<Config::Values::CStringValue> colorAccent;
+    SP<Config::Values::CStringValue> colorMoss;
   } config;
 
   uint32_t noImgBordersRuleIdx = 0;

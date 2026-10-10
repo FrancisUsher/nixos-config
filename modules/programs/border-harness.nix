@@ -17,8 +17,9 @@ let
       palette="''${BORDER_HARNESS_PALETTE:-$HOME/.config/border-harness/palette.json}"
       out="''${BORDER_HARNESS_OUT:-$HOME/.cache/border-harness/current.png}"
       selection="''${BORDER_HARNESS_SELECTION:-$HOME/nixos-config/modules/programs/border-harness-selection.json}"
+      live="''${BORDER_HARNESS_LIVE:-$HOME/.cache/border-harness/live.lua}"
       mkdir -p "$(dirname "$out")"
-      python3 ${generatorScript} --palette "$palette" --out "$out" --write-selection "$selection" "$@"
+      python3 ${generatorScript} --palette "$palette" --out "$out" --write-selection "$selection" --live-lua "$live" "$@"
       hyprctl reload >/dev/null 2>&1 || true
     '';
   };
@@ -27,14 +28,9 @@ let
     nativeBuildInputs = [ pythonWithPillow ];
   } ''
     python3 ${generatorScript} --palette ${paletteJson} --out $out \
-      --algorithm ${selection.algorithm or "sprite"} \
       --accent ${selection.accent} \
       --stone-blend ${toString selection.stone_blend} \
-      --highlight-blend ${toString selection.highlight_blend} \
-      --seed ${toString (selection.seed or 1)} \
-      --roughness ${toString (selection.roughness or 0.5)} \
-      --chipping ${toString (selection.chipping or 0.4)} \
-      --moss ${toString (selection.moss or 0.2)}
+      --highlight-blend ${toString selection.highlight_blend}
   '';
 in
 {
@@ -46,5 +42,26 @@ in
   home.activation.borderHarnessSeed = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     $DRY_RUN_CMD mkdir -p "$HOME/.cache/border-harness"
     $DRY_RUN_CMD install -m 644 ${defaultBorderImage} "$HOME/.cache/border-harness/current.png"
+    $DRY_RUN_CMD rm -f "$HOME/.cache/border-harness/live.lua"
+  '';
+
+  wayland.windowManager.hyprland.settings.config.plugin.imgborders = {
+    mode = if (selection.algorithm or "sprite") == "procedural" then "procedural" else "image";
+    seed = selection.seed or 1;
+    roughness = selection.roughness or 0.5;
+    chipping = selection.chipping or 0.4;
+    moss = selection.moss or 0.2;
+    stone_blend = selection.stone_blend;
+    highlight_blend = selection.highlight_blend;
+    color_mortar = palette.base00;
+    color_accent = palette.${selection.accent};
+    color_moss = palette.base0B;
+  };
+
+  wayland.windowManager.hyprland.extraConfig = ''
+    local borderHarnessOk, borderHarnessLive = pcall(dofile, os.getenv("HOME") .. "/.cache/border-harness/live.lua")
+    if borderHarnessOk and type(borderHarnessLive) == "table" then
+      hl.config({ plugin = { imgborders = borderHarnessLive } })
+    end
   '';
 }

@@ -108,12 +108,50 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   g_pGlobalState->config.blur = makeShared<Config::Values::CBoolValue>(
       "plugin:imgborders:blur", "Whether transparency should have blur or not.",
       false);
+  g_pGlobalState->config.mode = makeShared<Config::Values::CStringValue>(
+      "plugin:imgborders:mode",
+      "\"image\" to slice the image, \"procedural\" to generate stone borders "
+      "per window.",
+      "image");
+  g_pGlobalState->config.seed = makeShared<Config::Values::CIntValue>(
+      "plugin:imgborders:seed", "Base seed mixed into every window's seed.", 1);
+  g_pGlobalState->config.roughness = makeShared<Config::Values::CFloatValue>(
+      "plugin:imgborders:roughness", "Per-stone and per-pixel shade variance.",
+      0.5);
+  g_pGlobalState->config.chipping = makeShared<Config::Values::CFloatValue>(
+      "plugin:imgborders:chipping", "Chance of chipped corners and cracks.",
+      0.4);
+  g_pGlobalState->config.moss = makeShared<Config::Values::CFloatValue>(
+      "plugin:imgborders:moss", "Amount of moss growing on stone tops.", 0.2);
+  g_pGlobalState->config.stoneBlend = makeShared<Config::Values::CFloatValue>(
+      "plugin:imgborders:stone_blend",
+      "Stone body brightness, as a blend from mortar to accent.", 0.2);
+  g_pGlobalState->config.highlightBlend =
+      makeShared<Config::Values::CFloatValue>(
+          "plugin:imgborders:highlight_blend",
+          "Stone bevel brightness, as a blend from mortar to accent.", 0.45);
+  g_pGlobalState->config.colorMortar = makeShared<Config::Values::CStringValue>(
+      "plugin:imgborders:color_mortar", "Mortar color as RRGGBB.", "1c1b1a");
+  g_pGlobalState->config.colorAccent = makeShared<Config::Values::CStringValue>(
+      "plugin:imgborders:color_accent", "Stone color as RRGGBB.", "9d5d40");
+  g_pGlobalState->config.colorMoss = makeShared<Config::Values::CStringValue>(
+      "plugin:imgborders:color_moss", "Moss color as RRGGBB.", "76856a");
   HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.image);
   HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.sizes);
   HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.insets);
   HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.scale);
   HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.smooth);
   HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.blur);
+  HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.mode);
+  HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.seed);
+  HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.roughness);
+  HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.chipping);
+  HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.moss);
+  HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.stoneBlend);
+  HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.highlightBlend);
+  HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.colorMortar);
+  HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.colorAccent);
+  HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.colorMoss);
 
   // Register window rules
   g_pGlobalState->noImgBordersRuleIdx =

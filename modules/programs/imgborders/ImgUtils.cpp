@@ -134,3 +134,16 @@ SP<ITexture> ImgUtils::sliceTexture(SP<ITexture> src, CBox box) {
 
   return tex;
 }
+
+SP<ITexture> ImgUtils::fromRGBA(const uint8_t *data, int width, int height) {
+  SP<ITexture> tex = g_pHyprRenderer->createTexture();
+  tex->allocate({width, height});
+
+  glBindTexture(GL_TEXTURE_2D, tex->m_texID);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+               GL_UNSIGNED_BYTE, data);
+
+  return tex;
+}

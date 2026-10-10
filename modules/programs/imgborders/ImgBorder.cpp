@@ -3,6 +3,7 @@
 #include "ImgUtils.hpp"
 #include "globals.hpp"
 #include <filesystem>
+#include <random>
 #include <hyprland/src/Compositor.hpp>
 #include <hyprland/src/SharedDefs.hpp>
 #include <hyprland/src/debug/log/Logger.hpp>
@@ -21,6 +22,8 @@ using namespace GL;
 
 CImgBorder::CImgBorder(PHLWINDOW pWindow) : IHyprWindowDecoration(pWindow) {
   m_pWindow = pWindow;
+  std::random_device rd;
+  m_windowSeed = ((uint64_t)rd() << 32) | rd();
   updateConfig();
 }
 
@@ -108,6 +111,11 @@ void CImgBorder::drawPass(PHLMONITOR pMonitor, const float &a) {
   // ------------
 
   const auto scale = m_scale * pMonitor->m_scale;
+
+  if (m_isProcedural) {
+    drawProcedural(box, scale, a);
+    return;
+  }
 
   const auto BORDER_LEFT = (float)m_sizes[0] * scale;
   const auto BORDER_RIGHT = (float)m_sizes[1] * scale;
@@ -252,33 +260,58 @@ void CImgBorder::drawPass(PHLMONITOR pMonitor, const float &a) {
   g_pHyprRenderer->m_renderData.primarySurfaceUVBottomRight = prevUVBR;
 }
 
+void CImgBorder::drawProcedural(const CBox &box, float scale,
+                                const float &a) {
+  const int b = m_stoneParams.thickness;
+  const int w = std::max(2 * b + 1, (int)std::lround(box.width / scale));
+  const int h = std::max(2 * b + 1, (int)std::lround(box.height / scale));
+
+  if (w != m_genWidth || h != m_genHeight) {
+    m_genWidth = w;
+    m_genHeight = h;
+    const auto gen = [&](StoneGen::eEdge edge) -> SP<ITexture> {
+      const auto img = StoneGen::renderEdge(m_stoneParams, edge, w, h);
+      if (img.w <= 0 || img.h <= 0)
+        return nullptr;
+      return ImgUtils::fromRGBA(img.rgba.data(), img.w, img.h);
+    };
+    m_tex_t = gen(StoneGen::EDGE_TOP);
+    m_tex_r = gen(StoneGen::EDGE_RIGHT);
+    m_tex_b = gen(StoneGen::EDGE_BOTTOM);
+    m_tex_l = gen(StoneGen::EDGE_LEFT);
+  }
+
+  const double bs = b * scale;
+  const std::pair<SP<ITexture>, CBox> edges[] = {
+      {m_tex_t, {box.x, box.y, box.width, bs}},
+      {m_tex_r, {box.x + box.width - bs, box.y + bs, bs, box.height - 2 * bs}},
+      {m_tex_b, {box.x, box.y + box.height - bs, box.width, bs}},
+      {m_tex_l, {box.x, box.y + bs, bs, box.height - 2 * bs}},
+  };
+
+  const auto wasUsingNearestNeighbour =
+      g_pHyprRenderer->m_renderData.useNearestNeighbor;
+  g_pHyprRenderer->m_renderData.useNearestNeighbor = !m_shouldSmooth;
+
+  for (const auto &[tex, edgeBox] : edges) {
+    if (tex == nullptr || edgeBox.width <= 0 || edgeBox.height <= 0)
+      continue;
+    g_pHyprRenderer->draw({.tex = tex,
+                           .box = edgeBox,
+                           .a = a,
+                           .damage = edgeBox,
+                           .blur = shouldBlur(),
+                           .discardMode = DISCARD_ALPHA});
+  }
+
+  g_pHyprRenderer->m_renderData.useNearestNeighbor = wasUsingNearestNeighbour;
+}
+
 void CImgBorder::updateConfig() {
   // Read config
   // ------------
 
   m_isEnabled = true;
-
-  // image
-  const auto texSrc = g_pGlobalState->config.image->value();
-  if (texSrc.empty()) {
-    m_isEnabled = false;
-    return;
-  }
-  wordexp_t p;
-  wordexp(texSrc.c_str(), &p, 0);
-  std::string texSrcExpanded = "";
-  for (size_t i = 0; i < p.we_wordc; i++)
-    texSrcExpanded.append(p.we_wordv[i]);
-  wordfree(&p);
-  if (!std::filesystem::exists(texSrcExpanded)) {
-    HyprlandAPI::addNotification(
-        PHANDLE,
-        std::format("[imgborders] image at \"{}\" doesn't exist",
-                    texSrcExpanded),
-        CHyprColor{1.0, 0.1, 0.1, 1.0}, 5000);
-    m_isEnabled = false;
-    return;
-  }
 
   // sizes
   const auto sizes = g_pGlobalState->config.sizes->value();
@@ -311,10 +344,7 @@ void CImgBorder::updateConfig() {
   // blur
   m_shouldBlur = g_pGlobalState->config.blur->value();
 
-  // Create textures
-  // ------------
-
-  // But first delete old textures
+  // Delete old textures
   m_tex_tl = nullptr;
   m_tex_tr = nullptr;
   m_tex_br = nullptr;
@@ -323,6 +353,60 @@ void CImgBorder::updateConfig() {
   m_tex_t = nullptr;
   m_tex_b = nullptr;
   m_tex_r = nullptr;
+
+  m_isProcedural = g_pGlobalState->config.mode->value() == "procedural";
+  if (m_isProcedural) {
+    auto &sp = m_stoneParams;
+    sp.seed = StoneGen::mix(
+        (uint64_t)g_pGlobalState->config.seed->value(), m_windowSeed);
+    sp.thickness = std::max(5, m_sizes[2]);
+    sp.roughness = g_pGlobalState->config.roughness->value();
+    sp.chipping = g_pGlobalState->config.chipping->value();
+    sp.moss = g_pGlobalState->config.moss->value();
+    sp.stoneBlend = g_pGlobalState->config.stoneBlend->value();
+    sp.highlightBlend = g_pGlobalState->config.highlightBlend->value();
+    if (!StoneGen::parseHex(g_pGlobalState->config.colorMortar->value(),
+                            sp.mortar) ||
+        !StoneGen::parseHex(g_pGlobalState->config.colorAccent->value(),
+                            sp.accent) ||
+        !StoneGen::parseHex(g_pGlobalState->config.colorMoss->value(),
+                            sp.mossColor)) {
+      HyprlandAPI::addNotification(
+          PHANDLE, "[imgborders] invalid procedural color in config",
+          CHyprColor{1.0, 0.1, 0.1, 1.0}, 5000);
+      m_isEnabled = false;
+      return;
+    }
+    m_genWidth = 0;
+    m_genHeight = 0;
+    g_pDecorationPositioner->repositionDeco(this);
+    return;
+  }
+
+  // image
+  const auto texSrc = g_pGlobalState->config.image->value();
+  if (texSrc.empty()) {
+    m_isEnabled = false;
+    return;
+  }
+  wordexp_t p;
+  wordexp(texSrc.c_str(), &p, 0);
+  std::string texSrcExpanded = "";
+  for (size_t i = 0; i < p.we_wordc; i++)
+    texSrcExpanded.append(p.we_wordv[i]);
+  wordfree(&p);
+  if (!std::filesystem::exists(texSrcExpanded)) {
+    HyprlandAPI::addNotification(
+        PHANDLE,
+        std::format("[imgborders] image at \"{}\" doesn't exist",
+                    texSrcExpanded),
+        CHyprColor{1.0, 0.1, 0.1, 1.0}, 5000);
+    m_isEnabled = false;
+    return;
+  }
+
+  // Create textures
+  // ------------
 
   auto tex = ImgUtils::load(texSrcExpanded);
 

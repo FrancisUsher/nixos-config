@@ -1,5 +1,6 @@
 #pragma once
 
+#include "StoneGen.hpp"
 #include "globals.hpp"
 #include <hyprland/src/desktop/DesktopTypes.hpp>
 #include <hyprland/src/desktop/rule/windowRule/WindowRule.hpp>
@@ -33,6 +34,7 @@ public:
   CBox getGlobalBoundingBox();
 
   void drawPass(PHLMONITOR, float const &a);
+  void drawProcedural(const CBox &box, float scale, float const &a);
 
   void updateConfig();
   void updateRules();
@@ -51,6 +53,12 @@ private:
   float m_scale;
   bool m_shouldSmooth;
   bool m_shouldBlur;
+
+  bool m_isProcedural = false;
+  uint64_t m_windowSeed;
+  StoneGen::SParams m_stoneParams;
+  int m_genWidth = 0;
+  int m_genHeight = 0;
 
   SP<ITexture> m_tex_tl;
   SP<ITexture> m_tex_tr;
