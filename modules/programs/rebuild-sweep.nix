@@ -64,13 +64,6 @@ let
         fi
       }
       runAsUser ${pkgs.quickshell}/bin/qs ipc --any-display -c rebuild-sweep call rebuildSweep trigger 2>/dev/null || true
-
-      # Quickshell doesn't reread its QML on its own. Force a restart.
-      runAsUser ${pkgs.quickshell}/bin/qs kill --any-display -c display-options 2>/dev/null || true
-      runAsUser ${pkgs.quickshell}/bin/qs kill --any-display -c volume-osd 2>/dev/null || true
-      sleep 0.3
-      runAsUser ${pkgs.quickshell}/bin/qs -c display-options -d 2>/dev/null || true
-      runAsUser ${pkgs.quickshell}/bin/qs -c volume-osd -d 2>/dev/null || true
     fi
     exit "$status"
   '';
