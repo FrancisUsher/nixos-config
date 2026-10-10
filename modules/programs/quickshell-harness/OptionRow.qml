@@ -6,9 +6,24 @@ Item {
     required property var theme
     property string label: ""
     property bool checked: false
+    signal picked()
 
     width: parent ? parent.width : 0
     height: 24
+    activeFocusOnTab: enabled
+
+    Keys.onPressed: (event) => {
+        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
+            root.picked();
+            event.accepted = true;
+        }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        enabled: root.enabled
+        onClicked: { root.forceActiveFocus(); root.picked(); }
+    }
 
     // radio-style indicator showing whether this option is the active one
     Rectangle {
@@ -18,8 +33,8 @@ Item {
         radius: 6
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
-        border.width: 1
-        border.color: root.enabled ? root.theme.hex("base05") : root.theme.hex("base03")
+        border.width: root.activeFocus ? 2 : 1
+        border.color: root.activeFocus ? root.theme.hex("base06") : root.enabled ? root.theme.hex("base05") : root.theme.hex("base03")
         color: root.checked ? root.theme.hex("base0A") : "transparent"
     }
 
