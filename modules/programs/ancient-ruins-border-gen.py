@@ -43,6 +43,7 @@ def write_live_lua(path, args, palette):
         "color_mortar": palette[args.mortar],
         "color_accent": palette[args.accent],
         "color_moss": palette[args.moss_slot],
+        "merge": args.merge,
     }
     body = "".join(f"  {k} = {json.dumps(v)},\n" for k, v in params.items())
     tmp = path + ".tmp"
@@ -113,6 +114,7 @@ def main():
     parser.add_argument("--chipping", type=float, default=0.4)
     parser.add_argument("--moss", type=float, default=0.2)
     parser.add_argument("--moss-slot", default="base0B")
+    parser.add_argument("--merge", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--sheet-out", help="also write the 16-tile dual-grid autotile sheet here")
     parser.add_argument("--live-lua", help="write plugin params as a Lua table to this path")
@@ -149,6 +151,7 @@ def main():
                     "roughness": args.roughness,
                     "chipping": args.chipping,
                     "moss": args.moss,
+                    "merge": args.merge,
                 },
                 f,
                 indent=2,

@@ -8,6 +8,7 @@ Column {
     property real roughness: 0.5
     property real chipping: 0.4
     property real moss: 0.2
+    property bool merge: true
     signal edited(string key, var value)
 
     width: parent ? parent.width : 0
@@ -80,5 +81,12 @@ Column {
         theme: root.theme
         value: root.moss
         onMoved: root.edited("moss", value)
+    }
+
+    OptionRow {
+        theme: root.theme
+        label: "Merge adjoining walls"
+        checked: root.merge
+        onPicked: root.edited("merge", !root.merge)
     }
 }

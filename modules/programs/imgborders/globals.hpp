@@ -6,12 +6,21 @@
 #include <hyprland/src/config/values/types/IntValue.hpp>
 #include <hyprland/src/config/values/types/StringValue.hpp>
 #include <hyprland/src/plugins/PluginAPI.hpp>
+#include <unordered_map>
+
+#include "WallField.hpp"
 
 // Plugin API handle
 inline HANDLE PHANDLE = nullptr;
 
 // Class defined elsewhere
 class CImgBorder;
+
+struct SWallCache {
+  uint64_t key = 0;
+  uint64_t version = 0;
+  WallField::SField field;
+};
 
 struct SGlobalState {
   std::vector<WP<CImgBorder>> borders;
@@ -33,7 +42,12 @@ struct SGlobalState {
     SP<Config::Values::CStringValue> colorMortar;
     SP<Config::Values::CStringValue> colorAccent;
     SP<Config::Values::CStringValue> colorMoss;
+    SP<Config::Values::CBoolValue> merge;
+    SP<Config::Values::CFloatValue> mergeDistance;
   } config;
+
+  uint64_t configGeneration = 0;
+  std::unordered_map<WORKSPACEID, SWallCache> walls;
 
   uint32_t noImgBordersRuleIdx = 0;
 };

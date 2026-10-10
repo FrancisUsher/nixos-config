@@ -32,7 +32,7 @@ ePassElementType CImgBorderPassElement::type() { return EK_CUSTOM; }
 // bool CImgBorderPassElement::undiscardable() {}
 
 std::optional<CBox> CImgBorderPassElement::boundingBox() {
-  return data.deco->getGlobalBoundingBox().translate(
+  return data.deco->getDamageBox().translate(
       -g_pHyprRenderer->m_renderData.pMonitor->m_position);
 }
 

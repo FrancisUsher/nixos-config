@@ -70,6 +70,8 @@ in
     color_mortar = palette.base00;
     color_accent = palette.${selection.accent};
     color_moss = palette.base0B;
+    merge = selection.merge or true;
+    merge_distance = 2 * hyprlandConfig.general.gaps_in + 2;
   };
 
   wayland.windowManager.hyprland.extraConfig = ''

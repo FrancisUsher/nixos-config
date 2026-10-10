@@ -30,6 +30,33 @@ struct SImage {
   std::vector<uint8_t> rgba;
 };
 
+struct SRng {
+  uint64_t s;
+
+  explicit SRng(uint64_t seed) : s(seed) {}
+
+  uint64_t next();
+  double unit();
+  int range(int lo, int hi);
+  double uniform(double lo, double hi);
+  bool chance(double p);
+};
+
+struct SRect {
+  int x, y, w, h;
+};
+
+struct SCanvas {
+  int w, h;
+  std::vector<uint8_t> &px;
+
+  void set(int x, int y, SRGB c);
+};
+
+void shadeStone(SCanvas &canvas, SRng &rng, const SRect &r, const SParams &p);
+
+void growMoss(SCanvas &canvas, SRng &rng, const SRect &r, const SParams &p);
+
 SImage renderEdge(const SParams &params, eEdge edge, int width, int height);
 
 bool parseHex(const std::string &hex, SRGB &out);

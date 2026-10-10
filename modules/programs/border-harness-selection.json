@@ -6,5 +6,6 @@
   "seed": 1,
   "roughness": 0.5,
   "chipping": 0.4,
-  "moss": 0.2
+  "moss": 0.2,
+  "merge": true
 }

@@ -4,49 +4,34 @@
 #include <cmath>
 
 namespace StoneGen {
+uint64_t SRng::next() {
+  uint64_t z = (s += 0x9E3779B97F4A7C15ULL);
+  z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL;
+  z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;
+  return z ^ (z >> 31);
+}
+
+double SRng::unit() { return (double)(next() >> 11) * 0x1.0p-53; }
+
+int SRng::range(int lo, int hi) {
+  return lo + (int)(next() % (uint64_t)(hi - lo + 1));
+}
+
+double SRng::uniform(double lo, double hi) { return lo + (hi - lo) * unit(); }
+
+bool SRng::chance(double p) { return unit() < p; }
+
+void SCanvas::set(int x, int y, SRGB c) {
+  if (x < 0 || y < 0 || x >= w || y >= h)
+    return;
+  const auto i = (size_t)(y * w + x) * 4;
+  px[i] = (uint8_t)std::lround(std::clamp(c.r, 0.F, 255.F));
+  px[i + 1] = (uint8_t)std::lround(std::clamp(c.g, 0.F, 255.F));
+  px[i + 2] = (uint8_t)std::lround(std::clamp(c.b, 0.F, 255.F));
+  px[i + 3] = 255;
+}
+
 namespace {
-struct SRng {
-  uint64_t s;
-
-  explicit SRng(uint64_t seed) : s(seed) {}
-
-  uint64_t next() {
-    uint64_t z = (s += 0x9E3779B97F4A7C15ULL);
-    z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL;
-    z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;
-    return z ^ (z >> 31);
-  }
-
-  double unit() { return (double)(next() >> 11) * 0x1.0p-53; }
-
-  int range(int lo, int hi) {
-    return lo + (int)(next() % (uint64_t)(hi - lo + 1));
-  }
-
-  double uniform(double lo, double hi) { return lo + (hi - lo) * unit(); }
-
-  bool chance(double p) { return unit() < p; }
-};
-
-struct SRect {
-  int x, y, w, h;
-};
-
-struct SCanvas {
-  int w, h;
-  std::vector<uint8_t> &px;
-
-  void set(int x, int y, SRGB c) {
-    if (x < 0 || y < 0 || x >= w || y >= h)
-      return;
-    const auto i = (size_t)(y * w + x) * 4;
-    px[i] = (uint8_t)std::lround(std::clamp(c.r, 0.F, 255.F));
-    px[i + 1] = (uint8_t)std::lround(std::clamp(c.g, 0.F, 255.F));
-    px[i + 2] = (uint8_t)std::lround(std::clamp(c.b, 0.F, 255.F));
-    px[i + 3] = 255;
-  }
-};
-
 SRGB blend(SRGB a, SRGB b, double t) {
   return {(float)(a.r + (b.r - a.r) * t), (float)(a.g + (b.g - a.g) * t),
           (float)(a.b + (b.b - a.b) * t)};
@@ -73,6 +58,8 @@ std::vector<SRect> stripRects(SRng &rng, int along0, int length, int thickness) 
   }
   return rects;
 }
+
+} // namespace
 
 void shadeStone(SCanvas &canvas, SRng &rng, const SRect &r, const SParams &p) {
   const double k = 1 + rng.uniform(-0.6, 0.6) * p.roughness;
@@ -148,8 +135,6 @@ void growMoss(SCanvas &canvas, SRng &rng, const SRect &r, const SParams &p) {
     }
   }
 }
-} // namespace
-
 uint64_t mix(uint64_t a, uint64_t b) {
   SRng rng(a ^ (b * 0x9E3779B97F4A7C15ULL));
   return rng.next();

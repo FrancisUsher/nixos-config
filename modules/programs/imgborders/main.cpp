@@ -67,6 +67,7 @@ static void onWindowUpdateRules(PHLWINDOW window) {
 }
 
 static void onConfigReloaded() {
+  g_pGlobalState->configGeneration++;
   for (auto &b : g_pGlobalState->borders) {
     b->updateConfig();
   }
@@ -136,6 +137,17 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
       "plugin:imgborders:color_accent", "Stone color as RRGGBB.", "9d5d40");
   g_pGlobalState->config.colorMoss = makeShared<Config::Values::CStringValue>(
       "plugin:imgborders:color_moss", "Moss color as RRGGBB.", "76856a");
+  g_pGlobalState->config.merge = makeShared<Config::Values::CBoolValue>(
+      "plugin:imgborders:merge",
+      "In procedural mode, merge the borders of neighboring tiled windows "
+      "into one wall.",
+      false);
+  g_pGlobalState->config.mergeDistance =
+      makeShared<Config::Values::CFloatValue>(
+          "plugin:imgborders:merge_distance",
+          "Largest gap between window borders, in layout pixels, that merging "
+          "fills with wall.",
+          12);
   HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.image);
   HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.sizes);
   HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.insets);
@@ -152,6 +164,8 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.colorMortar);
   HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.colorAccent);
   HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.colorMoss);
+  HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.merge);
+  HyprlandAPI::addConfigValueV2(PHANDLE, g_pGlobalState->config.mergeDistance);
 
   // Register window rules
   g_pGlobalState->noImgBordersRuleIdx =

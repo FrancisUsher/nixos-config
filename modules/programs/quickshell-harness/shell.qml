@@ -16,6 +16,7 @@ ShellRoot {
     property real roughness: 0.5
     property real chipping: 0.4
     property real moss: 0.2
+    property bool merge: true
     property var accentSlots: ["base08", "base09", "base0A", "base0B", "base0C", "base0D", "base0E", "base0F"]
     property int sheetVersion: 0
     readonly property url autotileSheet: "file://" + Quickshell.env("HOME") + "/.cache/border-harness/autotile.png?v=" + sheetVersion
@@ -35,7 +36,8 @@ ShellRoot {
             "--seed", root.seed.toString(),
             "--roughness", root.roughness.toFixed(2),
             "--chipping", root.chipping.toFixed(2),
-            "--moss", root.moss.toFixed(2)
+            "--moss", root.moss.toFixed(2),
+            root.merge ? "--merge" : "--no-merge"
         ];
         generator.running = true;
     }
@@ -106,6 +108,7 @@ ShellRoot {
             root.roughness = saved.roughness ?? root.roughness;
             root.chipping = saved.chipping ?? root.chipping;
             root.moss = saved.moss ?? root.moss;
+            root.merge = saved.merge ?? root.merge;
         } catch (e) {
             console.warn("border-harness: could not load saved selection, using built-in defaults", e);
         }
@@ -207,6 +210,7 @@ ShellRoot {
                     roughness: root.roughness
                     chipping: root.chipping
                     moss: root.moss
+                    merge: root.merge
                     onEdited: (key, value) => {
                         root[key] = value;
                         regenDebounce.restart();

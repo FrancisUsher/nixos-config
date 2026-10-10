@@ -2,13 +2,16 @@
 #include "ImgBorderPassElement.hpp"
 #include "ImgUtils.hpp"
 #include "globals.hpp"
+#include <algorithm>
 #include <filesystem>
 #include <random>
 #include <hyprland/src/Compositor.hpp>
 #include <hyprland/src/SharedDefs.hpp>
 #include <hyprland/src/debug/log/Logger.hpp>
 #include <hyprland/src/desktop/DesktopTypes.hpp>
+#include <hyprland/src/desktop/view/Window.hpp>
 #include <hyprland/src/helpers/MiscFunctions.hpp>
+#include <hyprland/src/managers/fullscreen/FullscreenController.hpp>
 #include <hyprland/src/plugins/PluginAPI.hpp>
 #include <hyprland/src/render/OpenGL.hpp>
 #include <hyprland/src/render/Renderer.hpp>
@@ -65,9 +68,7 @@ eDecorationType CImgBorder::getDecorationType() { return DECORATION_CUSTOM; }
 
 void CImgBorder::updateWindow(PHLWINDOW pWindow) { damageEntire(); }
 
-void CImgBorder::damageEntire() {
-  g_pHyprRenderer->damageBox(getGlobalBoundingBox());
-}
+void CImgBorder::damageEntire() { g_pHyprRenderer->damageBox(getDamageBox()); }
 
 eDecorationLayer CImgBorder::getDecorationLayer() {
   return DECORATION_LAYER_OVER;
@@ -96,6 +97,128 @@ CBox CImgBorder::getGlobalBoundingBox() {
                                    : Vector2D();
 
   return box.translate(WORKSPACEOFFSET);
+}
+
+CBox CImgBorder::getDamageBox() {
+  const auto box = getGlobalBoundingBox();
+  if (!m_wallBox)
+    return box;
+  const auto &wall = *m_wallBox;
+  const double x0 = std::min(box.x, wall.x);
+  const double y0 = std::min(box.y, wall.y);
+  const double x1 = std::max(box.x + box.width, wall.x + wall.width);
+  const double y1 = std::max(box.y + box.height, wall.y + wall.height);
+  return {x0, y0, x1 - x0, y1 - y0};
+}
+
+bool CImgBorder::participatesInWall() {
+  if (!m_isProcedural || !m_isEnabled || m_isHidden ||
+      !g_pGlobalState->config.merge->value() ||
+      g_pGlobalState->config.mergeDistance->value() <= 0 ||
+      !validMapped(m_pWindow))
+    return false;
+  const auto PWINDOW = m_pWindow.lock();
+  return !PWINDOW->isHidden() && !PWINDOW->m_isFloating &&
+         PWINDOW->m_workspace &&
+         PWINDOW->m_ruleApplicator->decorate().valueOrDefault() &&
+         !Fullscreen::controller()->isFullscreen(PWINDOW);
+}
+
+CBox CImgBorder::goalFrame() {
+  const auto content = m_pWindow.lock()->geometricBox(
+      Desktop::View::IGeometric::GEOMETRIC_GOAL);
+  const double left = (m_sizes[0] - m_insets[0]) * m_scale;
+  const double right = (m_sizes[1] - m_insets[1]) * m_scale;
+  const double top = (m_sizes[2] - m_insets[2]) * m_scale;
+  const double bottom = (m_sizes[3] - m_insets[3]) * m_scale;
+  return {content.x - left, content.y - top, content.width + left + right,
+          content.height + top + bottom};
+}
+
+uint64_t CImgBorder::stoneSeed() { return m_stoneParams.seed; }
+
+bool CImgBorder::drawWall(const CBox &box, const float &a) {
+  const auto PWORKSPACE = m_pWindow.lock()->m_workspace;
+  const double cell = m_scale;
+  const double mergeDistance = g_pGlobalState->config.mergeDistance->value();
+  const auto goal = goalFrame();
+  if (goal.width <= 0 || goal.height <= 0 || cell <= 0)
+    return false;
+
+  std::vector<WallField::SWindow> windows;
+  std::vector<CImgBorder *> members;
+  uint64_t key = StoneGen::mix(g_pGlobalState->configGeneration,
+                               (uint64_t)PWORKSPACE->m_id);
+  for (const auto &wb : g_pGlobalState->borders) {
+    auto *b = wb.get();
+    if (b == nullptr || !b->participatesInWall())
+      continue;
+    const auto window = b->getWindow().lock();
+    if (window->m_workspace != PWORKSPACE)
+      continue;
+    const auto frame = b->goalFrame();
+    const auto content =
+        window->geometricBox(Desktop::View::IGeometric::GEOMETRIC_GOAL);
+    windows.push_back({b->stoneSeed(),
+                       {frame.x, frame.y, frame.width, frame.height},
+                       {content.x, content.y, content.width, content.height}});
+    members.push_back(b);
+    key = StoneGen::mix(key, b->stoneSeed());
+    for (const double v : {frame.x, frame.y, frame.width, frame.height,
+                           content.x, content.y, content.width, content.height})
+      key = StoneGen::mix(key, (uint64_t)std::llround(v * 8));
+  }
+  if (windows.empty())
+    return false;
+
+  auto &cache = g_pGlobalState->walls[PWORKSPACE->m_id];
+  if (cache.version == 0 || cache.key != key) {
+    cache.field = WallField::build(windows, m_stoneParams, cell, mergeDistance);
+    cache.key = key;
+    cache.version++;
+    for (auto *b : members)
+      if (b != this)
+        b->damageEntire();
+  }
+
+  const double reach = mergeDistance / 2.0 + cell;
+  const int crop[4] = {
+      (int)std::floor((goal.x - reach) / cell),
+      (int)std::floor((goal.y - reach) / cell),
+      (int)std::ceil((goal.x + goal.width + reach) / cell),
+      (int)std::ceil((goal.y + goal.height + reach) / cell),
+  };
+  if (m_tex_wall == nullptr || m_wallVersion != cache.version ||
+      !std::equal(std::begin(crop), std::end(crop), std::begin(m_wallCrop))) {
+    const auto img = WallField::crop(cache.field, crop[0], crop[1],
+                                     crop[2] - crop[0], crop[3] - crop[1]);
+    m_tex_wall = ImgUtils::fromRGBA(img.rgba.data(), img.w, img.h);
+    m_wallVersion = cache.version;
+    std::copy(std::begin(crop), std::end(crop), std::begin(m_wallCrop));
+  }
+
+  const auto mapTo = [&](const CBox &frame) {
+    const double sx = frame.width / goal.width;
+    const double sy = frame.height / goal.height;
+    return CBox{frame.x + (crop[0] * cell - goal.x) * sx,
+                frame.y + (crop[1] * cell - goal.y) * sy,
+                (crop[2] - crop[0]) * cell * sx,
+                (crop[3] - crop[1]) * cell * sy};
+  };
+  const auto drawBox = mapTo(box);
+  m_wallBox = mapTo(getGlobalBoundingBox());
+
+  const auto wasUsingNearestNeighbour =
+      g_pHyprRenderer->m_renderData.useNearestNeighbor;
+  g_pHyprRenderer->m_renderData.useNearestNeighbor = !m_shouldSmooth;
+  g_pHyprRenderer->draw({.tex = m_tex_wall,
+                         .box = drawBox,
+                         .a = a,
+                         .damage = drawBox,
+                         .blur = shouldBlur(),
+                         .discardMode = DISCARD_ALPHA});
+  g_pHyprRenderer->m_renderData.useNearestNeighbor = wasUsingNearestNeighbour;
+  return true;
 }
 
 void CImgBorder::drawPass(PHLMONITOR pMonitor, const float &a) {
@@ -262,6 +385,10 @@ void CImgBorder::drawPass(PHLMONITOR pMonitor, const float &a) {
 
 void CImgBorder::drawProcedural(const CBox &box, float scale,
                                 const float &a) {
+  if (participatesInWall() && drawWall(box, a))
+    return;
+  m_wallBox.reset();
+
   const int b = m_stoneParams.thickness;
   const int w = std::max(2 * b + 1, (int)std::lround(box.width / scale));
   const int h = std::max(2 * b + 1, (int)std::lround(box.height / scale));

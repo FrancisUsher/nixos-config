@@ -1,6 +1,7 @@
 #pragma once
 
 #include "StoneGen.hpp"
+#include <optional>
 #include "globals.hpp"
 #include <hyprland/src/desktop/DesktopTypes.hpp>
 #include <hyprland/src/desktop/rule/windowRule/WindowRule.hpp>
@@ -32,9 +33,15 @@ public:
   bool shouldBlur();
 
   CBox getGlobalBoundingBox();
+  CBox getDamageBox();
+
+  bool participatesInWall();
+  CBox goalFrame();
+  uint64_t stoneSeed();
 
   void drawPass(PHLMONITOR, float const &a);
   void drawProcedural(const CBox &box, float scale, float const &a);
+  bool drawWall(const CBox &box, float const &a);
 
   void updateConfig();
   void updateRules();
@@ -59,6 +66,11 @@ private:
   StoneGen::SParams m_stoneParams;
   int m_genWidth = 0;
   int m_genHeight = 0;
+
+  uint64_t m_wallVersion = 0;
+  int m_wallCrop[4] = {0, 0, 0, 0};
+  SP<ITexture> m_tex_wall;
+  std::optional<CBox> m_wallBox;
 
   SP<ITexture> m_tex_tl;
   SP<ITexture> m_tex_tr;
