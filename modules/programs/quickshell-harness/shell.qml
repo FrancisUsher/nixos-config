@@ -11,15 +11,30 @@ ShellRoot {
     property string selectedAccent: "base09"
     property real stoneBlend: 0.20
     property real highlightBlend: 0.45
+    property string algorithm: "sprite"
+    property int seed: 1
+    property real roughness: 0.5
+    property real chipping: 0.4
+    property real moss: 0.2
     property var accentSlots: ["base08", "base09", "base0A", "base0B", "base0C", "base0D", "base0E", "base0F"]
 
     function regenerate() {
         Quickshell.execDetached([
             "border-harness-generate",
+            "--algorithm", root.algorithm,
             "--accent", root.selectedAccent,
             "--stone-blend", root.stoneBlend.toFixed(2),
-            "--highlight-blend", root.highlightBlend.toFixed(2)
+            "--highlight-blend", root.highlightBlend.toFixed(2),
+            "--seed", root.seed.toString(),
+            "--roughness", root.roughness.toFixed(2),
+            "--chipping", root.chipping.toFixed(2),
+            "--moss", root.moss.toFixed(2)
         ]);
+    }
+
+    function pickAlgorithm(name) {
+        root.algorithm = name;
+        regenDebounce.restart();
     }
 
     Theme {
@@ -45,6 +60,11 @@ ShellRoot {
             root.selectedAccent = saved.accent;
             root.stoneBlend = saved.stone_blend;
             root.highlightBlend = saved.highlight_blend;
+            root.algorithm = saved.algorithm ?? root.algorithm;
+            root.seed = saved.seed ?? root.seed;
+            root.roughness = saved.roughness ?? root.roughness;
+            root.chipping = saved.chipping ?? root.chipping;
+            root.moss = saved.moss ?? root.moss;
         } catch (e) {
             console.warn("border-harness: could not load saved selection, using built-in defaults", e);
         }
@@ -68,7 +88,7 @@ ShellRoot {
         }
 
         implicitWidth: 360
-        implicitHeight: 440
+        implicitHeight: sections.implicitHeight + 32
 
         onVisibleChanged: if (visible) content.forceActiveFocus()
 
@@ -93,6 +113,7 @@ ShellRoot {
             Keys.onEscapePressed: window.visible = false
 
             Column {
+                id: sections
                 anchors.fill: parent
                 anchors.margins: 16
                 spacing: 14
@@ -109,17 +130,41 @@ ShellRoot {
                     spacing: 4
 
                     SectionLabel { theme: theme; text: "Algorithm" }
-                    OptionRow { theme: theme; label: "Repeating sprite"; checked: true; enabled: true }
+                    OptionRow {
+                        theme: theme
+                        label: "Repeating sprite"
+                        checked: root.algorithm === "sprite"
+                        onPicked: root.pickAlgorithm("sprite")
+                    }
                     OptionRow { theme: theme; label: "Neighbor-aware autotile (soon)"; checked: false; enabled: false }
-                    OptionRow { theme: theme; label: "Procedural generation (soon)"; checked: false; enabled: false }
+                    OptionRow {
+                        theme: theme
+                        label: "Procedural generation"
+                        checked: root.algorithm === "procedural"
+                        onPicked: root.pickAlgorithm("procedural")
+                    }
                 }
 
                 Column {
                     width: parent.width
                     spacing: 4
+                    visible: root.algorithm === "sprite"
 
                     SectionLabel { theme: theme; text: "Sprite" }
                     OptionRow { theme: theme; label: "Ancient Ruins brick"; checked: true; enabled: true }
+                }
+
+                ProceduralParams {
+                    theme: theme
+                    visible: root.algorithm === "procedural"
+                    seed: root.seed
+                    roughness: root.roughness
+                    chipping: root.chipping
+                    moss: root.moss
+                    onEdited: (key, value) => {
+                        root[key] = value;
+                        regenDebounce.restart();
+                    }
                 }
 
                 Column {

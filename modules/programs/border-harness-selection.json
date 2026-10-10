@@ -1,5 +1,10 @@
 {
+  "algorithm": "sprite",
   "accent": "base09",
   "stone_blend": 0.08,
-  "highlight_blend": 0.26
+  "highlight_blend": 0.26,
+  "seed": 1,
+  "roughness": 0.5,
+  "chipping": 0.4,
+  "moss": 0.2
 }

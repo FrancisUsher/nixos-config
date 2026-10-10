@@ -27,9 +27,14 @@ let
     nativeBuildInputs = [ pythonWithPillow ];
   } ''
     python3 ${generatorScript} --palette ${paletteJson} --out $out \
+      --algorithm ${selection.algorithm or "sprite"} \
       --accent ${selection.accent} \
       --stone-blend ${toString selection.stone_blend} \
-      --highlight-blend ${toString selection.highlight_blend}
+      --highlight-blend ${toString selection.highlight_blend} \
+      --seed ${toString (selection.seed or 1)} \
+      --roughness ${toString (selection.roughness or 0.5)} \
+      --chipping ${toString (selection.chipping or 0.4)} \
+      --moss ${toString (selection.moss or 0.2)}
   '';
 in
 {
