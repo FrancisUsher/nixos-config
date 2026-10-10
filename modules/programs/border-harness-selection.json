@@ -1,11 +1,11 @@
 {
-  "algorithm": "sprite",
-  "accent": "base09",
+  "algorithm": "procedural",
+  "accent": "base08",
   "stone_blend": 0.08,
-  "highlight_blend": 0.26,
-  "seed": 1,
-  "roughness": 0.5,
-  "chipping": 0.4,
-  "moss": 0.2,
+  "highlight_blend": 0.3,
+  "seed": 230084,
+  "roughness": 0.67,
+  "chipping": 0.39,
+  "moss": 0.74,
   "merge": true
 }
