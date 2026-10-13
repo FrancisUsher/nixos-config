@@ -36,9 +36,6 @@
       (modules/themes/red-sun-whorl-wallpaper.nix) - current sun-line/ridges
       scene is an acceptable first pass, not a final look
 - [ ] Procedural window borders: more generators, ornamentation, theming (#15)
-- [ ] Migrate red-sun-whorl's Hyprland config from hyprlang (.conf) to Lua
-      (configType = "lua") before Hyprland 0.57 drops .conf support - a
-      deprecation notice for .conf landed in 0.56.1
 - [ ] [[red-sun-whorl-seamless-startup|Seamless themed startup process for red-sun-whorl]]
 - [ ] Better terminal autocomplete for command params/flags (had this on
       the old Arch machine) - research the best way to set it up on NixOS
