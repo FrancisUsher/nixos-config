@@ -171,11 +171,10 @@ void CImgBorder::updateSharedEdges() {
     return;
   m_repositionQueued = true;
   g_pEventLoopManager->doLater([self = m_self] {
-    const auto b = self.lock();
-    if (!b)
+    if (self.expired())
       return;
-    b->m_repositionQueued = false;
-    g_pDecorationPositioner->repositionDeco(b.get());
+    self->m_repositionQueued = false;
+    g_pDecorationPositioner->repositionDeco(self.get());
   });
 }
 
