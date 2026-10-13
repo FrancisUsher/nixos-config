@@ -24,6 +24,7 @@
     ./modules/programs/quickshell-harness.nix
     ./modules/programs/rebuild-sweep.nix
     ./modules/programs/volume-osd.nix
+    ./modules/programs/bluetooth-panel.nix
     ./modules/programs/krita.nix
   ];
 

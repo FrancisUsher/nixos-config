@@ -90,6 +90,7 @@ in
           { _args = [ "SUPER + P" (mkExec "fuzzel") ]; }
           { _args = [ "SUPER + V" (mkExec "fuzzel-cliphist") ]; }
           { _args = [ "SUPER + D" (mkExec "${pkgs.quickshell}/bin/qs ipc -c display-options call displayOptions toggle") ]; }
+          { _args = [ "SUPER + B" (mkExec "${pkgs.quickshell}/bin/qs ipc -c bluetooth call bluetooth toggle") ]; }
           {
             _args = [
               "SUPER + SHIFT + V"
