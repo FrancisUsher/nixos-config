@@ -33,15 +33,13 @@ let
 
   imgbordersLoad = pkgs.writeShellApplication {
     name = "imgborders-load";
-    runtimeInputs = [ unstableUnfreePkgs.hyprland pkgs.procps pkgs.gnugrep pkgs.coreutils pkgs.findutils ];
+    runtimeInputs = [ unstableUnfreePkgs.hyprland pkgs.jq pkgs.gnugrep pkgs.coreutils ];
     text = ''
       new="${imgborders}/lib/libimgborders.so"
-      pid=$(pgrep -x -u "$(id -u)" Hyprland | head -n1 || true)
-      [ -n "$pid" ] || exit 0
-      if [ -z "''${HYPRLAND_INSTANCE_SIGNATURE:-}" ]; then
-        HYPRLAND_INSTANCE_SIGNATURE=$(find "$XDG_RUNTIME_DIR/hypr" -mindepth 1 -maxdepth 1 -printf '%T@ %f\n' | sort -rn | head -n1 | cut -d' ' -f2)
-        export HYPRLAND_INSTANCE_SIGNATURE
-      fi
+      instance=$(hyprctl instances -j | jq -r 'max_by(.time) // empty | "\(.pid) \(.instance)"' || true)
+      [ -n "$instance" ] || exit 0
+      pid=''${instance%% *}
+      export HYPRLAND_INSTANCE_SIGNATURE=''${instance#* }
       loaded=$(grep -o '/nix/store/[^ ]*/libimgborders\.so' "/proc/$pid/maps" | sort -u || true)
       [ "$loaded" = "$new" ] && exit 0
       for old in $loaded; do
