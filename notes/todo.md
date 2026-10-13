@@ -48,3 +48,5 @@
       working; pre-existing, unrelated to the Hyprland hyprlang-to-Lua
       migration (confirmed the binds themselves survived that migration
       unchanged)
+- [ ] Make fingerprint recognition on red-sun-whorl more reliable /
+      tolerant of finger position (#14)
