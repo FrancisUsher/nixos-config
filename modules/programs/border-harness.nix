@@ -7,7 +7,7 @@ let
   selection = builtins.fromJSON (builtins.readFile ./border-harness-selection.json);
   selectionJson = pkgs.writeText "border-harness-selection.json" (builtins.toJSON selection);
 
-  algorithm = selection.algorithm or "sprite";
+  algorithm = selection.algorithm or "procedural";
   customBorders = algorithm != "none";
   layout = {
     image = "~/.cache/border-harness/current.png";

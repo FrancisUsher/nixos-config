@@ -53,3 +53,7 @@
 - [ ] waybar network/battery icons are empty strings in waybar.nix (format-wifi,
       format-charging, format-icons, etc.) - glyphs were lost at some point, so
       wifi shows nothing and battery shows just the number
+- [ ] Prune the dropped sprite/autotile border backends now that the Display
+      Options menu only offers procedural bricks: sprite + autotile sheet
+      generation in ancient-ruins-border-gen.py, the autotile QML
+      (WallLayer, HyprlandLayout, TileStrip, WallGeometry.js) and wall.json

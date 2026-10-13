@@ -11,16 +11,13 @@ ShellRoot {
     property string selectedAccent: "base09"
     property real stoneBlend: 0.20
     property real highlightBlend: 0.45
-    property string algorithm: "sprite"
+    property string algorithm: "procedural"
     property int seed: 1
     property real roughness: 0.5
     property real chipping: 0.4
     property real moss: 0.2
     property bool merge: true
     property var accentSlots: ["base08", "base09", "base0A", "base0B", "base0C", "base0D", "base0E", "base0F"]
-    property int sheetVersion: 0
-    readonly property url autotileSheet: "file://" + Quickshell.env("HOME") + "/.cache/border-harness/autotile.png?v=" + sheetVersion
-    property var wallOptions: ({ reach: 29, edgeReach: 34, pixelScale: 3 })
 
     function regenerate() {
         if (generator.running) {
@@ -49,23 +46,6 @@ ShellRoot {
 
     Process {
         id: generator
-        onExited: root.sheetVersion++
-    }
-
-    HyprlandLayout {
-        id: hyprLayout
-        active: root.algorithm === "autotile"
-    }
-
-    Variants {
-        model: root.algorithm === "autotile" ? Quickshell.screens : []
-
-        WallLayer {
-            clients: hyprLayout.clients
-            monitors: hyprLayout.monitors
-            wallOptions: root.wallOptions
-            sheet: root.autotileSheet
-        }
     }
 
     Theme {
@@ -85,25 +65,14 @@ ShellRoot {
         blockLoading: true
     }
 
-    FileView {
-        id: wallFile
-        path: Quickshell.env("HOME") + "/.config/border-harness/wall.json"
-        preload: true
-        blockLoading: true
-    }
-
     Component.onCompleted: {
-        try {
-            root.wallOptions = JSON.parse(wallFile.text());
-        } catch (e) {
-            console.warn("border-harness: could not load wall.json, using built-in defaults", e);
-        }
         try {
             const saved = JSON.parse(selectionFile.text());
             root.selectedAccent = saved.accent;
             root.stoneBlend = saved.stone_blend;
             root.highlightBlend = saved.highlight_blend;
-            root.algorithm = saved.algorithm ?? root.algorithm;
+            if (saved.algorithm === "none" || saved.algorithm === "procedural")
+                root.algorithm = saved.algorithm;
             root.seed = saved.seed ?? root.seed;
             root.roughness = saved.roughness ?? root.roughness;
             root.chipping = saved.chipping ?? root.chipping;
@@ -182,31 +151,10 @@ ShellRoot {
                     }
                     OptionRow {
                         theme: theme
-                        label: "Repeating sprite"
-                        checked: root.algorithm === "sprite"
-                        onPicked: root.pickAlgorithm("sprite")
-                    }
-                    OptionRow {
-                        theme: theme
-                        label: "Neighbor-aware autotile"
-                        checked: root.algorithm === "autotile"
-                        onPicked: root.pickAlgorithm("autotile")
-                    }
-                    OptionRow {
-                        theme: theme
-                        label: "Procedural generation"
+                        label: "Procedural bricks"
                         checked: root.algorithm === "procedural"
                         onPicked: root.pickAlgorithm("procedural")
                     }
-                }
-
-                Column {
-                    width: parent.width
-                    spacing: 4
-                    visible: root.algorithm === "sprite"
-
-                    SectionLabel { theme: theme; text: "Sprite" }
-                    OptionRow { theme: theme; label: "Ancient Ruins brick"; checked: true; enabled: true }
                 }
 
                 ProceduralParams {
