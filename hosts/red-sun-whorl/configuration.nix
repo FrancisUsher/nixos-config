@@ -57,6 +57,7 @@
   };
 
   hardware.graphics.enable = true;
+  hardware.bluetooth.enable = true;
 
   # Hyprland's home-manager module enables xdg.portal by default, which
   # needs these paths linked into /run/current-system/sw - home-manager
