@@ -31,24 +31,6 @@ let
     src = ./imgborders;
   });
 
-  imgbordersLoad = pkgs.writeShellApplication {
-    name = "imgborders-load";
-    runtimeInputs = [ unstableUnfreePkgs.hyprland pkgs.jq pkgs.gnugrep pkgs.coreutils ];
-    text = ''
-      new="${imgborders}/lib/libimgborders.so"
-      instance=$(hyprctl instances -j | jq -r 'max_by(.time) // empty | "\(.pid) \(.instance)"' || true)
-      [ -n "$instance" ] || exit 0
-      pid=''${instance%% *}
-      export HYPRLAND_INSTANCE_SIGNATURE=''${instance#* }
-      loaded=$(grep -o '/nix/store/[^ ]*/libimgborders\.so' "/proc/$pid/maps" | sort -u || true)
-      [ "$loaded" = "$new" ] && exit 0
-      for old in $loaded; do
-        hyprctl plugin unload "$old"
-      done
-      hyprctl plugin load "$new"
-      hyprctl reload
-    '';
-  };
 in
 {
   home.packages = [
@@ -168,6 +150,8 @@ in
     };
 
     extraConfig = ''
+      hl.plugin.load("${imgborders}/lib/libimgborders.so")
+
       hl.on("hyprland.start", function()
         hl.exec_cmd("waybar")
         hl.exec_cmd("${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store")
@@ -185,20 +169,6 @@ in
     name = "phinger-cursors-dark";
     package = pkgs.phinger-cursors;
     size = 24;
-  };
-
-  systemd.user.services.imgborders-load = {
-    Unit = {
-      Description = "Load the imgborders Hyprland plugin, swapping out a stale build";
-      PartOf = [ "graphical-session.target" ];
-      After = [ "graphical-session.target" ];
-    };
-    Service = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = lib.getExe imgbordersLoad;
-    };
-    Install.WantedBy = [ "graphical-session.target" ];
   };
 
   # needed for interactive auth in e.g. fprintd enrollment
