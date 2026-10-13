@@ -27,12 +27,30 @@ let
   mkBezier = name: points: { _args = [ name { type = "bezier"; inherit points; } ]; };
 
   imgborders = unstableUnfreePkgs.hyprlandPlugins.imgborders.overrideAttrs (_: {
-    version = "2026-08-16";
-    src = pkgs.fetchzip {
-      url = "https://codeberg.org/zacoons/imgborders/archive/08be22236144d3c91607bcfa955ed0d457f4f50b.tar.gz";
-      hash = "sha256-O+896T2qrisxiWTotB5HlzKw8XEJqPDTgSUHAAVUD18=";
-    };
+    version = "2026-08-16-local";
+    src = ./imgborders;
   });
+
+  imgbordersLoad = pkgs.writeShellApplication {
+    name = "imgborders-load";
+    runtimeInputs = [ unstableUnfreePkgs.hyprland pkgs.procps pkgs.gnugrep pkgs.coreutils pkgs.findutils ];
+    text = ''
+      new="${imgborders}/lib/libimgborders.so"
+      pid=$(pgrep -x -u "$(id -u)" Hyprland | head -n1 || true)
+      [ -n "$pid" ] || exit 0
+      if [ -z "''${HYPRLAND_INSTANCE_SIGNATURE:-}" ]; then
+        HYPRLAND_INSTANCE_SIGNATURE=$(find "$XDG_RUNTIME_DIR/hypr" -mindepth 1 -maxdepth 1 -printf '%T@ %f\n' | sort -rn | head -n1 | cut -d' ' -f2)
+        export HYPRLAND_INSTANCE_SIGNATURE
+      fi
+      loaded=$(grep -o '/nix/store/[^ ]*/libimgborders\.so' "/proc/$pid/maps" | sort -u || true)
+      [ "$loaded" = "$new" ] && exit 0
+      for old in $loaded; do
+        hyprctl plugin unload "$old"
+      done
+      hyprctl plugin load "$new"
+      hyprctl reload
+    '';
+  };
 in
 {
   home.packages = [
@@ -49,8 +67,6 @@ in
     package = unstableUnfreePkgs.hyprland;
     systemd.variables = [ "--all" ];
     configType = "lua";
-
-    plugins = [ imgborders ];
 
     settings = {
       config = {
@@ -93,6 +109,7 @@ in
           { _args = [ "SUPER + P" (mkExec "fuzzel") ]; }
           { _args = [ "SUPER + V" (mkExec "fuzzel-cliphist") ]; }
           { _args = [ "SUPER + D" (mkExec "${pkgs.quickshell}/bin/qs ipc -c display-options call displayOptions toggle") ]; }
+          { _args = [ "SUPER + B" (mkExec "${pkgs.quickshell}/bin/qs ipc -c bluetooth call bluetooth toggle") ]; }
           {
             _args = [
               "SUPER + SHIFT + V"
@@ -162,7 +179,6 @@ in
         hl.exec_cmd("waybar")
         hl.exec_cmd("${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store")
         hl.exec_cmd("${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store")
-        hl.exec_cmd("${pkgs.quickshell}/bin/qs -c display-options")
         hl.exec_cmd("${pkgs.quickshell}/bin/qs -c rebuild-sweep")
       end)
     '';
@@ -176,6 +192,20 @@ in
     name = "phinger-cursors-dark";
     package = pkgs.phinger-cursors;
     size = 24;
+  };
+
+  systemd.user.services.imgborders-load = {
+    Unit = {
+      Description = "Load the imgborders Hyprland plugin, swapping out a stale build";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = lib.getExe imgbordersLoad;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
   };
 
   # needed for interactive auth in e.g. fprintd enrollment

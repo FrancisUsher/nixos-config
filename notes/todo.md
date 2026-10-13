@@ -50,3 +50,6 @@
       unchanged)
 - [ ] Make fingerprint recognition on red-sun-whorl more reliable /
       tolerant of finger position (#14)
+- [ ] waybar network/battery icons are empty strings in waybar.nix (format-wifi,
+      format-charging, format-icons, etc.) - glyphs were lost at some point, so
+      wifi shows nothing and battery shows just the number

@@ -1,4 +1,5 @@
-import { expect, test } from 'claude-code/testing'
+import { expect, mock, test } from 'claude-code/testing'
+
 
 const long = (word: string) => Array(40).fill(word).join(' ')
 const ANSWER = [long('alpha'), long('beta'), long('gamma')].join('\n\n')
@@ -20,6 +21,7 @@ test('/annotate with no reply yet says so', async ($) => {
 })
 
 test('typed lines become notes on the current section and are sent as one prompt', async ($, on) => {
+  mock.store(on)
   const submitted: string[] = []
   on('turn.complete', () => ({ text: '' }))
   on('prompt.submit', ($, e) => {
@@ -51,6 +53,7 @@ test('typed lines become notes on the current section and are sent as one prompt
 })
 
 test('a hint appears after a reply and pressing it starts the review', async ($, on) => {
+  mock.store(on)
   on('turn.complete', () => ({ text: '' }))
   on('ui.render', () => ({ type: 'Text', props: {}, children: ['engine band'] }))
 
@@ -67,6 +70,7 @@ test('a hint appears after a reply and pressing it starts the review', async ($,
 })
 
 test('the hint clears when the next turn starts', async ($, on) => {
+  mock.store(on)
   on('turn.complete', () => ({ text: '' }))
   on('turn.start', ($, e) => ({ turnId: e.turnId }))
   on('ui.render', () => ({ type: 'Text', props: {}, children: ['engine band'] }))
@@ -79,6 +83,7 @@ test('the hint clears when the next turn starts', async ($, on) => {
 })
 
 test('slash commands pass through while reviewing', async ($, on) => {
+  mock.store(on)
   on('turn.complete', () => ({ text: '' }))
   on('prompt.submit', ($, e) => ({ text: e.text }))
   await $.turn.complete({ turnId: 't1', answer: ANSWER, durationMs: 1, isAborted: false, usage: null })
@@ -87,6 +92,7 @@ test('slash commands pass through while reviewing', async ($, on) => {
 })
 
 test('/annotate-cancel drops the notes and stops swallowing prompts', async ($, on) => {
+  mock.store(on)
   on('turn.complete', () => ({ text: '' }))
   on('prompt.submit', ($, e) => ({ text: e.text }))
   await $.turn.complete({ turnId: 't1', answer: ANSWER, durationMs: 1, isAborted: false, usage: null })
