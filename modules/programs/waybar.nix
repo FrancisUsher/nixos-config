@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   programs.waybar = {
@@ -11,6 +11,7 @@
       ];
       modules-center = [ "hyprland/window" ];
       modules-right = [
+        "bluetooth"
         "network"
         "battery"
         "clock"
@@ -32,6 +33,17 @@
         format-plugged = "{capacity}% ";
         format-alt = "{time} {icon}";
         format-icons = [ "" "" "" "" "" ];
+      };
+      bluetooth = {
+        format = "󰂯";
+        format-off = "󰂲";
+        format-disabled = "󰂲";
+        format-connected = "󰂱 {device_alias}";
+        format-connected-battery = "󰂱 {device_alias} {device_battery_percentage}%";
+        tooltip-format-connected = "{device_enumerate}";
+        tooltip-format-enumerate-connected = "{device_alias}";
+        tooltip-format-enumerate-connected-battery = "{device_alias} {device_battery_percentage}%";
+        on-click = "${pkgs.quickshell}/bin/qs ipc -c bluetooth call bluetooth toggle";
       };
       network = {
         format-wifi = "";
@@ -85,6 +97,7 @@
 
       #clock,
       #battery,
+      #bluetooth,
       #network,
       #tray {
           padding: 0 10px;
@@ -114,6 +127,10 @@
       }
 
       #network {
+          background-color: transparent;
+      }
+
+      #bluetooth {
           background-color: transparent;
       }
     '';
