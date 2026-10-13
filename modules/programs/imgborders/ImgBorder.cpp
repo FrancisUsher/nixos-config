@@ -11,6 +11,7 @@
 #include <hyprland/src/desktop/DesktopTypes.hpp>
 #include <hyprland/src/desktop/view/Window.hpp>
 #include <hyprland/src/helpers/MiscFunctions.hpp>
+#include <hyprland/src/managers/eventLoop/EventLoopManager.hpp>
 #include <hyprland/src/managers/fullscreen/FullscreenController.hpp>
 #include <hyprland/src/plugins/PluginAPI.hpp>
 #include <hyprland/src/render/OpenGL.hpp>
@@ -38,12 +39,12 @@ SDecorationPositioningInfo CImgBorder::getPositioningInfo() {
   info.edges = DECORATION_EDGE_LEFT | DECORATION_EDGE_RIGHT |
                DECORATION_EDGE_TOP | DECORATION_EDGE_BOTTOM;
   info.priority = 4999; // Must be lower than hyprbars
+  for (int side = 0; side < 4; side++)
+    m_reserve[side] = m_isEnabled && !m_isHidden ? reserveFor(side) : 0;
   if (m_isEnabled && !m_isHidden) {
     info.desiredExtents = {
-        .topLeft = {(m_sizes[0] - m_insets[0]) * m_scale,
-                    (m_sizes[2] - m_insets[2]) * m_scale},
-        .bottomRight = {(m_sizes[1] - m_insets[1]) * m_scale,
-                        (m_sizes[3] - m_insets[3]) * m_scale},
+        .topLeft = {m_reserve[0], m_reserve[2]},
+        .bottomRight = {m_reserve[1], m_reserve[3]},
     };
   }
   info.reserved = true;
@@ -124,13 +125,67 @@ bool CImgBorder::participatesInWall() {
          !Fullscreen::controller()->isFullscreen(PWINDOW);
 }
 
+double CImgBorder::reserveFor(int side) {
+  const double full = (m_sizes[side] - m_insets[side]) * m_scale;
+  if (m_sharedGap[side] < 0 || !participatesInWall())
+    return full;
+  return std::max(0.0, std::round((full - m_sharedGap[side]) / 2));
+}
+
+void CImgBorder::updateSharedEdges() {
+  double gaps[4] = {-1, -1, -1, -1};
+  if (participatesInWall()) {
+    const auto PWORKSPACE = m_pWindow.lock()->m_workspace;
+    const double maxGap = g_pGlobalState->config.mergeDistance->value();
+    const auto me = goalFrame();
+    const auto share = [&](int side, double gap) {
+      if (gap < -1 || gap > maxGap)
+        return;
+      gap = std::max(0.0, gap);
+      gaps[side] = gaps[side] < 0 ? gap : std::min(gaps[side], gap);
+    };
+    for (const auto &wb : g_pGlobalState->borders) {
+      auto *b = wb.get();
+      if (b == nullptr || b == this || !b->participatesInWall() ||
+          b->getWindow().lock()->m_workspace != PWORKSPACE)
+        continue;
+      const auto o = b->goalFrame();
+      const double overlapX = std::min(me.x + me.width, o.x + o.width) -
+                              std::max(me.x, o.x);
+      const double overlapY = std::min(me.y + me.height, o.y + o.height) -
+                              std::max(me.y, o.y);
+      if (overlapY > 1) {
+        share(0, me.x - (o.x + o.width));
+        share(1, o.x - (me.x + me.width));
+      }
+      if (overlapX > 1) {
+        share(2, me.y - (o.y + o.height));
+        share(3, o.y - (me.y + me.height));
+      }
+    }
+  }
+  if (std::equal(std::begin(gaps), std::end(gaps), std::begin(m_sharedGap)))
+    return;
+  std::copy(std::begin(gaps), std::end(gaps), std::begin(m_sharedGap));
+  if (m_repositionQueued)
+    return;
+  m_repositionQueued = true;
+  g_pEventLoopManager->doLater([self = m_self] {
+    const auto b = self.lock();
+    if (!b)
+      return;
+    b->m_repositionQueued = false;
+    g_pDecorationPositioner->repositionDeco(b.get());
+  });
+}
+
 CBox CImgBorder::goalFrame() {
   const auto content = m_pWindow.lock()->geometricBox(
       Desktop::View::IGeometric::GEOMETRIC_GOAL);
-  const double left = (m_sizes[0] - m_insets[0]) * m_scale;
-  const double right = (m_sizes[1] - m_insets[1]) * m_scale;
-  const double top = (m_sizes[2] - m_insets[2]) * m_scale;
-  const double bottom = (m_sizes[3] - m_insets[3]) * m_scale;
+  const double left = m_reserve[0];
+  const double right = m_reserve[1];
+  const double top = m_reserve[2];
+  const double bottom = m_reserve[3];
   return {content.x - left, content.y - top, content.width + left + right,
           content.height + top + bottom};
 }
@@ -236,6 +291,7 @@ void CImgBorder::drawPass(PHLMONITOR pMonitor, const float &a) {
   const auto scale = m_scale * pMonitor->m_scale;
 
   if (m_isProcedural) {
+    updateSharedEdges();
     drawProcedural(box, scale, a);
     return;
   }

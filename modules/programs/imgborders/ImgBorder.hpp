@@ -36,6 +36,8 @@ public:
   CBox getDamageBox();
 
   bool participatesInWall();
+  double reserveFor(int side);
+  void updateSharedEdges();
   CBox goalFrame();
   uint64_t stoneSeed();
 
@@ -66,6 +68,10 @@ private:
   StoneGen::SParams m_stoneParams;
   int m_genWidth = 0;
   int m_genHeight = 0;
+
+  double m_sharedGap[4] = {-1, -1, -1, -1};
+  double m_reserve[4] = {0, 0, 0, 0};
+  bool m_repositionQueued = false;
 
   uint64_t m_wallVersion = 0;
   int m_wallCrop[4] = {0, 0, 0, 0};
