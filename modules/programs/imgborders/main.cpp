@@ -22,6 +22,8 @@
 // Do NOT change this function.
 APICALL EXPORT std::string PLUGIN_API_VERSION() { return HYPRLAND_API_VERSION; }
 
+static std::vector<Hyprutils::Signal::CHyprSignalListener> g_listeners;
+
 static void addToWindow(PHLWINDOW PWINDOW) {
   // Create border and apply it
   auto border = makeUnique<CImgBorder>(PWINDOW);
@@ -45,7 +47,7 @@ static void onWindowOpen(PHLWINDOW window) {
 static void onWindowClose(PHLWINDOW window) {
   const auto BORDER = std::find_if(
       g_pGlobalState->borders.begin(), g_pGlobalState->borders.end(),
-      [window](const auto &b) { return b->getWindow() == window; });
+      [window](const auto &b) { return b && b->getWindow() == window; });
 
   if (BORDER == g_pGlobalState->borders.end())
     return;
@@ -57,7 +59,7 @@ static void onWindowClose(PHLWINDOW window) {
 static void onWindowUpdateRules(PHLWINDOW window) {
   const auto BORDER = std::find_if(
       g_pGlobalState->borders.begin(), g_pGlobalState->borders.end(),
-      [window](const auto &b) { return b->getWindow() == window; });
+      [window](const auto &b) { return b && b->getWindow() == window; });
 
   if (BORDER == g_pGlobalState->borders.end())
     return;
@@ -68,6 +70,7 @@ static void onWindowUpdateRules(PHLWINDOW window) {
 
 static void onConfigReloaded() {
   g_pGlobalState->configGeneration++;
+  std::erase_if(g_pGlobalState->borders, [](const auto &b) { return !b; });
   for (auto &b : g_pGlobalState->borders) {
     b->updateConfig();
   }
@@ -172,14 +175,12 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
       Desktop::Rule::windowEffects()->registerEffect("imgborders:noimgborders");
 
   // Register callbacks
-  static auto windowOpenHook =
-      Event::bus()->m_events.window.open.listen(onWindowOpen);
-  static auto windowCloseHook =
-      Event::bus()->m_events.window.close.listen(onWindowClose);
-  static auto windowUpdateRulesHook =
-      Event::bus()->m_events.window.updateRules.listen(onWindowUpdateRules);
-  static auto configReloadedHook =
-      Event::bus()->m_events.config.reloaded.listen(onConfigReloaded);
+  g_listeners = {
+      Event::bus()->m_events.window.open.listen(onWindowOpen),
+      Event::bus()->m_events.window.close.listen(onWindowClose),
+      Event::bus()->m_events.window.updateRules.listen(onWindowUpdateRules),
+      Event::bus()->m_events.config.reloaded.listen(onConfigReloaded),
+  };
 
   // Add to existing windows
   for (auto &w : Desktop::windowState()->windows()) {
@@ -192,6 +193,10 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
 }
 
 APICALL EXPORT void PLUGIN_EXIT() {
+  g_listeners.clear();
+  g_pGlobalState->borders.clear();
+  g_pGlobalState->walls.clear();
+
   for (auto &m : State::monitorState()->monitors())
     m->m_scheduledRecalc = true;
 
