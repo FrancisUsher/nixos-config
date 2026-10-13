@@ -176,6 +176,12 @@ ShellRoot {
                     SectionLabel { theme: theme; text: "Algorithm" }
                     OptionRow {
                         theme: theme
+                        label: "None (minimal tiling)"
+                        checked: root.algorithm === "none"
+                        onPicked: root.pickAlgorithm("none")
+                    }
+                    OptionRow {
+                        theme: theme
                         label: "Repeating sprite"
                         checked: root.algorithm === "sprite"
                         onPicked: root.pickAlgorithm("sprite")
@@ -220,6 +226,7 @@ ShellRoot {
                 Column {
                     width: parent.width
                     spacing: 8
+                    visible: root.algorithm !== "none"
 
                     SectionLabel { theme: theme; text: "Color theming" }
 

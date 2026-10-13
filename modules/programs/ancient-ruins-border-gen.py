@@ -31,24 +31,42 @@ def brick_module(mortar, stone, highlight):
     return px
 
 
-def write_live_lua(path, args, palette):
-    params = {
-        "mode": "procedural" if args.algorithm == "procedural" else "image",
-        "seed": args.seed,
-        "roughness": args.roughness,
-        "chipping": args.chipping,
-        "moss": args.moss,
-        "stone_blend": args.stone_blend,
-        "highlight_blend": args.highlight_blend,
-        "color_mortar": palette[args.mortar],
-        "color_accent": palette[args.accent],
-        "color_moss": palette[args.moss_slot],
-        "merge": args.merge,
+def to_lua(value, indent=""):
+    if isinstance(value, dict):
+        inner = indent + "  "
+        body = "".join(f"{inner}{k} = {to_lua(v, inner)},\n" for k, v in value.items())
+        return "{\n" + body + indent + "}"
+    return json.dumps(value)
+
+
+def write_live_lua(path, args, palette, layout):
+    custom = args.algorithm != "none"
+    profile = layout["custom" if custom else "minimal"]
+    config = {
+        "general": {
+            "gaps_out": profile["gaps_out"],
+            "border_size": profile["border_size"],
+        },
+        "plugin": {
+            "imgborders": {
+                "image": layout["image"] if custom else "",
+                "mode": "procedural" if args.algorithm == "procedural" else "image",
+                "seed": args.seed,
+                "roughness": args.roughness,
+                "chipping": args.chipping,
+                "moss": args.moss,
+                "stone_blend": args.stone_blend,
+                "highlight_blend": args.highlight_blend,
+                "color_mortar": palette[args.mortar],
+                "color_accent": palette[args.accent],
+                "color_moss": palette[args.moss_slot],
+                "merge": args.merge,
+            },
+        },
     }
-    body = "".join(f"  {k} = {json.dumps(v)},\n" for k, v in params.items())
     tmp = path + ".tmp"
     with open(tmp, "w") as f:
-        f.write("return {\n" + body + "}\n")
+        f.write("return " + to_lua(config) + "\n")
     os.replace(tmp, path)
 
 
@@ -108,7 +126,7 @@ def main():
     parser.add_argument("--mortar", default="base00", help="palette slot for background/mortar")
     parser.add_argument("--stone-blend", type=float, default=0.20)
     parser.add_argument("--highlight-blend", type=float, default=0.45)
-    parser.add_argument("--algorithm", choices=("sprite", "procedural", "autotile"), default="sprite")
+    parser.add_argument("--algorithm", choices=("none", "sprite", "procedural", "autotile"), default="sprite")
     parser.add_argument("--seed", type=int, default=1)
     parser.add_argument("--roughness", type=float, default=0.5)
     parser.add_argument("--chipping", type=float, default=0.4)
@@ -117,7 +135,8 @@ def main():
     parser.add_argument("--merge", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--sheet-out", help="also write the 16-tile dual-grid autotile sheet here")
-    parser.add_argument("--live-lua", help="write plugin params as a Lua table to this path")
+    parser.add_argument("--live-lua", help="write Hyprland config overrides as a Lua table to this path")
+    parser.add_argument("--layout", help="layout.json with gap/border profiles for custom and minimal modes")
     parser.add_argument(
         "--write-selection",
         help="also write the applied accent/blend params as JSON to this path, "
@@ -137,7 +156,9 @@ def main():
         autotile_sheet(args, palette).save(args.sheet_out)
 
     if args.live_lua:
-        write_live_lua(args.live_lua, args, palette)
+        with open(args.layout) as f:
+            layout = json.load(f)
+        write_live_lua(args.live_lua, args, palette, layout)
 
     if args.write_selection and os.path.isdir(os.path.dirname(args.write_selection)):
         with open(args.write_selection, "w") as f:

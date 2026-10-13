@@ -448,6 +448,7 @@ void CImgBorder::updateConfig() {
                                  "[imgborders] invalid sizes in config",
                                  CHyprColor{1.0, 0.1, 0.1, 1.0}, 5000);
     m_isEnabled = false;
+    g_pDecorationPositioner->repositionDeco(this);
     return;
   }
   m_sizes[0] = sizes.m_left;
@@ -502,6 +503,7 @@ void CImgBorder::updateConfig() {
           PHANDLE, "[imgborders] invalid procedural color in config",
           CHyprColor{1.0, 0.1, 0.1, 1.0}, 5000);
       m_isEnabled = false;
+      g_pDecorationPositioner->repositionDeco(this);
       return;
     }
     m_genWidth = 0;
@@ -514,6 +516,7 @@ void CImgBorder::updateConfig() {
   const auto texSrc = g_pGlobalState->config.image->value();
   if (texSrc.empty()) {
     m_isEnabled = false;
+    g_pDecorationPositioner->repositionDeco(this);
     return;
   }
   wordexp_t p;
@@ -529,6 +532,7 @@ void CImgBorder::updateConfig() {
                     texSrcExpanded),
         CHyprColor{1.0, 0.1, 0.1, 1.0}, 5000);
     m_isEnabled = false;
+    g_pDecorationPositioner->repositionDeco(this);
     return;
   }
 

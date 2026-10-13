@@ -7,6 +7,15 @@ let
   selection = builtins.fromJSON (builtins.readFile ./border-harness-selection.json);
   selectionJson = pkgs.writeText "border-harness-selection.json" (builtins.toJSON selection);
 
+  algorithm = selection.algorithm or "sprite";
+  customBorders = algorithm != "none";
+  layout = {
+    image = "~/.cache/border-harness/current.png";
+    custom = { gaps_out = 0; border_size = 0; };
+    minimal = { gaps_out = 10; border_size = 1; };
+  };
+  layoutJson = pkgs.writeText "border-harness-layout.json" (builtins.toJSON layout);
+
   hyprlandConfig = config.wayland.windowManager.hyprland.settings.config;
   imgbordersFrame = hyprlandConfig.plugin.imgborders.sizes * hyprlandConfig.plugin.imgborders.scale;
   wallJson = pkgs.writeText "border-harness-wall.json" (builtins.toJSON {
@@ -27,8 +36,9 @@ let
       sheet="''${BORDER_HARNESS_SHEET:-$HOME/.cache/border-harness/autotile.png}"
       selection="''${BORDER_HARNESS_SELECTION:-$HOME/nixos-config/modules/programs/border-harness-selection.json}"
       live="''${BORDER_HARNESS_LIVE:-$HOME/.cache/border-harness/live.lua}"
+      layout="''${BORDER_HARNESS_LAYOUT:-$HOME/.config/border-harness/layout.json}"
       mkdir -p "$(dirname "$out")"
-      python3 ${generatorScript} --palette "$palette" --out "$out" --sheet-out "$sheet" --write-selection "$selection" --live-lua "$live" "$@"
+      python3 ${generatorScript} --palette "$palette" --out "$out" --sheet-out "$sheet" --write-selection "$selection" --live-lua "$live" --layout "$layout" "$@"
       hyprctl reload >/dev/null 2>&1 || true
     '';
   };
@@ -39,7 +49,7 @@ let
     mkdir -p $out
     python3 ${generatorScript} --palette ${paletteJson} \
       --out $out/current.png --sheet-out $out/autotile.png \
-      --algorithm ${selection.algorithm or "sprite"} \
+      --algorithm ${algorithm} \
       --accent ${selection.accent} \
       --stone-blend ${toString selection.stone_blend} \
       --highlight-blend ${toString selection.highlight_blend}
@@ -51,6 +61,7 @@ in
   xdg.configFile."border-harness/palette.json".source = paletteJson;
   xdg.configFile."border-harness/selection.json".source = selectionJson;
   xdg.configFile."border-harness/wall.json".source = wallJson;
+  xdg.configFile."border-harness/layout.json".source = layoutJson;
 
   home.activation.borderHarnessSeed = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     $DRY_RUN_CMD mkdir -p "$HOME/.cache/border-harness"
@@ -59,8 +70,13 @@ in
     $DRY_RUN_CMD rm -f "$HOME/.cache/border-harness/live.lua"
   '';
 
+  wayland.windowManager.hyprland.settings.config.general = {
+    inherit (layout.${if customBorders then "custom" else "minimal"}) gaps_out border_size;
+  };
+
   wayland.windowManager.hyprland.settings.config.plugin.imgborders = {
-    mode = if (selection.algorithm or "sprite") == "procedural" then "procedural" else "image";
+    image = if customBorders then layout.image else "";
+    mode = if algorithm == "procedural" then "procedural" else "image";
     seed = selection.seed or 1;
     roughness = selection.roughness or 0.5;
     chipping = selection.chipping or 0.4;
@@ -77,7 +93,7 @@ in
   wayland.windowManager.hyprland.extraConfig = ''
     local borderHarnessOk, borderHarnessLive = pcall(dofile, os.getenv("HOME") .. "/.cache/border-harness/live.lua")
     if borderHarnessOk and type(borderHarnessLive) == "table" then
-      hl.config({ plugin = { imgborders = borderHarnessLive } })
+      hl.config(borderHarnessLive)
     end
   '';
 }

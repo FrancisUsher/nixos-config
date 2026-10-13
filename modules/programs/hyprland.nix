@@ -70,16 +70,11 @@ in
 
     settings = {
       config = {
-        general = {
-          gaps_in = 5;
-          gaps_out = 10;
-          border_size = 0;
-        };
+        general.gaps_in = 5;
         animations.enabled = true;
         ecosystem.no_update_news = true;
         decoration.rounding = 0;
         plugin.imgborders = {
-          image = "~/.cache/border-harness/current.png";
           sizes = 8;
           insets = 0;
           scale = 3;
