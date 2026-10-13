@@ -48,3 +48,6 @@
       working; pre-existing, unrelated to the Hyprland hyprlang-to-Lua
       migration (confirmed the binds themselves survived that migration
       unchanged)
+- [ ] waybar network/battery icons are empty strings in waybar.nix (format-wifi,
+      format-charging, format-icons, etc.) - glyphs were lost at some point, so
+      wifi shows nothing and battery shows just the number
