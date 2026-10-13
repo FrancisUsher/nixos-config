@@ -35,7 +35,7 @@
 - [ ] Refine red-sun-whorl's wallpaper aesthetic further
       (modules/themes/red-sun-whorl-wallpaper.nix) - current sun-line/ridges
       scene is an acceptable first pass, not a final look
-- [ ] [[pixel-art-window-borders|Pixel-art brick/stone window borders + runtime render-mode test harness]]
+- [ ] Procedural window borders: more generators, ornamentation, theming (#15)
 - [ ] Migrate red-sun-whorl's Hyprland config from hyprlang (.conf) to Lua
       (configType = "lua") before Hyprland 0.57 drops .conf support - a
       deprecation notice for .conf landed in 0.56.1
