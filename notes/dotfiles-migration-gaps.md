@@ -20,10 +20,3 @@ Loose ends found while triaging `arch-reference/` for deletion. See
       itself got enabled (modules/programs/cli-tools.nix). File kept in
       arch-reference for now. Todo: add `settings.mgr.show_hidden = true`
       to programs.yazi's settings once yazi config gets another pass.
-- [ ] Hyprland - deliberately set aside for now (arch-reference's
-      hyprland.conf was untouched stock example config, nothing
-      customized; Sway is what's actually in use), but expected to come
-      back later as the real theming engine for the Solar Cycle look
-      (animations, dynamic borders, transparency) once the migration
-      itself is done - see
-      [[red-sun-whorl-rename-plan|red-sun-whorl rename plan]].
