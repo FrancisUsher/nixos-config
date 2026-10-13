@@ -38,9 +38,11 @@
         format = "󰂯";
         format-off = "󰂲";
         format-disabled = "󰂲";
-        format-connected = "󰂱 {device_alias}";
-        format-connected-battery = "󰂱 {device_alias} {device_battery_percentage}%";
-        tooltip-format-connected = "{device_enumerate}";
+        format-connected = "󰂱 {num_connections}";
+        tooltip-format = "No devices connected\nSUPER+B for details";
+        tooltip-format-off = "Bluetooth off\nSUPER+B for details";
+        tooltip-format-disabled = "Bluetooth off\nSUPER+B for details";
+        tooltip-format-connected = "{device_enumerate}\nSUPER+B for details";
         tooltip-format-enumerate-connected = "{device_alias}";
         tooltip-format-enumerate-connected-battery = "{device_alias} {device_battery_percentage}%";
         on-click = "${pkgs.quickshell}/bin/qs ipc -c bluetooth call bluetooth toggle";
