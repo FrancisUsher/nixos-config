@@ -46,7 +46,7 @@ in
   };
 
   wayland.windowManager.hyprland.settings.config.plugin.imgborders = {
-    mode = if customBorders then "procedural" else "image";
+    mode = if customBorders then "procedural" else "none";
     seed = selection.seed or 1;
     roughness = selection.roughness or 0.5;
     chipping = selection.chipping or 0.4;

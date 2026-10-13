@@ -537,7 +537,13 @@ void CImgBorder::updateConfig() {
   m_tex_b = nullptr;
   m_tex_r = nullptr;
 
-  m_isProcedural = g_pGlobalState->config.mode->value() == "procedural";
+  const auto mode = g_pGlobalState->config.mode->value();
+  m_isProcedural = mode == "procedural";
+  if (mode == "none") {
+    m_isEnabled = false;
+    g_pDecorationPositioner->repositionDeco(this);
+    return;
+  }
   if (m_isProcedural) {
     auto &sp = m_stoneParams;
     sp.seed = StoneGen::mix(

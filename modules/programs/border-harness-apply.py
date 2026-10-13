@@ -21,7 +21,7 @@ def write_live_lua(path, args, palette, layout):
         },
         "plugin": {
             "imgborders": {
-                "mode": "procedural" if custom else "image",
+                "mode": "procedural" if custom else "none",
                 "seed": args.seed,
                 "roughness": args.roughness,
                 "chipping": args.chipping,

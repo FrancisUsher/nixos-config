@@ -115,7 +115,7 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   g_pGlobalState->config.mode = makeShared<Config::Values::CStringValue>(
       "plugin:imgborders:mode",
       "\"image\" to slice the image, \"procedural\" to generate stone borders "
-      "per window.",
+      "per window, \"none\" to draw nothing.",
       "image");
   g_pGlobalState->config.seed = makeShared<Config::Values::CIntValue>(
       "plugin:imgborders:seed", "Base seed mixed into every window's seed.", 1);
