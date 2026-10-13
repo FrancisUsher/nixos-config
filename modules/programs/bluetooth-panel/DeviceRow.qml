@@ -30,7 +30,10 @@ Item {
             return;
         if (root.device.connected) {
             root.device.disconnect();
-        } else if (root.known) {
+            return;
+        }
+        root.device.trusted = true;
+        if (root.known) {
             root.device.connect();
         } else {
             root.connectAfterPair = true;
@@ -57,7 +60,6 @@ Item {
         function onPairedChanged() {
             if (root.device.paired && root.connectAfterPair) {
                 root.connectAfterPair = false;
-                root.device.trusted = true;
                 root.device.connect();
             }
         }
