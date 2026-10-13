@@ -23,6 +23,7 @@
     ./modules/programs/border-harness.nix
     ./modules/programs/quickshell-harness.nix
     ./modules/programs/rebuild-sweep.nix
+    ./modules/programs/volume-osd.nix
     ./modules/programs/krita.nix
   ];
 

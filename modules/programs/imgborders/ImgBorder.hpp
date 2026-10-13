@@ -1,0 +1,83 @@
+#pragma once
+
+#include "StoneGen.hpp"
+#include <optional>
+#include "globals.hpp"
+#include <hyprland/src/desktop/DesktopTypes.hpp>
+#include <hyprland/src/desktop/rule/windowRule/WindowRule.hpp>
+#include <hyprland/src/render/Texture.hpp>
+#include <hyprland/src/render/decorations/IHyprWindowDecoration.hpp>
+
+using namespace Render;
+
+static const auto DISPLAY_NAME = "Image borders";
+
+class CImgBorder : public IHyprWindowDecoration {
+public:
+  CImgBorder(PHLWINDOW);
+  virtual ~CImgBorder();
+
+  virtual SDecorationPositioningInfo getPositioningInfo() override;
+  virtual void
+  onPositioningReply(const SDecorationPositioningReply &reply) override;
+  virtual void draw(PHLMONITOR, float const &a) override;
+  virtual eDecorationType getDecorationType() override;
+  virtual void updateWindow(PHLWINDOW) override;
+  virtual void damageEntire() override;
+  virtual eDecorationLayer getDecorationLayer() override;
+  virtual uint64_t getDecorationFlags() override;
+  virtual std::string getDisplayName() override;
+
+  PHLWINDOWREF getWindow();
+
+  bool shouldBlur();
+
+  CBox getGlobalBoundingBox();
+  CBox getDamageBox();
+
+  bool participatesInWall();
+  CBox goalFrame();
+  uint64_t stoneSeed();
+
+  void drawPass(PHLMONITOR, float const &a);
+  void drawProcedural(const CBox &box, float scale, float const &a);
+  bool drawWall(const CBox &box, float const &a);
+
+  void updateConfig();
+  void updateRules();
+
+  WP<CImgBorder> m_self;
+
+private:
+  PHLWINDOWREF m_pWindow;
+
+  CBox m_assignedBox;
+
+  bool m_isEnabled;
+  bool m_isHidden;
+  int m_sizes[4];
+  int m_insets[4];
+  float m_scale;
+  bool m_shouldSmooth;
+  bool m_shouldBlur;
+
+  bool m_isProcedural = false;
+  uint64_t m_windowSeed;
+  StoneGen::SParams m_stoneParams;
+  int m_genWidth = 0;
+  int m_genHeight = 0;
+
+  uint64_t m_wallVersion = 0;
+  int m_wallCrop[4] = {0, 0, 0, 0};
+  SP<ITexture> m_tex_wall;
+  std::optional<CBox> m_wallBox;
+
+  SP<ITexture> m_tex_tl;
+  SP<ITexture> m_tex_tr;
+  SP<ITexture> m_tex_br;
+  SP<ITexture> m_tex_bl;
+  SP<ITexture> m_tex_t;
+  SP<ITexture> m_tex_r;
+  SP<ITexture> m_tex_b;
+  SP<ITexture> m_tex_l;
+};
