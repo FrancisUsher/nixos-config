@@ -71,7 +71,7 @@ void CImgBorder::updateWindow(PHLWINDOW pWindow) { damageEntire(); }
 void CImgBorder::damageEntire() { g_pHyprRenderer->damageBox(getDamageBox()); }
 
 eDecorationLayer CImgBorder::getDecorationLayer() {
-  return DECORATION_LAYER_OVER;
+  return m_isProcedural ? DECORATION_LAYER_UNDER : DECORATION_LAYER_OVER;
 }
 
 uint64_t CImgBorder::getDecorationFlags() {
