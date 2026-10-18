@@ -52,5 +52,4 @@
       wifi shows nothing and battery shows just the number
 - [ ] Set up a ~/.cache pruning rule (e.g. home-manager
       systemd.user.tmpfiles.rules) so stale files from dropped features don't
-      linger - check what lives in ~/.cache that isn't disposable first
-      (cliphist history, border-harness live.lua)
+      linger
