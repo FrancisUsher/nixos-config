@@ -102,6 +102,12 @@ in
     keymaps = [
       {
         mode = "n";
+        key = "<leader>e";
+        action = "<cmd>Neotree toggle<CR>";
+        options.desc = "File [E]xplorer";
+      }
+      {
+        mode = "n";
         key = "<Esc>";
         action = "<cmd>nohlsearch<CR>";
       }
@@ -188,6 +194,13 @@ in
     '';
 
     plugins = {
+      neo-tree = {
+        enable = true;
+        settings = {
+          
+        };
+      };
+
       gitsigns = {
         enable = true;
         settings.signs = {
