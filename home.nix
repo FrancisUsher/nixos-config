@@ -35,6 +35,7 @@
   home.shellAliases = {
     cat = "bat";
     grep = "rg";
+    librarian = "claude --agent librarian --settings ~/.claude/librarian/settings.json --setting-sources user";
   };
   home.sessionVariables = {
     EDITOR = "nvim";

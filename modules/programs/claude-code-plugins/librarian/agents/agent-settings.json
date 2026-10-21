@@ -1,0 +1,21 @@
+{
+  "pluginConfigs": {
+    "cc-plugin-agents-md@builtin": {
+      "options": { "instructionFiles": "managed-only" }
+    }
+  },
+  "autoMemoryDirectory": "~/.claude/librarian/memory",
+  "permissions": {
+    "defaultMode": "default",
+    "allow": [
+      "Bash(man *)",
+      "Bash(apropos *)",
+      "Bash(nix search *)",
+      "Bash(rg *)",
+      "Bash(grep *)",
+      "Bash(gh search *)",
+      "WebSearch",
+      "WebFetch"
+    ]
+  }
+}

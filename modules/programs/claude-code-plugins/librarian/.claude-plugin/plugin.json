@@ -1,0 +1,10 @@
+{
+  "name": "librarian",
+  "description": "It helps you find references without solving problems for you.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Francis Usher",
+    "url": "https://github.com/FrancisUsher"
+  }
+}
+
