@@ -14,7 +14,7 @@
     ]
   },
   "env": {
-    "CLAUDE_CODE_PLUGIN_DIRS": "~/nixos-config/modules/programs/claude-code-mods/section-review"
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/nixos-config/modules/programs/claude-code-plugins/librarian"
   },
   "autoCompactWindow": 400000,
   "attribution": {
