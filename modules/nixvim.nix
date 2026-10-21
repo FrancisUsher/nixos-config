@@ -197,7 +197,11 @@ in
       neo-tree = {
         enable = true;
         settings = {
-          
+          filesystem = {
+            filtered_items = {
+              visible = true;
+            };
+          };
         };
       };
 
