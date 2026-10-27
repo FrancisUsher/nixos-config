@@ -1,3 +1,8 @@
+---
+id: nixos-rebuild-health-checks
+aliases: []
+tags: []
+---
 # Post-rebuild health checks
 
 Came up while chasing the tailscale/NetworkManager DNS-fight fix for
@@ -73,3 +78,11 @@ none of this is adopted yet:
       pushes exactly when something needs a human, no polling required. A
       status file/dashboard is fine as a secondary "what's true right now"
       view later, not as the primary alert path.
+
+## More test cases
+
+
+- [ ] Custom flake check process for catching a broken plugin/nixpkgs
+      update (e.g. nvim failing to start) before committing the flake.lock
+      bump, instead of discovering it several revisions later - needs its
+      own longer discussion about what would actually meet my needs here.
