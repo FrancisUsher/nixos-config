@@ -108,6 +108,12 @@ in
       }
       {
         mode = "n";
+        key = "<leader>g";
+        action = "<cmd>Neotree git_status<CR>";
+        options.desc = "[G]it status";
+      }
+      {
+        mode = "n";
         key = "<Esc>";
         action = "<cmd>nohlsearch<CR>";
       }
@@ -202,6 +208,8 @@ in
               visible = true;
             };
           };
+          use_libuv_file_watcher = true;
+          follow_current_file.enabled = true;
         };
       };
 
