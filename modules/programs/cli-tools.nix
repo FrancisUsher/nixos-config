@@ -1,7 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, lib, config, ... }:
 
 {
-  home.packages = [ pkgs.gitleaks pkgs.kicad ];
 
   programs.bash.enable = true;
   programs.bat.enable = true;
@@ -20,5 +19,14 @@
     enable = true;
     enableBashIntegration = true;
     shellWrapperName = "y";
+  };
+
+  home.shellAliases = {
+    cat = lib.mkIf config.programs.bat.enable "bat";
+    grep = lib.mkIf config.programs.ripgrep.enable "rg";
+  };
+  home.sessionVariables = {
+    MANPAGER = lib.mkIf config.programs.bat.enable "sh -c 'col -bx | bat -l man -p'";
+    MANROFFOPT = lib.mkIf config.programs.bat.enable "-c";
   };
 }

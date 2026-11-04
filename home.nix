@@ -35,13 +35,9 @@
 
   home.shellAliases = {
     gogo = "sudo nixos-rebuild switch";
-    cat = "bat";
-    grep = "rg";
     librarian = "claude --agent librarian --settings ~/.claude/librarian/settings.json --setting-sources user";
   };
   home.sessionVariables = {
     EDITOR = "nvim";
-    MANPAGER = "sh -c 'col -bx | bat -l man -p'";
-    MANROFFOPT = "-c";
   };
 }
