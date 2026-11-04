@@ -22,6 +22,13 @@ let
       server = "ts_ls";
       grammars = [ "typescript" "tsx" "javascript" ];
     };
+    nix = {
+      server = "nixd";
+      grammars = [ "nix"];
+      # serverSettings = {
+      #
+      # };
+    };
   };
 
   # Grammars with no matching LSP server - Neovim-internal/structural
