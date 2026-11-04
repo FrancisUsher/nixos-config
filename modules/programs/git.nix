@@ -1,7 +1,7 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 {
-  config.programs.git = {
+  programs.git = {
     enable = true;
     settings = {
       user.name = "Francis Usher";
@@ -19,7 +19,7 @@
       };
     };
   };
-  config.home.shellAliases = lib.mkIf config.programs.git.enable {
+  home.shellAliases = lib.mkIf config.programs.git.enable {
     g = "git";
     gs = "git status";
     gc = "git commit -m";
