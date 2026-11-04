@@ -26,6 +26,7 @@
     ./modules/programs/volume-osd.nix
     ./modules/programs/bluetooth-panel.nix
     ./modules/programs/krita.nix
+    ./modules/programs/kicad.nix
   ];
 
   home.username = username;
