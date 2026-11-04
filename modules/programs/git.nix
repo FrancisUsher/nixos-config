@@ -27,4 +27,5 @@
     gl = "git log";
     ga = "git add";
   };
+  home.packages = [ (lib.mkIf config.programs.git.enable pkgs.gitleaks) ];
 }
