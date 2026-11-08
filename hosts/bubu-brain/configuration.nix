@@ -1,4 +1,4 @@
-{ config, lib, pkgs, claudeCodePkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   imports =
@@ -68,14 +68,7 @@
     jq
     python3
     nodejs
-  ] ++ [
-    claudeCodePkgs.claude-code
   ];
-
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [
-      "claude-code"
-    ];
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";

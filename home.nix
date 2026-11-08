@@ -3,7 +3,6 @@
 {
   imports = [
     ./modules/nixvim.nix
-    ./modules/programs/claude-code.nix
     ./modules/programs/git.nix
     ./modules/programs/gh.nix
     ./modules/programs/glow.nix
@@ -35,7 +34,6 @@
 
   home.shellAliases = {
     gogo = "sudo nixos-rebuild switch";
-    librarian = "claude --agent librarian --settings ~/.claude/librarian/settings.json --setting-sources user";
   };
   home.sessionVariables = {
     EDITOR = "nvim";

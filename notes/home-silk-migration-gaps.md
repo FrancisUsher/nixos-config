@@ -1,3 +1,8 @@
+---
+id: home-silk-migration-gaps
+aliases: []
+tags: []
+---
 # home/silk migration gaps
 
 Found while auditing `/mnt/backup-ssd/arch-backup-2026-09-03/home/silk/` for
@@ -25,7 +30,7 @@ This audit is partial - see the last item below for what's left to look at.
       looked at closely so far. Still unreviewed: `.config/{chromium, dconf,
       kritarc, kritadisplayrc, nvim.bkp, procps, pulse, QtProject.conf,
       tailscale}`, and top-level `.bash_history`, `.bash_logout`,
-      `.bash_profile`, `.bashrc`, `.cargo`, `.claude`/`.claude.json`,
+      `.bash_profile`, `.bashrc`, `.cargo`,
       `container_hist.txt`, `dev/` (actual project repos - e.g. `power-tui`,
       `themer`, several `zmk-*` firmware forks - a different kind of review
       than dotfiles, whether they're pushed/backed up elsewhere rather than

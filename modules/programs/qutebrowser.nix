@@ -26,7 +26,6 @@
       "*://*.zmk.dev/*".content.images = true;
       "*://www.kiserdesigns.com/*".content.images = true;
       "*://doc.qt.io/*".content.images = true;
-      "*://*.claude.com/*".content.images = true;
     };
   };
 }
