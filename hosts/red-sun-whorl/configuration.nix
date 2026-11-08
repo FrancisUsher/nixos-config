@@ -91,6 +91,7 @@
     jq
     python3
     nodejs
+    brightnessctl
   ];
 
   services.captivePortalAccept = {
