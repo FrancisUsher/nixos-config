@@ -2,7 +2,7 @@
 
 {
   programs.qutebrowser = {
-    enable = true;
+    enable = false;
 
     settings = {
       auto_save.session = true;
