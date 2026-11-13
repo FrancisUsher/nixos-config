@@ -26,10 +26,10 @@ let
 
   mkBezier = name: points: { _args = [ name { type = "bezier"; inherit points; } ]; };
 
-  imgborders = unstableUnfreePkgs.hyprlandPlugins.imgborders.overrideAttrs (_: {
-    version = "2026-08-16-local";
-    src = ./imgborders;
-  });
+  # imgborders = unstableUnfreePkgs.hyprlandPlugins.imgborders.overrideAttrs (_: {
+  #   version = "2026-08-16-local";
+  #   src = ./imgborders;
+  # });
 
 in
 {
@@ -54,13 +54,13 @@ in
         animations.enabled = true;
         ecosystem.no_update_news = true;
         decoration.rounding = 0;
-        plugin.imgborders = {
-          sizes = 8;
-          insets = 0;
-          scale = 3;
-          smooth = false;
-          blur = false;
-        };
+        # plugin.imgborders = {
+        #   sizes = 8;
+        #   insets = 0;
+        #   scale = 3;
+        #   smooth = false;
+        #   blur = false;
+        # };
         dwindle.preserve_split = true;
       };
 
@@ -149,9 +149,8 @@ in
         ];
     };
 
+      # hl.plugin.load("${imgborders}/lib/libimgborders.so")
     extraConfig = ''
-      hl.plugin.load("${imgborders}/lib/libimgborders.so")
-
       hl.on("hyprland.start", function()
         hl.exec_cmd("waybar")
         hl.exec_cmd("${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store")

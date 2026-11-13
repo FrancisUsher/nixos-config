@@ -217,22 +217,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-claude-code": {
-      "locked": {
-        "lastModified": 1794042290,
-        "narHash": "sha256-ziZn2PvCJE5JEEpqTdxXwJpPB+L3YqoCpTAMCzyaP3U=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "f4a03c008967841f2a0b3cb7c436fc6fc31671f6",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-unstable-unfree": {
       "locked": {
         "lastModified": 1794042290,
@@ -302,7 +286,6 @@
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-claude-code": "nixpkgs-claude-code",
         "nixpkgs-unstable-unfree": "nixpkgs-unstable-unfree",
         "nixvim": "nixvim",
         "stylix": "stylix"

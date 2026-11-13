@@ -45,20 +45,20 @@ in
     inherit (layout.${if customBorders then "custom" else "minimal"}) gaps_out border_size;
   };
 
-  wayland.windowManager.hyprland.settings.config.plugin.imgborders = {
-    mode = if customBorders then "procedural" else "none";
-    seed = selection.seed or 1;
-    roughness = selection.roughness or 0.5;
-    chipping = selection.chipping or 0.4;
-    moss = selection.moss or 0.2;
-    stone_blend = selection.stone_blend;
-    highlight_blend = selection.highlight_blend;
-    color_mortar = palette.base00;
-    color_accent = palette.${selection.accent};
-    color_moss = palette.base0B;
-    merge = selection.merge or true;
-    merge_distance = 2 * hyprlandConfig.general.gaps_in + 2;
-  };
+  # wayland.windowManager.hyprland.settings.config.plugin.imgborders = {
+  #   mode = if customBorders then "procedural" else "none";
+  #   seed = selection.seed or 1;
+  #   roughness = selection.roughness or 0.5;
+  #   chipping = selection.chipping or 0.4;
+  #   moss = selection.moss or 0.2;
+  #   stone_blend = selection.stone_blend;
+  #   highlight_blend = selection.highlight_blend;
+  #   color_mortar = palette.base00;
+  #   color_accent = palette.${selection.accent};
+  #   color_moss = palette.base0B;
+  #   merge = selection.merge or true;
+  #   merge_distance = 2 * hyprlandConfig.general.gaps_in + 2;
+  # };
 
   wayland.windowManager.hyprland.extraConfig = ''
     local borderHarnessOk, borderHarnessLive = pcall(dofile, os.getenv("HOME") .. "/.cache/border-harness/live.lua")
