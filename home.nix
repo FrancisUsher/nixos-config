@@ -17,7 +17,6 @@
     ./modules/programs/hyprlock.nix
     ./modules/programs/waybar.nix
     ./modules/programs/fuzzel.nix
-    ./modules/programs/qutebrowser.nix
     ./modules/programs/hyprland.nix
     ./modules/programs/border-harness.nix
     ./modules/programs/quickshell-harness.nix
