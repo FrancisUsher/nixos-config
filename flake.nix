@@ -61,7 +61,6 @@
             home-manager.users.silk.imports = [
               ./modules/programs/power-menu.nix
               ./modules/programs/google-chrome.nix
-              ./hosts/red-sun-whorl/ssh-pas-bubu-brain.nix
             ];
           }
         ];
